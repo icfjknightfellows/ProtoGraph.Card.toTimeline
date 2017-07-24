@@ -1,0 +1,193 @@
+@import url('https://fonts.googleapis.com/css?family=Droid+Sans');
+
+.proto-cover-fb{
+  height: 225px !important;
+  width: 450px !important;
+  position: relative;
+  background:#efefef
+  /*max-height: 100%; */
+  /*max-width: 100%;*/
+  /*background:rgba(0,0,0,0.6);*/
+}
+.proto-cover-insta{
+  height: 450px !important;
+  width: 450px !important;
+  position: relative;
+  background:#efefef;
+  /*max-height: 100%; */
+  /*max-width: 100%;*/
+  /*background:rgba(0,0,0,0.6);*/
+}
+.proto-cover-image{
+  width: 450px !important;
+  position: relative;
+  margin:auto;
+}
+.proto-transparent-layer {
+  height: 400px;
+  width: 700px;
+  top: 8px;
+  left: 8px;
+  /*background:rgba(255,255,255,0.3);*/
+  /*background:rgba(0,0,0,0.2);*/
+  position: absolute;
+}
+
+.proto-logo-image{
+  height: 100%;
+  width: 100%;
+  border-radius: 5px;
+  /*position: absolute; */
+  /*top: 20px;
+  padding-left: 10px;*/
+  display: inline-block;
+}
+
+.proto-quote-title {
+  color: white;
+  font-size: 16px;
+  padding-right: 10%;
+  font-family: 'Droid Sans', sans-serif;
+  vertical-align: top;
+  border-radius: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  background: rgba(0,0,0,0.5);
+  margin-left: 5px;
+  display: inline-block;
+}
+
+.proto-top-div{
+  position: absolute;
+  top: 15px;
+  left: 15px;
+
+}
+.proto-top-image{
+  display: inline-block;
+  height:30px;
+  width:30px;
+}
+.form-container{
+  margin-top:20px;
+}
+.proto-tab {
+  padding: 5px 15px;
+  background: #ccc;
+  margin-right: 10px;
+}
+
+.proto-share-card-div {
+  max-height: 100%;
+  overflow: auto;
+  min-height: 512px;
+  text-align: center;
+  margin-top:10px;
+  /*padding: 0px;*/
+}
+
+.preview {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  min-height: 447.5px;
+  margin-top:10px;
+}
+
+.protograph-edit-form {
+  border-right: 1px solid #efefef ;
+}
+
+.protograph-submit-button {
+  display: none;
+}
+
+@media only screen and (max-width: 500px){
+  body {
+    margin: 0px
+  }
+  .proto-top-div{
+    position: absolute;
+    top: 10px;
+    padding-left: 5px;
+  }
+  .proto-logo-image{
+    height: 20px;
+    width: 20px;
+    border-radius: 5px;
+    display: inline-block;
+  }
+  .proto-quote-title {
+    font-size: 11px;
+    padding-right: 10%;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background: rgba(0,0,0,0.5);
+    margin-left: 3px;
+    display: inline-block;
+    border-radius: 3px;
+  }
+}
+
+
+.protograph_col_6 {
+  width: 50%;
+  float: left;
+}
+
+.proto-grey-body {
+  background: #fafafa; }
+
+.proto-container {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto; }
+
+.proto-navbar {
+  padding: 5px 0px;
+  border-bottom: 1px solid #efefef;
+  background: white; }
+  .proto-navbar .round-image {
+    height: 45px;
+    width: 45px;
+    overflow: hidden;
+    border-radius: 50px; }
+
+.form-layout .proto-card-form {
+  padding-top: 15px; }
+.form-layout .proto-card-preview {
+  background: white;
+  height: 100vh;
+  padding-top: 15px; }
+
+.default-button {
+  border: 1px solid #c5c5c5;
+  display: inline-block;
+  padding: 2px;
+  border-radius: 4px; }
+  .default-button i.icon, .default-button i.icons {
+    color: #969696;
+    font-size: 1.5em; }
+
+.section-title-text{
+  font-size: 1.5em;
+  padding-bottom: 15px;
+  font-weight: bold;
+  display: inline-block;
+}
+.proto-pull-right {
+  float: right;
+}
+
+/*#ProtoScreenshot {
+  max-height: 450px;
+  max-width: 450px;
+  position: relative;
+  overflow: hidden;
+  padding: 10px 15px;
+  margin-left: 20px;
+}*/
