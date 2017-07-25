@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {},
+  "id": "http://example.com/example.json",
+  "type": "object",
+  "properties": {
+    "data": {
+      "id": "/properties/data",
+      "type": "object",
+      "properties": {
+        "events": {
+          "id": "/properties/data/properties/events",
+          "type": "array",
+          "title": "Event List",
+          "minItems": "2",
+          "items": {
+            "type": "object",
+            "id": "/properties/data/properties/events/items",
+            "properties": {
+              "single_event": {
+                "title": "",
+                "condition": {"element": "timeline_mode", "value": "single"},
+                "type": "object",
+                "id": "/properties/data/properties/events/items/properties/single_event",
+                "properties": {
+                  "timestamp_date": {
+                    "title": "Timestamp Date",
+                    "type": "string",
+                    "format": "alt-date",
+                    "default": "2009-07-17",
+                    "id": "/properties/data/properties/events/items/properties/single_event/properties/timestamp_date",
+                    "condition": {"element": "timestamp_mode", "value": "date"}
+                  },
+                  "message": {
+                    "title": "Text",
+                    "type": "string",
+                    "default": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                    "id": "/properties/data/properties/events/items/properties/single_event/properties/message"
+                  },
+                  "photo": {
+                    "title": "Image",
+                    "type": "string",
+                    "format": "data-url",
+                    "id": "/properties/data/properties/events/items/properties/single_event/properties/photo"
+                  },
+                  "youtube_url": {
+                    "title": "Youtube URL",
+                    "type": "string",
+                    "id": "/properties/data/properties/events/items/properties/single_event/properties/youtube_url"
+                  }
+                },
+                "required":["timestamp_date", "message"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "mandatory_config": {
+      "type": "object",
+      "id": "/properties/mandatory_config",
+      "properties": {
+        "timeline_mode": {
+          "title": "Timeline Mode",
+          "type": "string",
+          "id": "/properties/mandatory_config/properties/timeline_mode",
+          "enum": ["range", "single"]
+        },
+        "timestamp_mode": {
+          "title": "Timestamp Mode",
+          "type": "string",
+          "id": "/properties/mandatory_config/properties/timestamp_mode",
+          "enum": ["time", "date", "month", "year"]
+        },
+        "timeline_title": {
+          "title": "Timeline Title",
+          "type": "string",
+          "id": "/properties/mandatory_config/properties/timeline_title"
+        },
+        "timeline_description": {
+          "title": "Timeline Description",
+          "type": "string",
+          "id": "/properties/mandatory_config/properties/timeline_description"
+        },
+        "timeline_image": {
+          "title": "Timeline Image",
+          "type": "string",
+          "id": "/properties/mandatory_config/properties/timeline_image",
+          "format": "data-url"
+        }
+      }
+    }
+  }
+}

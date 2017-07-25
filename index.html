@@ -3,40 +3,27 @@
   <head>
     <meta charset = "UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Share Card</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="./dist/0.0.1/card.min.css">
-    <!-- <link rel="stylesheet" type="text/css" href="./src/css/style.css"> -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.css" />
-    <link rel="stylesheet" type="text/css" href="./lib/css/react-jsonschema-form.css">
-    <script
-      src="https://code.jquery.com/jquery-3.1.1.min.js"
-      integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-      crossorigin="anonymous"></script>
+    <title>Timeline Card</title>
+    <link rel="stylesheet" type="text/css" href="https://dwln9tzsi7g07.cloudfront.net/Assets/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="src/css/styles.css">
   </head>
   <body>
-    <script src="http://cdn.bootcss.com/react/15.4.1/react.js"></script>
-    <script src="http://cdn.bootcss.com/react/15.4.1/react-dom.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="./lib/js/react-jsonschema-form.js"></script>
 
-    <div id="share_div"></div>
+    <div id="timeline_div"></div>
     <script src = "dist/0.0.1/card.min.js"></script>
-    <!-- <script src = "dist/0.0.1/edit-card.min.js"></script> -->
-
     <script type="text/javascript">
     var x = new ProtoGraph.Card.toTimeline();
     x.init({
-      selector: document.querySelector('#share_div'),
-      data_url: './sample.json',
-      schema_url: './formschema.json',
-      ui_schema_url: './ui_schema.json'
+      selector: document.querySelector('#timeline_div'),
+      data_url: './dist/0.0.1/sample.json',
+      schema_url: './dist/0.0.1/schema.json',
+      ui_schema_url: './dist/0.0.1/ui_schema.json',
+      configuration_url: "./dist/0.0.1/configuration_sample.json",
+      configuration_schema_url: './dist/0.0.1/configuration_schema.json'
     });
-    // x.renderEdit();
-    x.renderFacebookCard();
-    // x.renderInstagramCard();
-    // x.getData();
-    // x.renderScreenshot();
+
+    x.renderLaptop();
     </script>
   </body>
 </html>

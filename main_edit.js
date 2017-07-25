@@ -1,26 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import EditShareCard from './src/js/edit_share_card.jsx';
+import EditTimelineCard from './src/js/edit_timeline_card.jsx';
 
 ProtoGraph.Card.toTimeline.prototype.getData = function (data) {
   return this.containerInstance.exportData();
 }
 
-ProtoGraph.Card.toTimeline.prototype.renderEdit = function (onPublishCallback) {
-  this.mode = 'edit';
-  this.onPublishCallback = onPublishCallback;
-  generateShareCard.call(this);
+ProtoGraph.Card.toTimeline.prototype.renderSEO = function (data) {
+  this.renderMode = 'SEO';
+  return this.containerInstance.renderSEO();
 }
 
 ProtoGraph.Card.toTimeline.prototype.renderEdit = function (onPublishCallback) {
   this.mode = 'edit';
   this.onPublishCallback = onPublishCallback;
-  generateShareCard.call(this);
-}
-
-function generateShareCard() {
   ReactDOM.render(
-    <EditShareCard
+    <EditTimelineCard
       dataURL={this.options.data_url}
       schemaURL={this.options.schema_url}
       uiSchemaURL={this.options.ui_schema_url}
