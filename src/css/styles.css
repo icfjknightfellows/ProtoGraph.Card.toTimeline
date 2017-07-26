@@ -15,15 +15,7 @@
   transition: opacity 0.5s;
 }
 
-#month-div {
-
-}
-
-#year-div {
-
-}
-
-#day-div {
+#day_div {
   font-size: 30px;
   margin: 5px 0;
   font-weight: bold;
@@ -50,11 +42,12 @@
   display: inline-block;
   width: 86.5%;
   height: 544px;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 #scroll_down_indicator {
   /*margin-top: 30px;*/
+  text-align: center;
 }
 
 #scroll_down_arrow {
@@ -78,7 +71,7 @@
   text-decoration: none;
   display: block;
   font-size: 18px;
-  margin-top: 50%;
+  margin-top: 50px;
   cursor: pointer;
   border-radius: 4px;
   position: absolute;
@@ -89,11 +82,16 @@
 }
 
 #protograph_div {
-  /*display: inline-block;*/
-  height: 609px;
+  height: 600px;
+  width: 640px;
   background: #f5f5f5;
-  padding: 20px 30px;
+  padding: 20px 20px;
   overflow: hidden;
+}
+
+body ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 0px;
 }
 
 #initial_timestamp {
@@ -103,6 +101,8 @@
 #initial_timestamp, #final_timestamp {
   height: 20px;
   color: #C0C0C0;
+  width: 50px;
+  text-align: center;
 }
 
 .circle-plot {
@@ -112,26 +112,10 @@
 
 .content-card {
   /*box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0), 0 5px 30px 0 rgba(0, 0, 0, 0.19);*/
+  width: 100%;
   padding: 16px;
   background: white;
   text-align: left;
-}
-
-.proto-share-card-div {
-  max-height: 100%;
-  overflow: auto;
-  min-height: 512px;
-  text-align: center;
-  margin-top:10px;
-  /*padding: 0px;*/
-}
-
-.preview {
-  /*position: relative;*/
-  /*display: inline-block;*/
-  width: 100%;
-  min-height: 447.5px;
-  margin-top:10px;
 }
 
 .event_message_div {
@@ -184,80 +168,11 @@
     height: 420px;
 }
 
-@media only screen and (max-width: 500px){
-  body {
-    margin: 0px
-  }
-  .proto-top-div{
-    position: absolute;
-    top: 10px;
-    padding-left: 5px;
-  }
-  .proto-logo-image{
-    height: 20px;
-    width: 20px;
-    border-radius: 5px;
-    display: inline-block;
-  }
-  .proto-quote-title {
-    font-size: 11px;
-    padding-right: 10%;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    padding-left: 10px;
-    padding-right: 10px;
-    background: rgba(0,0,0,0.5);
-    margin-left: 3px;
-    display: inline-block;
-    border-radius: 3px;
-  }
-}
-
-
-.protograph_col_6 {
-  width: 50%;
-  float: left;
-}
-
-.proto-grey-body {
-  background: #fafafa; }
-
-.proto-container {
-  max-width: 1280px;
-  width: 100%;
-  margin: 0 auto; }
-
-.proto-navbar {
-  padding: 5px 0px;
-  border-bottom: 1px solid #efefef;
-  background: white; }
-  .proto-navbar .round-image {
-    height: 45px;
-    width: 45px;
-    overflow: hidden;
-    border-radius: 50px; }
-
-.form-layout .proto-card-form {
-  padding-top: 15px; }
-.form-layout .proto-card-preview {
-  background: white;
-  height: 100vh;
-  padding-top: 15px; }
-
-.default-button {
-  border: 1px solid #c5c5c5;
-  display: inline-block;
-  padding: 2px;
-  border-radius: 4px; }
-  .default-button i.icon, .default-button i.icons {
-    color: #969696;
-    font-size: 1.5em; }
-
-/*#ProtoScreenshot {
+#ProtoScreenshot {
   max-height: 450px;
   max-width: 450px;
   position: relative;
   overflow: hidden;
   padding: 10px 15px;
   margin-left: 20px;
-}*/
+}

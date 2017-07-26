@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 
-export default class ShareCard extends React.Component {
+export default class TimelineCard extends React.Component {
   constructor(props) {
     super(props)
 
@@ -141,14 +141,24 @@ export default class ShareCard extends React.Component {
           visibleEvents.push(event);
       }
     }
-    container.style.paddingBottom = `${container.getBoundingClientRect().height/2 - events[events.length-1].getBoundingClientRect().height/2}px`;
-    let centralEvent;
+    container.style.paddingBottom = `${container.getBoundingClientRect().height/2 + 200 - events[events.length-1].getBoundingClientRect().height/2}px`;
+    let centralEvents = [];
     for(let visibleEvent of visibleEvents) {
       let offsetTop = visibleEvent.getBoundingClientRect().top - container.getBoundingClientRect().top;
       let offsetBottom = visibleEvent.getBoundingClientRect().top - container.getBoundingClientRect().top + visibleEvent.getBoundingClientRect().height;
-      if(offsetTop < container.getBoundingClientRect().height/2 && offsetBottom > container.getBoundingClientRect().height/2) {
-        centralEvent = visibleEvent;
+      let diff = offsetBottom - offsetTop;
+      let offsetMiddle = offsetTop + diff/2;
+      let scanLine = container.getBoundingClientRect().height/2;
+      // if(offsetTop < scanLine && offsetBottom > scanLine) {
+      //   centralEvent = visibleEvent;
+      //   console.log(centralEvent.id, offsetTop, scanLine, offsetBottom);
+      // }
+      if(offsetMiddle < (scanLine + 200) && offsetMiddle > (scanLine - 200)) {
+        centralEvents.push(visibleEvent);
       }
+    }
+    if(centralEvents.length === 0) {
+      centralEvents.push(visibleEvents[0]);
     }
     // var that = this;
     // if(this.state.debounce === true) {
@@ -158,12 +168,12 @@ export default class ShareCard extends React.Component {
     // }
     // setTimeout(function(){ that.setState({debounce: true}); }, 3000);
     for(let plot of circlePlots) {
-      if(plot.id === centralEvent.id) {
+      if(plot.id === centralEvents[0].id) {
         plot.style.fill = "red";
-        if(centralEvent === document.getElementsByClassName('first-event')[0]) {
+        if(centralEvents[0] === document.getElementsByClassName('first-event')[0] && this.props.mode === 'laptop') {
           document.getElementById('date_div').style.marginTop = "20px";
         }
-        else {
+        else if (this.props.mode === 'laptop'){
           document.getElementById('date_div').style.marginTop = `${plot.getBoundingClientRect().top - container.getBoundingClientRect().top - 35}px`;
         }
       }
@@ -171,13 +181,15 @@ export default class ShareCard extends React.Component {
         plot.style.fill = "#C0C0C0";
       }
     }
-    let timestamp = centralEvent.id.split('-');
-    document.getElementById('month-div').innerHTML = this.getMonth(timestamp[1]);
-    document.getElementById('day-div').innerHTML = timestamp[2];
-    document.getElementById('year-div').innerHTML = timestamp[0];
+    let timestamp = centralEvents[0].id.split('-');
+    if(this.props.mode === 'laptop') {
+      document.getElementById('month_div').innerHTML = this.getMonth(timestamp[1]);
+      document.getElementById('day_div').innerHTML = timestamp[2];
+      document.getElementById('year_div').innerHTML = timestamp[0];
+    }
     for(event of events) {
-      if(event === centralEvent) {
-        if(centralEvent === document.getElementsByClassName('first-event')[0]) {
+      if(centralEvents.includes(event)) {
+        if(centralEvents[0] === document.getElementsByClassName('first-event')[0]) {
           document.getElementById('scroll_down_arrow').style.height = "25px";
           document.getElementById('scroll_down_text').style.height = "20px";
           document.getElementById('scroll_down_text').innerHTML = "Scroll";
@@ -206,7 +218,7 @@ export default class ShareCard extends React.Component {
     else {
       element = e.target.parentElement.parentElement;
     }
-    document.getElementById('content_div').scrollTop = element.offsetTop;
+    document.getElementById('content_div').scrollTop = `${document.getElementById('content_div').scrollTop + 30}px`;
     console.log(document.getElementById('content_div').scrollTop);
   }
 
@@ -234,7 +246,6 @@ export default class ShareCard extends React.Component {
     if (this.state.schemaJSON === undefined ){
       return(<div>Loading</div>)
     } else {
-      console.log(this.state.dataJSON);
       // let styles = this.state.dataJSON.configs ? {backgroundColor: this.state.dataJSON.configs.background_color} : {undefined}
       let events = this.state.dataJSON.card_data.events;
       const line_height = 500;
@@ -260,22 +271,22 @@ export default class ShareCard extends React.Component {
       var that = this;
       let plotCircles = eventPoints.map((element, pos) => {
         if(pos == 0) {
-          return <circle id={element.timestamp} className="circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="red"/>;
+          return <circle id={element.timestamp} key={element.timestamp} className="circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="red"/>;
         }
         else {
-          return <circle id={element.timestamp} className="circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="#C0C0C0" />
+          return <circle id={element.timestamp} key={element.timestamp} className="circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="#C0C0C0" />
         }
       });
       let assetIcons = events.map((element, pos) => {
         if(element.single_event.youtube_url){
           return (
-            <svg id={element.timestamp} className="asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 25) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='/src/images/play.svg' />"}}/>
+            <svg id={element.timestamp} key={element.timestamp} className="asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 20) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='/src/images/play.svg' />"}}/>
 
           );
         }
         if(element.single_event.photo){
           return (
-            <svg id={element.timestamp} className="asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 25) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='/src/images/image.svg' />"}}/>
+            <svg id={element.timestamp} key={element.timestamp} className="asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 20) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='/src/images/image.svg' />"}}/>
           );
         }
       });
@@ -285,7 +296,7 @@ export default class ShareCard extends React.Component {
         let timestamp = `${that.getMonth(timestampComponents[1])} ${timestampComponents[2]}, ${timestampComponents[0]}`;
         if(pos == 0) {
             return (
-              <div id={element.single_event.timestamp_date} className="event_message_div first-event" onClick={(e) => that.moveEventToTop(e)} style={{marginTop: line_height/2 - 51}} >
+              <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="event_message_div first-event" onClick={(e) => that.moveEventToTop(e)} style={{marginTop: line_height/2 - 51}} >
                 <div id="scroll_down_indicator">
                   <p id="scroll_down_text" style={{marginBottom: "2px", height: "20px"}}>Scroll</p>
                   <svg id="scroll_down_arrow" height="25px" width="25px" viewBox="0 0 100 100">
@@ -306,7 +317,7 @@ export default class ShareCard extends React.Component {
         }
         else {
           return (
-            <div id={element.single_event.timestamp_date} className="event_message_div" onClick={(e) => that.moveEventToTop(e)} style={onStartStyle}>
+            <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="event_message_div" onClick={(e) => that.moveEventToTop(e)} style={onStartStyle}>
               <p className="message-timestamp">{timestamp}</p>
               <div className="content-card">
                 <p>{element.single_event.message}</p>
@@ -334,7 +345,7 @@ export default class ShareCard extends React.Component {
           for(j = 0; j < ranges.length; j++) {
             let textPosition = ranges[j].start + (ranges[j].end - ranges[j].start)/2;
             let rotateBy = `rotate(180 ${svgWidth/2},${textPosition})`;
-            yearCountText.push(<text fontSize="12" writingMode="tb-rl" textAnchor="middle" x={svgWidth/2 + 10} y={textPosition} fill="#C0C0C0" transform={rotateBy}>{ranges[j].years} years</text>);
+            yearCountText.push(<text key={textPosition} fontSize="12" writingMode="tb-rl" textAnchor="middle" x={svgWidth/2 + 10} y={textPosition} fill="#C0C0C0" transform={rotateBy}>{ranges[j].years} years</text>);
           }
         }
       }
@@ -344,17 +355,17 @@ export default class ShareCard extends React.Component {
             <div id="timeline_details_div">
               <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
               <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
+              <button id="show_main_card_button" onClick={(e) => that.showMainCard(e)}>Lets time travel</button>
             </div>
             <div id="timeline_image_div">
               <img className="timeline_image" src={this.state.dataJSON.mandatory_config.timeline_image}/>
             </div>
-            <button id="show_main_card_button" onClick={(e) => that.showMainCard(e)}>Lets time travel</button>
           </div>
           <div id="card_main_div">
             <div id="date_div">
-              <div id="month-div">{this.getMonth(firstEventTimeComponents[1])}</div>
-              <div id="day-div">{firstEventTimeComponents[2]}</div>
-              <div id="year-div">{firstEventTimeComponents[0]}</div>
+              <div id="month_div">{this.getMonth(firstEventTimeComponents[1])}</div>
+              <div id="day_div">{firstEventTimeComponents[2]}</div>
+              <div id="year_div">{firstEventTimeComponents[0]}</div>
             </div>
             <div id="timeline_svg_div">
               <p id="initial_timestamp">{firstEventTimeComponents[0]}</p>
@@ -381,10 +392,158 @@ export default class ShareCard extends React.Component {
     if (this.state.schemaJSON === undefined ){
       return(<div>Loading</div>)
     } else {
+      // let styles = this.state.dataJSON.configs ? {backgroundColor: this.state.dataJSON.configs.background_color} : {undefined}
+      let events = this.state.dataJSON.card_data.events;
+      const line_height = 500;
+      const extraLineSpace = 30;
+      const svgWidth = 50;
+      const msDay = 60*60*24*1000;
+      let firstEventTimeComponents = events[0].single_event.timestamp_date.split('-');
+      let lastEventTimeComponents = events[events.length-1].single_event.timestamp_date.split('-');
+      let firstEventTimestamp = new Date(firstEventTimeComponents[0], firstEventTimeComponents[1], firstEventTimeComponents[2]);
+      let lastEventTimeStamp = new Date(lastEventTimeComponents[0], lastEventTimeComponents[1], lastEventTimeComponents[2]);
+      let maxTimeDifferenceInDays = Math.floor((lastEventTimeStamp - firstEventTimestamp)/msDay);
+      let eventTimestamps = events.map(element => element.single_event.timestamp_date.split('-'));
+      let eventPoints = [];
+      for(var i = 0; i < eventTimestamps.length; i++) {
+        let eventTimestamp = new Date(eventTimestamps[i][0], eventTimestamps[i][1], eventTimestamps[i][2])
+        let timeDifference = Math.floor((eventTimestamp - firstEventTimestamp)/msDay);
+        let newYCoord = 10;
+        if(maxTimeDifferenceInDays != 0){
+          newYCoord = ((timeDifference/maxTimeDifferenceInDays) * (line_height-2*extraLineSpace)) + extraLineSpace;
+        }
+        eventPoints.push({timestamp: eventTimestamps[i].join('-'), yCoord: newYCoord});
+      }
+      var that = this;
+      let plotCircles = eventPoints.map((element, pos) => {
+        if(pos == 0) {
+          return <circle id={element.timestamp} key={element.timestamp} className="circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="red"/>;
+        }
+        else {
+          return <circle id={element.timestamp} key={element.timestamp} className="circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="#C0C0C0" />
+        }
+      });
+      let assetIcons = events.map((element, pos) => {
+        if(element.single_event.youtube_url){
+          return (
+            <svg id={element.timestamp} key={element.timestamp} className="asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 25) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='/src/images/play.svg' />"}}/>
+
+          );
+        }
+        if(element.single_event.photo){
+          return (
+            <svg id={element.timestamp} key={element.timestamp} className="asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 25) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='/src/images/image.svg' />"}}/>
+          );
+        }
+      });
+      let onStartStyle = {opacity: "0.10"};
+      let eventDetails = events.map((element, pos) => {
+        let timestampComponents = element.single_event.timestamp_date.split('-');
+        let timestamp = `${that.getMonth(timestampComponents[1])} ${timestampComponents[2]}, ${timestampComponents[0]}`;
+        if(pos == 0) {
+            return (
+              <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="event_message_div first-event" onClick={(e) => that.moveEventToTop(e)} style={{marginTop: line_height/2 - 51}} >
+                <div id="scroll_down_indicator">
+                  <p id="scroll_down_text" style={{marginBottom: "2px", height: "20px"}}>Scroll</p>
+                  <svg id="scroll_down_arrow" height="25px" width="25px" viewBox="0 0 100 100">
+                    <line x1="10" y1="10" x2="50" y2="50" style={{stroke:"black", strokeWidth:5}} />
+                    <line x1="50" y1="50" x2="90" y2="10" style={{stroke:"black", strokeWidth:5}} />
+                    <line x1="10" y1="30" x2="50" y2="70" style={{stroke:"black", strokeWidth:5}} />
+                    <line x1="50" y1="70" x2="90" y2="30" style={{stroke:"black", strokeWidth:5}} />
+                  </svg>
+                </div>
+                <p className="message-timestamp" style={{color: "black"}}>{timestamp}</p>
+                <div className="content-card">
+                  <p>{element.single_event.message}</p>
+                  {that.injectImage(element.single_event.photo)}
+                  {that.injectYoutubeEmbed(element.single_event.youtube_url)}
+                </div>
+              </div>
+            );
+        }
+        else {
+          return (
+            <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="event_message_div" onClick={(e) => that.moveEventToTop(e)} style={onStartStyle}>
+              <p className="message-timestamp">{timestamp}</p>
+              <div className="content-card">
+                <p>{element.single_event.message}</p>
+                {that.injectImage(element.single_event.photo)}
+                {that.injectYoutubeEmbed(element.single_event.youtube_url)}
+              </div>
+            </div>
+          );
+        }
+      });
+      let yearCountText = [];
+      for(let i = 0; i < events.length - 1; i++) {
+        let currentEventComponents = events[i].single_event.timestamp_date.split('-');
+        let nextEventComponents = events[i+1].single_event.timestamp_date.split('-');
+        let currentEvent = new Date(currentEventComponents[0], currentEventComponents[1], currentEventComponents[2]);
+        let nextEvent = new Date(nextEventComponents[0], nextEventComponents[1], nextEventComponents[2]);
+        let ranges = [];
+        if(Math.round((nextEvent - currentEvent)/(msDay*365)) >= 5) {
+          let j;
+          for(j = 0; j < eventPoints.length; j++) {
+            if(eventPoints[j].timestamp === events[i].single_event.timestamp_date) {
+              ranges.push({start: eventPoints[j].yCoord, end: eventPoints[j+1].yCoord, years: Math.round((nextEvent - currentEvent)/(msDay*365))})
+            }
+          }
+          for(j = 0; j < ranges.length; j++) {
+            let textPosition = ranges[j].start + (ranges[j].end - ranges[j].start)/2;
+            let rotateBy = `rotate(180 ${svgWidth/2},${textPosition})`;
+            yearCountText.push(<text key={textPosition} fontSize="12" writingMode="tb-rl" textAnchor="middle" x={svgWidth/2 + 10} y={textPosition} fill="#C0C0C0" transform={rotateBy}>{ranges[j].years} years</text>);
+          }
+        }
+      }
+      return (
+        <div id="protograph_div" className = "protograph-card-div" style={{width: '100%'}}>
+          <div id="card_title_div">
+            <div id="timeline_details_div">
+              <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
+              <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
+              <button id="show_main_card_button" onClick={(e) => that.showMainCard(e)}>Lets time travel</button>
+            </div>
+            <div id="timeline_image_div">
+              <img className="timeline_image" src={this.state.dataJSON.mandatory_config.timeline_image}/>
+            </div>
+          </div>
+          <div id="card_main_div">
+            <div id="timeline_svg_div">
+              <p id="initial_timestamp">{firstEventTimeComponents[0]}</p>
+              <svg id="timeline_svg" height={line_height} width={svgWidth}>
+                <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
+                <g>
+                  {plotCircles}
+                  {assetIcons}
+                  {yearCountText}
+                </g>
+              </svg>
+              <p id="final_timestamp">{lastEventTimeComponents[0]}</p>
+            </div>
+            <div id="content_div" onScroll={(e) => that.handleScroll(e)} style={{width: "92%"}}>
+              {eventDetails}
+            </div>
+          </div>
+      </div>
+      )
     }
   }
 
-  renderScreenshot() {}
+  renderScreenshot() {
+    if (this.state.schemaJSON === undefined ){
+      return(<div>Loading</div>)
+    } else {
+      const data = this.state.dataJSON.mandatory_config;
+      return (
+        <div id="ProtoScreenshot">
+          {/* <div className="protograph-card">
+            <h1>{data.timeline_title}</h1>
+            <p>{data.timeline_description}</p>
+          </div> */}
+        </div>
+      )
+    }
+  }
 
   render() {
     switch(this.props.mode) {

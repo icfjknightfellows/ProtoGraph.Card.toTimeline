@@ -4,7 +4,7 @@ import axios from 'axios';
 import TimelineCard from './Container.jsx';
 import JSONSchemaForm from '../../lib/js/react-jsonschema-form.js';
 
-export default class EditShareCard extends React.Component {
+export default class EditTimelineCard extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -82,7 +82,6 @@ export default class EditShareCard extends React.Component {
     if (typeof this.props.dataURL === "string"){
       axios.all([axios.get(this.props.dataURL), axios.get(this.props.schemaURL), axios.get(this.props.optionalConfigURL), axios.get(this.props.optionalConfigSchemaURL)])
         .then(axios.spread((card, schema, opt_config, opt_config_schema) => {
-          console.log("blah", card);
           this.setState({
             dataJSON: {
               card_data: card.data.data,

@@ -18,6 +18,9 @@ module.exports = {
     tls: 'empty',
     fs: 'empty'
   },
+  devServer: {
+    disableHostCheck: true
+  },
   module: {
     loaders: [
       {
