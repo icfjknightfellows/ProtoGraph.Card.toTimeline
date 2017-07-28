@@ -62,14 +62,13 @@ export default class TimelineCard extends React.Component {
 
   componentDidUpdate() {
     if (this.props.mode === 'mobile' || this.props.mode === 'laptop') {
-      // document.getElementById('protograph_card_title_div').style.display = 'flex';
-      // document.getElementById('protograph_card_title_div').style.opacity = '1';
-      // document.getElementById('protograph_card_main_div').style.display = 'none';
-      let elems = document.querySelectorAll('.protograph-event-message-div');
-      for(let elem of elems) {
+      let elems = Array.from(document.querySelectorAll('.protograph-event-message-div'));
+      // for(let elem of elems) {
+      //   this.multiLineTruncate(elem.querySelector('.protograph-content-card').querySelector('.protograph-content-card-text'), elem);
+      // }
+      elems.forEach((elem) => {
         this.multiLineTruncate(elem.querySelector('.protograph-content-card').querySelector('.protograph-content-card-text'), elem);
-      }
-      // this.multiLineTruncate(elem[3].querySelector('.protograph-content-card').querySelector('.protograph-content-card-text'), elem);
+      });
     }
   }
 
@@ -163,40 +162,54 @@ export default class TimelineCard extends React.Component {
   }
 
   handleScroll(e) {
-    // e.preventDefault();
-    if(this.props.mode === 'laptop') {
-      document.getElementById('protograph_scroll_down_arrow').style.height = 0;
-      document.getElementById('protograph_scroll_down_text').style.height = 0;
-      document.getElementById('protograph_scroll_down_text').innerHTML = "";
-    }
+    document.getElementById('protograph_scroll_down_arrow').style.height = 0;
+    document.getElementById('protograph_scroll_down_text').style.height = 0;
+    document.getElementById('protograph_scroll_down_text').innerHTML = "";
     let events = Array.from(document.getElementsByClassName('protograph-event-message-div'));
     let visibleEvents = [];
-    let circlePlots = document.getElementsByClassName('protograph-circle-plot');
+    let circlePlots = Array.from(document.getElementsByClassName('protograph-circle-plot'));
     let container = document.getElementById('protograph_content_div');
     let containerTop = container.getBoundingClientRect().top;
     let containerBottom = container.getBoundingClientRect().bottom;
-    for(let event of events) {
+    let visibilityFrameSize = 300;
+    events.forEach((event) => {
       let offset = event.getBoundingClientRect().top - container.getBoundingClientRect().top + (event.getBoundingClientRect().height/2);
       let eventTop = event.getBoundingClientRect().top;
       let eventBottom = event.getBoundingClientRect().bottom;
       if(eventTop < containerBottom && eventBottom > containerTop) {
         visibleEvents.push(event);
       }
-    }
+    });
+    // for(let event of events) {
+    //   let offset = event.getBoundingClientRect().top - container.getBoundingClientRect().top + (event.getBoundingClientRect().height/2);
+    //   let eventTop = event.getBoundingClientRect().top;
+    //   let eventBottom = event.getBoundingClientRect().bottom;
+    //   if(eventTop < containerBottom && eventBottom > containerTop) {
+    //     visibleEvents.push(event);
+    //   }
+    // }
     container.style.paddingBottom = `${container.getBoundingClientRect().height/2 - events[events.length-1].getBoundingClientRect().height/2}px`;
     let centralEvents = [];
-    for(let visibleEvent of visibleEvents) {
+    visibleEvents.forEach((visibleEvent) => {
       let scanLine = (container.getBoundingClientRect().bottom + container.getBoundingClientRect().top)/2;
       let eventTop = visibleEvent.getBoundingClientRect().top;
       let eventBottom = visibleEvent.getBoundingClientRect().bottom;
-      if((eventTop < (scanLine + 50) && eventBottom > (scanLine + 50)) || (eventTop < (scanLine - 50) && eventBottom > (scanLine - 50)) || (eventTop > (scanLine - 50) && eventBottom < (scanLine + 50))) {
+      if((eventTop < (scanLine + visibilityFrameSize/2) && eventBottom > (scanLine + visibilityFrameSize/2)) || (eventTop < (scanLine - visibilityFrameSize/2) && eventBottom > (scanLine - visibilityFrameSize/2)) || (eventTop > (scanLine - visibilityFrameSize/2) && eventBottom < (scanLine + visibilityFrameSize/2))) {
         centralEvents.push(visibleEvent);
       }
-    }
+    });
+    // for(let visibleEvent of visibleEvents) {
+    //   let scanLine = (container.getBoundingClientRect().bottom + container.getBoundingClientRect().top)/2;
+    //   let eventTop = visibleEvent.getBoundingClientRect().top;
+    //   let eventBottom = visibleEvent.getBoundingClientRect().bottom;
+    //   if((eventTop < (scanLine + visibilityFrameSize/2) && eventBottom > (scanLine + visibilityFrameSize/2)) || (eventTop < (scanLine - visibilityFrameSize/2) && eventBottom > (scanLine - visibilityFrameSize/2)) || (eventTop > (scanLine - visibilityFrameSize/2) && eventBottom < (scanLine + visibilityFrameSize/2))) {
+    //     centralEvents.push(visibleEvent);
+    //   }
+    // }
     if(visibleEvents.includes(events[0])) {
       centralEvents.splice(0, 0, events[0]);
     }
-    for(let plot of circlePlots) {
+    circlePlots.forEach((plot) => {
       if(centralEvents[0] && (plot.id === centralEvents[0].id)) {
         plot.style.fill = "red";
         if(centralEvents[0] === document.getElementsByClassName('protograph-first-event')[0] && this.props.mode === 'laptop') {
@@ -209,7 +222,21 @@ export default class TimelineCard extends React.Component {
       else {
         plot.style.fill = "#C0C0C0";
       }
-    }
+    });
+    // for(let plot of circlePlots) {
+    //   if(centralEvents[0] && (plot.id === centralEvents[0].id)) {
+    //     plot.style.fill = "red";
+    //     if(centralEvents[0] === document.getElementsByClassName('protograph-first-event')[0] && this.props.mode === 'laptop') {
+    //       document.getElementById('protograph_date_div').style.marginTop = "20px";
+    //     }
+    //     else if (this.props.mode === 'laptop'){
+    //       document.getElementById('protograph_date_div').style.marginTop = `${plot.getBoundingClientRect().top - container.getBoundingClientRect().top - 35}px`;
+    //     }
+    //   }
+    //   else {
+    //     plot.style.fill = "#C0C0C0";
+    //   }
+    // }
     if(centralEvents[0]) {
       let timestamp = centralEvents[0].id.split('-');
       if(this.props.mode === 'laptop') {
@@ -218,13 +245,8 @@ export default class TimelineCard extends React.Component {
         document.getElementById('protograph_year_div').innerHTML = timestamp[0];
       }
     }
-    for(event of events) {
+    events.forEach((event) => {
       if(centralEvents.includes(event)) {
-        if(centralEvents[0] === document.getElementsByClassName('protograph-first-event')[0] && this.props.mode === 'laptop') {
-          document.getElementById('protograph_scroll_down_arrow').style.height = "25px";
-          document.getElementById('protograph_scroll_down_text').style.height = "20px";
-          document.getElementById('protograph_scroll_down_text').innerHTML = "Scroll";
-        }
         event.getElementsByClassName('protograph-message-timestamp')[0].style.color = "black";
         if(event === centralEvents[0]) {
           event.getElementsByClassName('protograph-message-timestamp')[0].style.fontWeight = "bold";
@@ -238,7 +260,23 @@ export default class TimelineCard extends React.Component {
         event.getElementsByClassName('protograph-message-timestamp')[0].style.color = "#808080";
         event.getElementsByClassName('protograph-content-card')[0].parentElement.style.opacity = "0.10";
       }
-    }
+    });
+    // for(event of events) {
+    //   if(centralEvents.includes(event)) {
+    //     event.getElementsByClassName('protograph-message-timestamp')[0].style.color = "black";
+    //     if(event === centralEvents[0]) {
+    //       event.getElementsByClassName('protograph-message-timestamp')[0].style.fontWeight = "bold";
+    //     }
+    //     else {
+    //       event.getElementsByClassName('protograph-message-timestamp')[0].style.fontWeight = "normal";
+    //     }
+    //     event.getElementsByClassName('protograph-content-card')[0].parentElement.style.opacity = "1";
+    //   }
+    //   else {
+    //     event.getElementsByClassName('protograph-message-timestamp')[0].style.color = "#808080";
+    //     event.getElementsByClassName('protograph-content-card')[0].parentElement.style.opacity = "0.10";
+    //   }
+    // }
   }
 
   moveEventToTop(e) {
@@ -256,11 +294,23 @@ export default class TimelineCard extends React.Component {
   }
 
   getEventYCoord(eventTimestamp, eventPoints) {
-    for(let point of eventPoints) {
-      if(point.timestamp === eventTimestamp) {
-        return point.yCoord;
+    for(let i = 0; i < eventPoints.length; i++) {
+      if(eventPoints[i].timestamp === eventTimestamp) {
+        return eventPoints[i].yCoord;
       }
     }
+    // eventPoints.forEach((point) => {
+    //   if(point.timestamp === eventTimestamp) {
+    //     // console.log(point.yCoord);
+    //     return point.yCoord;
+    //   }
+    // });
+    // return 0;
+    // for(let point of eventPoints) {
+    //   if(point.timestamp === eventTimestamp) {
+    //     return point.yCoord;
+    //   }
+    // }
   }
 
   showMainCard(e) {
@@ -313,6 +363,7 @@ export default class TimelineCard extends React.Component {
       });
       let assetIcons = events.map((element, pos) => {
         if(element.single_event.youtube_url){
+        console.log(that.getEventYCoord(element.single_event.timestamp_date, eventPoints))
           return (
             <svg id={element.timestamp} key={element.timestamp} className="protograph-asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 20) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='/src/images/play.svg' />"}}/>
 
@@ -331,6 +382,12 @@ export default class TimelineCard extends React.Component {
         if(pos == 0) {
             return (
               <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} >
+                <p className="protograph-message-timestamp" style={{color: "black"}}>{timestamp}</p>
+                <div className="protograph-content-card">
+                  <p className="protograph-content-card-text">{element.single_event.message}</p>
+                  {that.injectImage(element.single_event.photo)}
+                  {that.injectYoutubeEmbed(element.single_event.youtube_url)}
+                </div>
                 <div id="protograph_scroll_down_indicator">
                   <p id="protograph_scroll_down_text" style={{marginBottom: "2px", height: "20px"}}>Scroll</p>
                   <svg id="protograph_scroll_down_arrow" height="25px" width="25px" viewBox="0 0 100 100">
@@ -339,12 +396,6 @@ export default class TimelineCard extends React.Component {
                     <line x1="10" y1="30" x2="50" y2="70" style={{stroke:"black", strokeWidth:5}} />
                     <line x1="50" y1="70" x2="90" y2="30" style={{stroke:"black", strokeWidth:5}} />
                   </svg>
-                </div>
-                <p className="protograph-message-timestamp" style={{color: "black"}}>{timestamp}</p>
-                <div className="protograph-content-card">
-                  <p className="protograph-content-card-text">{element.single_event.message}</p>
-                  {that.injectImage(element.single_event.photo)}
-                  {that.injectYoutubeEmbed(element.single_event.youtube_url)}
                 </div>
               </div>
             );
@@ -476,12 +527,21 @@ export default class TimelineCard extends React.Component {
         let timestamp = `${that.getMonth(timestampComponents[1])} ${timestampComponents[2]}, ${timestampComponents[0]}`;
         if(pos == 0) {
             return (
-              <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" >
+              <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}}>
                 <p className="protograph-message-timestamp" style={{color: "black", fontWeight: "bold"}}>{timestamp}</p>
                 <div className="protograph-content-card">
                   <p className="protograph-content-card-text">{element.single_event.message}</p>
                   {that.injectImage(element.single_event.photo)}
                   {that.injectYoutubeEmbed(element.single_event.youtube_url)}
+                </div>
+                <div id="protograph_scroll_down_indicator">
+                  <p id="protograph_scroll_down_text" style={{marginBottom: "2px", height: "20px"}}>Scroll</p>
+                  <svg id="protograph_scroll_down_arrow" height="25px" width="25px" viewBox="0 0 100 100">
+                    <line x1="10" y1="10" x2="50" y2="50" style={{stroke:"black", strokeWidth:5}} />
+                    <line x1="50" y1="50" x2="90" y2="10" style={{stroke:"black", strokeWidth:5}} />
+                    <line x1="10" y1="30" x2="50" y2="70" style={{stroke:"black", strokeWidth:5}} />
+                    <line x1="50" y1="70" x2="90" y2="30" style={{stroke:"black", strokeWidth:5}} />
+                  </svg>
                 </div>
               </div>
             );
@@ -521,16 +581,8 @@ export default class TimelineCard extends React.Component {
         }
       }
       return (
-        <div id="protograph_div" className="protograph-card-div" style={{width: `320px`}}>
+        <div id="protograph_div" className="protograph-card-div mobile" style={{width: `320px`}}>
           <div id="protograph_card_title_div_mobile">
-            {/* <div id="protograph_timeline_start_div">
-              <div id="protograph_timeline_details_div">
-                <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
-                <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
-              </div>
-              <img id="protograph_timeline_image" src={this.state.dataJSON.mandatory_config.timeline_image}/>
-              <button id="protograph_show_main_card_button" onClick={(e) => that.showMainCard(e)}>Lets time travel</button>
-            </div> */}
             <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
             <img id="protograph_timeline_image_mobile" src={this.state.dataJSON.mandatory_config.timeline_image}/>
             <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
