@@ -19,51 +19,8 @@ export default class EditTimelineCard extends React.Component {
       optionalConfigJSON: {},
       optionalConfigSchemaJSON: undefined
     }
-    // this.handleClick = this.handleClick.bind(this);
-    // this.publishCard = this.publishCard.bind(this);
+    this.toggleMode = this.toggleMode.bind(this);
   }
-
-  // handleClick(e){
-  //   var id = e.target.closest('a.item').id;
-  //   this.setState({
-  //     type: id
-  //   });
-  // }
-
-  // exportData() {
-  //   const data = this.state;
-  //   return {
-  //     dataJSON: data.dataJSON,
-  //     name: data.dataJSON.data.cover_data.cover_title.substr(0,225)
-  //   };
-  // }
-
-  // transformErrors(errors) {
-  //   return errors.map(error => {
-  //     if (error.name === "pattern" && error.schema === '/properties/data/properties/cover_data/properties/post_url') {
-  //       error.message = "invalid Post URL"
-  //     }
-  //     return error;
-  //   });
-  // }
-
-  // componentDidMount() {
-  //   // get sample json data based on type i.e string or object
-  //   if (this.state.fetchingData){
-  //     axios.all([
-  //       axios.get(this.props.dataURL),
-  //       axios.get(this.props.schemaURL),
-  //       axios.get(this.props.uiSchemaURL)
-  //     ]).then(axios.spread((card, schema, uiSchema) => {
-  //       this.setState({
-  //         fetchingData: false,
-  //         dataJSON: card.data,
-  //         schemaJSON: schema.data,
-  //         uiSchemaJSON: uiSchema.data
-  //       });
-  //     }));
-  //   }
-  // }
 
   exportData() {
     let getDataObj = {
@@ -145,15 +102,15 @@ export default class EditTimelineCard extends React.Component {
   }
 
   renderSchemaJSON() {
-  switch(this.state.step){
-    case 1:
-      return this.state.schemaJSON.properties.mandatory_config;
-      break;
-    case 2:
-      return this.state.schemaJSON.properties.data;
-      break;
+    switch(this.state.step){
+      case 1:
+        return this.state.schemaJSON.properties.mandatory_config;
+        break;
+      case 2:
+        return this.state.schemaJSON.properties.data;
+        break;
+      }
   }
-}
 
 getFormData() {
   switch(this.state.step) {
@@ -196,22 +153,19 @@ showLinkText() {
   }
 
   toggleMode(e) {
-    // document.querySelector('.protograph-explainer-text').style.height = '120px'
-    // document.querySelector('.protograph-explainer-text').innerHTML = this.state.dataJSON.card_data.data.explainer_text;
-    // let element = e.target.closest('a'),
-    //   mode = element.getAttribute('data-mode');
-    // this.setState((prevState, props) => {
-    //   let newMode;
-    //   if (mode !== prevState.mode) {
-    //     newMode = mode;
-    //   } else {
-    //     newMode = prevState.mode
-    //   }
-    //
-    //   return {
-    //     mode: newMode
-    //   }
-    // });
+    let element = e.target.closest('a'),
+      mode = element.getAttribute('data-mode');
+    this.setState((prevState, props) => {
+      let newMode;
+      if (mode !== prevState.mode) {
+        newMode = mode;
+      } else {
+        newMode = prevState.mode
+      }
+      return {
+        mode: newMode
+      }
+    });
   }
 
   render() {

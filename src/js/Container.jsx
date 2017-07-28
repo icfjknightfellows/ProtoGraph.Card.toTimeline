@@ -38,7 +38,7 @@ export default class TimelineCard extends React.Component {
   }
 
   exportData() {
-    return document.getElementById('protograph-div').getBoundingClientRect();
+    return document.getElementById('protograph_div').getBoundingClientRect();
   }
 
   componentDidMount() {
@@ -57,6 +57,42 @@ export default class TimelineCard extends React.Component {
             optionalConfigSchemaJSON: opt_config_schema.data
           });
         }));
+    }
+  }
+
+  componentDidUpdate() {
+    if (this.props.mode === 'mobile' || this.props.mode === 'laptop') {
+      // document.getElementById('protograph_card_title_div').style.display = 'flex';
+      // document.getElementById('protograph_card_title_div').style.opacity = '1';
+      // document.getElementById('protograph_card_main_div').style.display = 'none';
+      let elems = document.querySelectorAll('.protograph-event-message-div');
+      for(let elem of elems) {
+        this.multiLineTruncate(elem.querySelector('.protograph-content-card').querySelector('.protograph-content-card-text'), elem);
+      }
+      // this.multiLineTruncate(elem[3].querySelector('.protograph-content-card').querySelector('.protograph-content-card-text'), elem);
+    }
+  }
+
+  multiLineTruncate(el, parent) {
+    let data = this.state.dataJSON.card_data.events.find(element => {
+      return element.single_event.timestamp_date === parent.id;
+    }),
+      wordArray = data.single_event.message.split(' '),
+      props = this.props,
+      height = this.props.mode === 'laptop' ?  document.getElementById('protograph_card_title_div').clientHeight : document.getElementById('protograph_card_title_div_mobile').clientHeight
+    while(parent.getBoundingClientRect().height > height) {
+      wordArray.pop();
+      el.innerHTML = wordArray.join(' ') + '...' + '<br><button id="protograph_read_more_button" class="protograph-read-more-button">View more</button>' ;
+    }
+    if(el.querySelector('.protograph-read-more-button') !== null){
+      el.querySelector('.protograph-read-more-button').addEventListener('click', function() {
+        el.querySelector('.protograph-read-more-button').style.display = 'none'
+        el.style.height = 'auto';
+        el.innerHTML = data.single_event.message;
+        if(typeof props.clickCallback === 'function') {
+          props.clickCallback();
+        }
+      });
     }
   }
 
@@ -103,7 +139,7 @@ export default class TimelineCard extends React.Component {
 
   injectImage(photoExists) {
     if (photoExists) {
-      return <img className="event_photo" src={photoExists} />;
+      return <img className="protograph-event-photo" src={photoExists} />;
     }
     else {
       return null;
@@ -115,7 +151,7 @@ export default class TimelineCard extends React.Component {
     if(urlExists) {
       if(regex.test(urlExists)){
         let embedUrl = "https://www.youtube.com/embed/" + urlExists.split('=')[1];
-        return <iframe className="youtube_embed" src={embedUrl} frameBorder="0" allowFullScreen></iframe>
+        return <iframe className="protograph-youtube-embed" src={embedUrl} frameBorder="0" allowFullScreen></iframe>
       }
       else {
         return null;
@@ -128,98 +164,95 @@ export default class TimelineCard extends React.Component {
 
   handleScroll(e) {
     // e.preventDefault();
-    document.getElementById('scroll_down_arrow').style.height = 0;
-    document.getElementById('scroll_down_text').style.height = 0;
-    document.getElementById('scroll_down_text').innerHTML = "";
-    let events = Array.from(document.getElementsByClassName('event_message_div'));
+    if(this.props.mode === 'laptop') {
+      document.getElementById('protograph_scroll_down_arrow').style.height = 0;
+      document.getElementById('protograph_scroll_down_text').style.height = 0;
+      document.getElementById('protograph_scroll_down_text').innerHTML = "";
+    }
+    let events = Array.from(document.getElementsByClassName('protograph-event-message-div'));
     let visibleEvents = [];
-    let circlePlots = document.getElementsByClassName('circle-plot');
-    let container = document.getElementById('content_div');
+    let circlePlots = document.getElementsByClassName('protograph-circle-plot');
+    let container = document.getElementById('protograph_content_div');
+    let containerTop = container.getBoundingClientRect().top;
+    let containerBottom = container.getBoundingClientRect().bottom;
     for(let event of events) {
       let offset = event.getBoundingClientRect().top - container.getBoundingClientRect().top + (event.getBoundingClientRect().height/2);
-      if(offset > 0 && offset <= container.clientHeight) {
-          visibleEvents.push(event);
+      let eventTop = event.getBoundingClientRect().top;
+      let eventBottom = event.getBoundingClientRect().bottom;
+      if(eventTop < containerBottom && eventBottom > containerTop) {
+        visibleEvents.push(event);
       }
     }
-    container.style.paddingBottom = `${container.getBoundingClientRect().height/2 + 200 - events[events.length-1].getBoundingClientRect().height/2}px`;
+    container.style.paddingBottom = `${container.getBoundingClientRect().height/2 - events[events.length-1].getBoundingClientRect().height/2}px`;
     let centralEvents = [];
     for(let visibleEvent of visibleEvents) {
-      let offsetTop = visibleEvent.getBoundingClientRect().top - container.getBoundingClientRect().top;
-      let offsetBottom = visibleEvent.getBoundingClientRect().top - container.getBoundingClientRect().top + visibleEvent.getBoundingClientRect().height;
-      let diff = offsetBottom - offsetTop;
-      let offsetMiddle = offsetTop + diff/2;
-      let scanLine = container.getBoundingClientRect().height/2;
-      // if(offsetTop < scanLine && offsetBottom > scanLine) {
-      //   centralEvent = visibleEvent;
-      //   console.log(centralEvent.id, offsetTop, scanLine, offsetBottom);
-      // }
-      if(offsetMiddle < (scanLine + 200) && offsetMiddle > (scanLine - 200)) {
+      let scanLine = (container.getBoundingClientRect().bottom + container.getBoundingClientRect().top)/2;
+      let eventTop = visibleEvent.getBoundingClientRect().top;
+      let eventBottom = visibleEvent.getBoundingClientRect().bottom;
+      if((eventTop < (scanLine + 50) && eventBottom > (scanLine + 50)) || (eventTop < (scanLine - 50) && eventBottom > (scanLine - 50)) || (eventTop > (scanLine - 50) && eventBottom < (scanLine + 50))) {
         centralEvents.push(visibleEvent);
       }
     }
-    if(centralEvents.length === 0) {
-      centralEvents.push(visibleEvents[0]);
+    if(visibleEvents.includes(events[0])) {
+      centralEvents.splice(0, 0, events[0]);
     }
-    // var that = this;
-    // if(this.state.debounce === true) {
-    //   document.getElementById('content_div').scrollTop = centralEvent.offsetTop;
-    //   console.log("fired");
-    //   this.setState({debounce: false});
-    // }
-    // setTimeout(function(){ that.setState({debounce: true}); }, 3000);
     for(let plot of circlePlots) {
-      if(plot.id === centralEvents[0].id) {
+      if(centralEvents[0] && (plot.id === centralEvents[0].id)) {
         plot.style.fill = "red";
-        if(centralEvents[0] === document.getElementsByClassName('first-event')[0] && this.props.mode === 'laptop') {
-          document.getElementById('date_div').style.marginTop = "20px";
+        if(centralEvents[0] === document.getElementsByClassName('protograph-first-event')[0] && this.props.mode === 'laptop') {
+          document.getElementById('protograph_date_div').style.marginTop = "20px";
         }
         else if (this.props.mode === 'laptop'){
-          document.getElementById('date_div').style.marginTop = `${plot.getBoundingClientRect().top - container.getBoundingClientRect().top - 35}px`;
+          document.getElementById('protograph_date_div').style.marginTop = `${plot.getBoundingClientRect().top - container.getBoundingClientRect().top - 35}px`;
         }
       }
       else {
         plot.style.fill = "#C0C0C0";
       }
     }
-    let timestamp = centralEvents[0].id.split('-');
-    if(this.props.mode === 'laptop') {
-      document.getElementById('month_div').innerHTML = this.getMonth(timestamp[1]);
-      document.getElementById('day_div').innerHTML = timestamp[2];
-      document.getElementById('year_div').innerHTML = timestamp[0];
+    if(centralEvents[0]) {
+      let timestamp = centralEvents[0].id.split('-');
+      if(this.props.mode === 'laptop') {
+        document.getElementById('protograph_month_div').innerHTML = this.getMonth(timestamp[1]);
+        document.getElementById('protograph_day_div').innerHTML = timestamp[2];
+        document.getElementById('protograph_year_div').innerHTML = timestamp[0];
+      }
     }
     for(event of events) {
       if(centralEvents.includes(event)) {
-        if(centralEvents[0] === document.getElementsByClassName('first-event')[0]) {
-          document.getElementById('scroll_down_arrow').style.height = "25px";
-          document.getElementById('scroll_down_text').style.height = "20px";
-          document.getElementById('scroll_down_text').innerHTML = "Scroll";
+        if(centralEvents[0] === document.getElementsByClassName('protograph-first-event')[0] && this.props.mode === 'laptop') {
+          document.getElementById('protograph_scroll_down_arrow').style.height = "25px";
+          document.getElementById('protograph_scroll_down_text').style.height = "20px";
+          document.getElementById('protograph_scroll_down_text').innerHTML = "Scroll";
         }
-        event.getElementsByClassName('message-timestamp')[0].style.color = "black";
-        // event.getElementsByClassName('content-card')[0].style.boxShadow = "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)";
-        // event.getElementsByClassName('content-card')[0].style.transition = "all 5s cubic-bezier(.25,.8,.25,1)";
-        event.getElementsByClassName('content-card')[0].parentElement.style.opacity = "1";
+        event.getElementsByClassName('protograph-message-timestamp')[0].style.color = "black";
+        if(event === centralEvents[0]) {
+          event.getElementsByClassName('protograph-message-timestamp')[0].style.fontWeight = "bold";
+        }
+        else {
+          event.getElementsByClassName('protograph-message-timestamp')[0].style.fontWeight = "normal";
+        }
+        event.getElementsByClassName('protograph-content-card')[0].parentElement.style.opacity = "1";
       }
       else {
-        event.getElementsByClassName('message-timestamp')[0].style.color = "#808080";
-        // event.getElementsByClassName('content-card')[0].style.boxShadow = "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)";
-        event.getElementsByClassName('content-card')[0].parentElement.style.opacity = "0.10";
+        event.getElementsByClassName('protograph-message-timestamp')[0].style.color = "#808080";
+        event.getElementsByClassName('protograph-content-card')[0].parentElement.style.opacity = "0.10";
       }
     }
   }
 
   moveEventToTop(e) {
     let element;
-    if(e.target.classList.contains('event_message_div')) {
+    if(e.target.classList.contains('protograph-event-message-div')) {
       element = e.target;
     }
-    else if(e.target.parentElement.classList.contains('event_message_div')) {
+    else if(e.target.parentElement.classList.contains('protograph-event-message-div')) {
       element = e.target.parentElement;
     }
     else {
       element = e.target.parentElement.parentElement;
     }
-    document.getElementById('content_div').scrollTop = `${document.getElementById('content_div').scrollTop + 30}px`;
-    console.log(document.getElementById('content_div').scrollTop);
+    document.getElementById('protograph_content_div').scrollTop = `${document.getElementById('protograph_content_div').scrollTop + 30}px`;
   }
 
   getEventYCoord(eventTimestamp, eventPoints) {
@@ -231,14 +264,15 @@ export default class TimelineCard extends React.Component {
   }
 
   showMainCard(e) {
-    let line_height = 500;
-    document.getElementById('card_title_div').style.opacity = '0';
+    let line_height = 500,
+      hideTitlePage = this.props.mode === 'laptop' ? document.getElementById('protograph_card_title_div') : document.getElementById('protograph_card_title_div_mobile');
+    hideTitlePage.style.opacity = '0';
     setTimeout(function(){
-      document.getElementById('card_title_div').style.display = 'none';
-      document.getElementById('card_main_div').style.display = 'block';
+      hideTitlePage.style.display = 'none';
+      document.getElementById('protograph_card_main_div').style.display = 'block';
     }, 500);
     setTimeout(function(){
-      document.getElementById('card_main_div').style.opacity = '1';
+      document.getElementById('protograph_card_main_div').style.opacity = '1';
     }, 515);
   }
 
@@ -271,22 +305,22 @@ export default class TimelineCard extends React.Component {
       var that = this;
       let plotCircles = eventPoints.map((element, pos) => {
         if(pos == 0) {
-          return <circle id={element.timestamp} key={element.timestamp} className="circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="red"/>;
+          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="red"/>;
         }
         else {
-          return <circle id={element.timestamp} key={element.timestamp} className="circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="#C0C0C0" />
+          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="#C0C0C0" />
         }
       });
       let assetIcons = events.map((element, pos) => {
         if(element.single_event.youtube_url){
           return (
-            <svg id={element.timestamp} key={element.timestamp} className="asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 20) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='/src/images/play.svg' />"}}/>
+            <svg id={element.timestamp} key={element.timestamp} className="protograph-asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 20) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='/src/images/play.svg' />"}}/>
 
           );
         }
         if(element.single_event.photo){
           return (
-            <svg id={element.timestamp} key={element.timestamp} className="asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 20) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='/src/images/image.svg' />"}}/>
+            <svg id={element.timestamp} key={element.timestamp} className="protograph-asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 20) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='/src/images/image.svg' />"}}/>
           );
         }
       });
@@ -296,19 +330,19 @@ export default class TimelineCard extends React.Component {
         let timestamp = `${that.getMonth(timestampComponents[1])} ${timestampComponents[2]}, ${timestampComponents[0]}`;
         if(pos == 0) {
             return (
-              <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="event_message_div first-event" onClick={(e) => that.moveEventToTop(e)} style={{marginTop: line_height/2 - 51}} >
-                <div id="scroll_down_indicator">
-                  <p id="scroll_down_text" style={{marginBottom: "2px", height: "20px"}}>Scroll</p>
-                  <svg id="scroll_down_arrow" height="25px" width="25px" viewBox="0 0 100 100">
+              <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} >
+                <div id="protograph_scroll_down_indicator">
+                  <p id="protograph_scroll_down_text" style={{marginBottom: "2px", height: "20px"}}>Scroll</p>
+                  <svg id="protograph_scroll_down_arrow" height="25px" width="25px" viewBox="0 0 100 100">
                     <line x1="10" y1="10" x2="50" y2="50" style={{stroke:"black", strokeWidth:5}} />
                     <line x1="50" y1="50" x2="90" y2="10" style={{stroke:"black", strokeWidth:5}} />
                     <line x1="10" y1="30" x2="50" y2="70" style={{stroke:"black", strokeWidth:5}} />
                     <line x1="50" y1="70" x2="90" y2="30" style={{stroke:"black", strokeWidth:5}} />
                   </svg>
                 </div>
-                <p className="message-timestamp" style={{color: "black"}}>{timestamp}</p>
-                <div className="content-card">
-                  <p>{element.single_event.message}</p>
+                <p className="protograph-message-timestamp" style={{color: "black"}}>{timestamp}</p>
+                <div className="protograph-content-card">
+                  <p className="protograph-content-card-text">{element.single_event.message}</p>
                   {that.injectImage(element.single_event.photo)}
                   {that.injectYoutubeEmbed(element.single_event.youtube_url)}
                 </div>
@@ -317,10 +351,10 @@ export default class TimelineCard extends React.Component {
         }
         else {
           return (
-            <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="event_message_div" onClick={(e) => that.moveEventToTop(e)} style={onStartStyle}>
-              <p className="message-timestamp">{timestamp}</p>
-              <div className="content-card">
-                <p>{element.single_event.message}</p>
+            <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle}>
+              <p className="protograph-message-timestamp">{timestamp}</p>
+              <div className="protograph-content-card">
+                <p className="protograph-content-card-text">{element.single_event.message}</p>
                 {that.injectImage(element.single_event.photo)}
                 {that.injectYoutubeEmbed(element.single_event.youtube_url)}
               </div>
@@ -351,25 +385,25 @@ export default class TimelineCard extends React.Component {
       }
       return (
         <div id="protograph_div" className = "protograph-card-div">
-          <div id="card_title_div">
-            <div id="timeline_details_div">
-              <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
-              <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
-              <button id="show_main_card_button" onClick={(e) => that.showMainCard(e)}>Lets time travel</button>
-            </div>
-            <div id="timeline_image_div">
-              <img className="timeline_image" src={this.state.dataJSON.mandatory_config.timeline_image}/>
+          <div id="protograph_card_title_div">
+            <div id="protograph_timeline_start_div">
+              <div id="protograph_timeline_details_div">
+                <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
+                <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
+              </div>
+              <img id="protograph_timeline_image" src={this.state.dataJSON.mandatory_config.timeline_image}/>
+              <button id="protograph_show_main_card_button" onClick={(e) => that.showMainCard(e)}>Lets time travel</button>
             </div>
           </div>
-          <div id="card_main_div">
-            <div id="date_div">
-              <div id="month_div">{this.getMonth(firstEventTimeComponents[1])}</div>
-              <div id="day_div">{firstEventTimeComponents[2]}</div>
-              <div id="year_div">{firstEventTimeComponents[0]}</div>
+          <div id="protograph_card_main_div">
+            <div id="protograph_date_div">
+              <div id="protograph_month_div">{this.getMonth(firstEventTimeComponents[1])}</div>
+              <div id="protograph_day_div">{firstEventTimeComponents[2]}</div>
+              <div id="protograph_year_div">{firstEventTimeComponents[0]}</div>
             </div>
-            <div id="timeline_svg_div">
-              <p id="initial_timestamp">{firstEventTimeComponents[0]}</p>
-              <svg id="timeline_svg" height={line_height} width={svgWidth}>
+            <div id="protograph_timeline_svg_div">
+              <p id="protograph_initial_timestamp">{firstEventTimeComponents[0]}</p>
+              <svg id="protograph_timeline_svg" height={line_height} width={svgWidth}>
                 <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
                 <g>
                   {plotCircles}
@@ -377,9 +411,9 @@ export default class TimelineCard extends React.Component {
                   {yearCountText}
                 </g>
               </svg>
-              <p id="final_timestamp">{lastEventTimeComponents[0]}</p>
+              <p id="protograph_final_timestamp">{lastEventTimeComponents[0]}</p>
             </div>
-            <div id="content_div" onScroll={(e) => that.handleScroll(e)}>
+            <div id="protograph_content_div" onScroll={(e) => that.handleScroll(e)}>
               {eventDetails}
             </div>
           </div>
@@ -394,9 +428,9 @@ export default class TimelineCard extends React.Component {
     } else {
       // let styles = this.state.dataJSON.configs ? {backgroundColor: this.state.dataJSON.configs.background_color} : {undefined}
       let events = this.state.dataJSON.card_data.events;
-      const line_height = 500;
+      const line_height = 544;
       const extraLineSpace = 30;
-      const svgWidth = 50;
+      const svgWidth = 10;
       const msDay = 60*60*24*1000;
       let firstEventTimeComponents = events[0].single_event.timestamp_date.split('-');
       let lastEventTimeComponents = events[events.length-1].single_event.timestamp_date.split('-');
@@ -417,22 +451,22 @@ export default class TimelineCard extends React.Component {
       var that = this;
       let plotCircles = eventPoints.map((element, pos) => {
         if(pos == 0) {
-          return <circle id={element.timestamp} key={element.timestamp} className="circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="red"/>;
+          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="red"/>;
         }
         else {
-          return <circle id={element.timestamp} key={element.timestamp} className="circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="#C0C0C0" />
+          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="#C0C0C0" />
         }
       });
       let assetIcons = events.map((element, pos) => {
         if(element.single_event.youtube_url){
           return (
-            <svg id={element.timestamp} key={element.timestamp} className="asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 25) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='/src/images/play.svg' />"}}/>
+            <svg id={element.timestamp} key={element.timestamp} className="protograph-asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 25) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='/src/images/play.svg' />"}}/>
 
           );
         }
         if(element.single_event.photo){
           return (
-            <svg id={element.timestamp} key={element.timestamp} className="asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 25) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='/src/images/image.svg' />"}}/>
+            <svg id={element.timestamp} key={element.timestamp} className="protograph-asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 25) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='/src/images/image.svg' />"}}/>
           );
         }
       });
@@ -442,19 +476,10 @@ export default class TimelineCard extends React.Component {
         let timestamp = `${that.getMonth(timestampComponents[1])} ${timestampComponents[2]}, ${timestampComponents[0]}`;
         if(pos == 0) {
             return (
-              <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="event_message_div first-event" onClick={(e) => that.moveEventToTop(e)} style={{marginTop: line_height/2 - 51}} >
-                <div id="scroll_down_indicator">
-                  <p id="scroll_down_text" style={{marginBottom: "2px", height: "20px"}}>Scroll</p>
-                  <svg id="scroll_down_arrow" height="25px" width="25px" viewBox="0 0 100 100">
-                    <line x1="10" y1="10" x2="50" y2="50" style={{stroke:"black", strokeWidth:5}} />
-                    <line x1="50" y1="50" x2="90" y2="10" style={{stroke:"black", strokeWidth:5}} />
-                    <line x1="10" y1="30" x2="50" y2="70" style={{stroke:"black", strokeWidth:5}} />
-                    <line x1="50" y1="70" x2="90" y2="30" style={{stroke:"black", strokeWidth:5}} />
-                  </svg>
-                </div>
-                <p className="message-timestamp" style={{color: "black"}}>{timestamp}</p>
-                <div className="content-card">
-                  <p>{element.single_event.message}</p>
+              <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" >
+                <p className="protograph-message-timestamp" style={{color: "black", fontWeight: "bold"}}>{timestamp}</p>
+                <div className="protograph-content-card">
+                  <p className="protograph-content-card-text">{element.single_event.message}</p>
                   {that.injectImage(element.single_event.photo)}
                   {that.injectYoutubeEmbed(element.single_event.youtube_url)}
                 </div>
@@ -463,10 +488,10 @@ export default class TimelineCard extends React.Component {
         }
         else {
           return (
-            <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="event_message_div" onClick={(e) => that.moveEventToTop(e)} style={onStartStyle}>
-              <p className="message-timestamp">{timestamp}</p>
-              <div className="content-card">
-                <p>{element.single_event.message}</p>
+            <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle}>
+              <p className="protograph-message-timestamp">{timestamp}</p>
+              <div className="protograph-content-card">
+                <p className="protograph-content-card-text">{element.single_event.message}</p>
                 {that.injectImage(element.single_event.photo)}
                 {that.injectYoutubeEmbed(element.single_event.youtube_url)}
               </div>
@@ -496,31 +521,31 @@ export default class TimelineCard extends React.Component {
         }
       }
       return (
-        <div id="protograph_div" className = "protograph-card-div" style={{width: '100%'}}>
-          <div id="card_title_div">
-            <div id="timeline_details_div">
-              <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
-              <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
-              <button id="show_main_card_button" onClick={(e) => that.showMainCard(e)}>Lets time travel</button>
-            </div>
-            <div id="timeline_image_div">
-              <img className="timeline_image" src={this.state.dataJSON.mandatory_config.timeline_image}/>
-            </div>
+        <div id="protograph_div" className="protograph-card-div" style={{width: `320px`}}>
+          <div id="protograph_card_title_div_mobile">
+            {/* <div id="protograph_timeline_start_div">
+              <div id="protograph_timeline_details_div">
+                <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
+                <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
+              </div>
+              <img id="protograph_timeline_image" src={this.state.dataJSON.mandatory_config.timeline_image}/>
+              <button id="protograph_show_main_card_button" onClick={(e) => that.showMainCard(e)}>Lets time travel</button>
+            </div> */}
+            <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
+            <img id="protograph_timeline_image_mobile" src={this.state.dataJSON.mandatory_config.timeline_image}/>
+            <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
+            <button id="protograph_show_main_card_button_mobile" onClick={(e) => that.showMainCard(e)}>Lets time travel</button>
           </div>
-          <div id="card_main_div">
-            <div id="timeline_svg_div">
-              <p id="initial_timestamp">{firstEventTimeComponents[0]}</p>
-              <svg id="timeline_svg" height={line_height} width={svgWidth}>
+          <div id="protograph_card_main_div">
+            <div id="protograph_timeline_svg_div">
+              <svg id="protograph_timeline_svg" height={line_height} width={svgWidth}>
                 <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
                 <g>
                   {plotCircles}
-                  {assetIcons}
-                  {yearCountText}
                 </g>
               </svg>
-              <p id="final_timestamp">{lastEventTimeComponents[0]}</p>
             </div>
-            <div id="content_div" onScroll={(e) => that.handleScroll(e)} style={{width: "92%"}}>
+            <div id="protograph_content_div" onScroll={(e) => that.handleScroll(e)} style={{width: "90.75%"}}>
               {eventDetails}
             </div>
           </div>
@@ -533,15 +558,128 @@ export default class TimelineCard extends React.Component {
     if (this.state.schemaJSON === undefined ){
       return(<div>Loading</div>)
     } else {
-      const data = this.state.dataJSON.mandatory_config;
+      // let styles = this.state.dataJSON.configs ? {backgroundColor: this.state.dataJSON.configs.background_color} : {undefined}
+      let events = this.state.dataJSON.card_data.events;
+      const line_height = 500;
+      const extraLineSpace = 30;
+      const svgWidth = 50;
+      const msDay = 60*60*24*1000;
+      let firstEventTimeComponents = events[0].single_event.timestamp_date.split('-');
+      let lastEventTimeComponents = events[events.length-1].single_event.timestamp_date.split('-');
+      let firstEventTimestamp = new Date(firstEventTimeComponents[0], firstEventTimeComponents[1], firstEventTimeComponents[2]);
+      let lastEventTimeStamp = new Date(lastEventTimeComponents[0], lastEventTimeComponents[1], lastEventTimeComponents[2]);
+      let maxTimeDifferenceInDays = Math.floor((lastEventTimeStamp - firstEventTimestamp)/msDay);
+      let eventTimestamps = events.map(element => element.single_event.timestamp_date.split('-'));
+      let eventPoints = [];
+      for(var i = 0; i < eventTimestamps.length; i++) {
+        let eventTimestamp = new Date(eventTimestamps[i][0], eventTimestamps[i][1], eventTimestamps[i][2])
+        let timeDifference = Math.floor((eventTimestamp - firstEventTimestamp)/msDay);
+        let newYCoord = 10;
+        if(maxTimeDifferenceInDays != 0){
+          newYCoord = ((timeDifference/maxTimeDifferenceInDays) * (line_height-2*extraLineSpace)) + extraLineSpace;
+        }
+        eventPoints.push({timestamp: eventTimestamps[i].join('-'), yCoord: newYCoord});
+      }
+      var that = this;
+      let plotCircles = eventPoints.map((element, pos) => {
+        if(pos == 0) {
+          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="red"/>;
+        }
+        else {
+          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="#C0C0C0" />
+        }
+      });
+      let assetIcons = events.map((element, pos) => {
+        if(element.single_event.youtube_url){
+          return (
+            <svg id={element.timestamp} key={element.timestamp} className="protograph-asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 20) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='/src/images/play.svg' />"}}/>
+
+          );
+        }
+        if(element.single_event.photo){
+          return (
+            <svg id={element.timestamp} key={element.timestamp} className="protograph-asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 20) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='/src/images/image.svg' />"}}/>
+          );
+        }
+      });
+      let onStartStyle = {opacity: "0.10"};
+      let eventDetails = events.map((element, pos) => {
+        let timestampComponents = element.single_event.timestamp_date.split('-');
+        let timestamp = `${that.getMonth(timestampComponents[1])} ${timestampComponents[2]}, ${timestampComponents[0]}`;
+        if(pos == 0) {
+            return (
+              <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" >
+                <p className="protograph-message-timestamp" style={{color: "black", fontWeight: "bold"}}>{timestamp}</p>
+                <div className="protograph-content-card-screenshot">
+                  <p className="protograph-content-card-text">{element.single_event.message}</p>
+                  {that.injectImage(element.single_event.photo)}
+                  {that.injectYoutubeEmbed(element.single_event.youtube_url)}
+                </div>
+              </div>
+            );
+        }
+        else {
+          return (
+            <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle}>
+              <p className="protograph-message-timestamp">{timestamp}</p>
+              <div className="protograph-content-card-screenshot">
+                <p className="protograph-protograph-content-card-text">{element.single_event.message}</p>
+                {that.injectImage(element.single_event.photo)}
+                {that.injectYoutubeEmbed(element.single_event.youtube_url)}
+              </div>
+            </div>
+          );
+        }
+      });
+      let yearCountText = [];
+      for(let i = 0; i < events.length - 1; i++) {
+        let currentEventComponents = events[i].single_event.timestamp_date.split('-');
+        let nextEventComponents = events[i+1].single_event.timestamp_date.split('-');
+        let currentEvent = new Date(currentEventComponents[0], currentEventComponents[1], currentEventComponents[2]);
+        let nextEvent = new Date(nextEventComponents[0], nextEventComponents[1], nextEventComponents[2]);
+        let ranges = [];
+        if(Math.round((nextEvent - currentEvent)/(msDay*365)) >= 5) {
+          let j;
+          for(j = 0; j < eventPoints.length; j++) {
+            if(eventPoints[j].timestamp === events[i].single_event.timestamp_date) {
+              ranges.push({start: eventPoints[j].yCoord, end: eventPoints[j+1].yCoord, years: Math.round((nextEvent - currentEvent)/(msDay*365))})
+            }
+          }
+          for(j = 0; j < ranges.length; j++) {
+            let textPosition = ranges[j].start + (ranges[j].end - ranges[j].start)/2;
+            let rotateBy = `rotate(180 ${svgWidth/2},${textPosition})`;
+            yearCountText.push(<text key={textPosition} fontSize="12" writingMode="tb-rl" textAnchor="middle" x={svgWidth/2 + 10} y={textPosition} fill="#C0C0C0" transform={rotateBy}>{ranges[j].years} years</text>);
+          }
+        }
+      }
       return (
         <div id="ProtoScreenshot">
-          {/* <div className="protograph-card">
-            <h1>{data.timeline_title}</h1>
-            <p>{data.timeline_description}</p>
-          </div> */}
+          <div id="protograph_div" className = "protograph-card-div">
+            <div id="protograph_screenshot_main_div">
+              <div id="protograph_date_div">
+                <div id="protograph_month_div">{this.getMonth(firstEventTimeComponents[1])}</div>
+                <div id="protograph_day_div">{firstEventTimeComponents[2]}</div>
+                <div id="protograph_year_div">{firstEventTimeComponents[0]}</div>
+              </div>
+              <div id="protograph_timeline_svg_div">
+                <p id="protograph_initial_timestamp">{firstEventTimeComponents[0]}</p>
+                <svg id="protograph_timeline_svg" height={line_height} width={svgWidth}>
+                  <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
+                  <g>
+                    {plotCircles}
+                    {assetIcons}
+                    {yearCountText}
+                  </g>
+                </svg>
+                <p id="protograph_final_timestamp">{lastEventTimeComponents[0]}</p>
+              </div>
+              <div id="protograph_content_div" style={{overflowY: "hidden"}}>
+                {eventDetails}
+              </div>
+            </div>
+          </div>
         </div>
-      )
+      );
     }
   }
 
