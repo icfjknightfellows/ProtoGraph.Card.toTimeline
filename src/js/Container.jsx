@@ -367,7 +367,7 @@ export default class TimelineCard extends React.Component {
         let currentEvent = new Date(currentEventComponents[0], currentEventComponents[1], currentEventComponents[2]);
         let nextEvent = new Date(nextEventComponents[0], nextEventComponents[1], nextEventComponents[2]);
         let ranges = [];
-        if(Math.round((nextEvent - currentEvent)/(msDay*365)) >= 5) {
+        if(Math.round((nextEvent - currentEvent)/(msDay*365)) >= 10) {
           let j;
           for(j = 0; j < eventPoints.length; j++) {
             if(eventPoints[j].timestamp === events[i].single_event.timestamp_date) {
