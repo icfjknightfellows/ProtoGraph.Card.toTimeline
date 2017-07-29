@@ -16,24 +16,19 @@ export default class TimelineCard extends React.Component {
       optionalConfigJSON: {},
       optionalConfigSchemaJSON: undefined
     };
-
     if (this.props.dataJSON) {
       stateVar.fetchingData = false;
       stateVar.dataJSON = this.props.dataJSON;
     }
-
     if (this.props.schemaJSON) {
       stateVar.schemaJSON = this.props.schemaJSON;
     }
-
     if (this.props.optionalConfigJSON) {
       stateVar.optionalConfigJSON = this.props.optionalConfigJSON;
     }
-
     if (this.props.optionalConfigSchemaJSON) {
       stateVar.optionalConfigSchemaJSON = this.props.optionalConfigSchemaJSON;
     }
-
     this.state = stateVar;
   }
 
@@ -187,9 +182,6 @@ export default class TimelineCard extends React.Component {
         centralEvents.push(visibleEvent);
       }
     });
-    if(visibleEvents.includes(events[0])) {
-      centralEvents.splice(0, 0, events[0]);
-    }
     circlePlots.forEach((plot) => {
       if(centralEvents[0] && (plot.id === centralEvents[0].id)) {
         plot.style.fill = "red";
@@ -230,20 +222,6 @@ export default class TimelineCard extends React.Component {
     });
   }
 
-  moveEventToTop(e) {
-    let element;
-    if(e.target.classList.contains('protograph-event-message-div')) {
-      element = e.target;
-    }
-    else if(e.target.parentElement.classList.contains('protograph-event-message-div')) {
-      element = e.target.parentElement;
-    }
-    else {
-      element = e.target.parentElement.parentElement;
-    }
-    document.getElementById('protograph_content_div').scrollTop = `${document.getElementById('protograph_content_div').scrollTop + 30}px`;
-  }
-
   getEventYCoord(eventTimestamp, eventPoints) {
     for(let i = 0; i < eventPoints.length; i++) {
       if(eventPoints[i].timestamp === eventTimestamp) {
@@ -271,6 +249,59 @@ export default class TimelineCard extends React.Component {
         document.querySelector('.protograph-card-div.mobile').style.padding = '20px 10px';
       }
     }, 515);
+  }
+
+  smoothScrollTo(element, to, duration) {
+    if (duration <= 0) return;
+    let difference = to - element.scrollTop;
+    let perTick = difference / duration * 10;
+    let that = this;
+    setTimeout(function() {
+        element.scrollTop = element.scrollTop + perTick;
+        if (element.scrollTop === to) return;
+        that.smoothScrollTo(element, to, duration - 10);
+    }, 10);
+}
+
+  handleEventCircleClick(e) {
+    let events = Array.from(document.getElementsByClassName('protograph-event-message-div'));
+    let circlePlots = Array.from(document.getElementsByClassName('protograph-circle-plot'));
+    let selectedEvent = events.find((event) => {
+      if(event.id === e.target.id) {
+        return event;
+      }
+    });
+    let currentPlot = circlePlots.find((plot) => {
+      if(plot.style.fill === 'red') {
+        return plot;
+      }
+    });
+    let maxDifference = Math.abs(circlePlots.indexOf(circlePlots[circlePlots.length - 1]) - circlePlots.indexOf(circlePlots[0]));
+    let difference = Math.abs(circlePlots.indexOf(e.target) - circlePlots.indexOf(currentPlot));
+    let scrollDuration = (difference*1000)/maxDifference;
+    this.smoothScrollTo(document.getElementById('protograph_content_div'), selectedEvent.offsetTop - 150, scrollDuration);
+  }
+
+  moveEventToTop(e) {
+    let element;
+    if(e.target.classList.contains('protograph-event-message-div')) {
+      element = e.target;
+    }
+    else if(e.target.parentElement.classList.contains('protograph-event-message-div')) {
+      element = e.target.parentElement;
+    }
+    else {
+      element = e.target.parentElement.parentElement;
+    }
+    this.smoothScrollTo(document.getElementById('protograph_content_div'), element.offsetTop - 150, 250);
+  }
+
+  handleEventCircleEnter(e) {
+    e.target.style.r = '7';
+  }
+
+  handleEventCircleLeave(e, prevFill) {
+    e.target.style.r = '5';
   }
 
   renderLaptop() {
@@ -302,15 +333,14 @@ export default class TimelineCard extends React.Component {
       var that = this;
       let plotCircles = eventPoints.map((element, pos) => {
         if(pos == 0) {
-          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="red"/>;
+          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" style={{fill: "red"}} onClick={(e) => that.handleEventCircleClick(e)} onMouseEnter={(e) => that.handleEventCircleEnter(e)} onMouseLeave={(e) => that.handleEventCircleLeave(e)} />;
         }
         else {
-          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="#C0C0C0" />
+          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" style={{fill: "#C0C0C0"}} onClick={(e) => {that.handleEventCircleClick(e)}} onMouseEnter={(e) => that.handleEventCircleEnter(e)} onMouseLeave={(e) => that.handleEventCircleLeave(e)} />
         }
       });
       let assetIcons = events.map((element, pos) => {
         if(element.single_event.youtube_url){
-        console.log(that.getEventYCoord(element.single_event.timestamp_date, eventPoints))
           return (
             <svg id={element.timestamp} key={element.timestamp} className="protograph-asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 20) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='/src/images/play.svg' />"}}/>
 
@@ -328,7 +358,7 @@ export default class TimelineCard extends React.Component {
         let timestamp = `${that.getMonth(timestampComponents[1])} ${timestampComponents[2]}, ${timestampComponents[0]}`;
         if(pos == 0) {
             return (
-              <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} >
+              <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} onClick={(e) => that.moveEventToTop(e)} >
                 <p className="protograph-message-timestamp" style={{color: "black"}}>{timestamp}</p>
                 <div className="protograph-content-card">
                   <p className="protograph-content-card-text">{element.single_event.message}</p>
@@ -349,7 +379,7 @@ export default class TimelineCard extends React.Component {
         }
         else {
           return (
-            <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle}>
+            <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle} onClick={(e) => that.moveEventToTop(e)} >
               <p className="protograph-message-timestamp">{timestamp}</p>
               <div className="protograph-content-card">
                 <p className="protograph-content-card-text">{element.single_event.message}</p>
@@ -447,10 +477,10 @@ export default class TimelineCard extends React.Component {
       var that = this;
       let plotCircles = eventPoints.map((element, pos) => {
         if(pos == 0) {
-          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="red"/>;
+          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" style={{fill: "red"}} onClick={(e) => {that.handleEventCircleClick(e)}} />;
         }
         else {
-          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="#C0C0C0" />
+          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" style={{fill: "#C0C0C0"}} onClick={(e) => {that.handleEventCircleClick(e)}} />
         }
       });
       let assetIcons = events.map((element, pos) => {
@@ -472,7 +502,7 @@ export default class TimelineCard extends React.Component {
         let timestamp = `${that.getMonth(timestampComponents[1])} ${timestampComponents[2]}, ${timestampComponents[0]}`;
         if(pos == 0) {
             return (
-              <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}}>
+              <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} onClick={(e) => that.moveEventToTop(e)} >
                 <p className="protograph-message-timestamp" style={{color: "black", fontWeight: "bold"}}>{timestamp}</p>
                 <div className="protograph-content-card">
                   <p className="protograph-content-card-text">{element.single_event.message}</p>
@@ -493,7 +523,7 @@ export default class TimelineCard extends React.Component {
         }
         else {
           return (
-            <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle}>
+            <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle} onClick={(e) => that.moveEventToTop(e)} >
               <p className="protograph-message-timestamp">{timestamp}</p>
               <div className="protograph-content-card">
                 <p className="protograph-content-card-text">{element.single_event.message}</p>
@@ -580,10 +610,10 @@ export default class TimelineCard extends React.Component {
       var that = this;
       let plotCircles = eventPoints.map((element, pos) => {
         if(pos == 0) {
-          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="red"/>;
+          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" style={{fill: "#C0C0C0"}} />;
         }
         else {
-          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" fill="#C0C0C0" />
+          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" style={{fill: "#C0C0C0"}} />
         }
       });
       let assetIcons = events.map((element, pos) => {
