@@ -93,7 +93,7 @@
   width: 640px;
   background: #f5f5f5;
   padding: 20px;
-  overflow-x: auto;
+  /*overflow-x: auto;*/
   overflow-y: hidden;
 }
 
