@@ -63,9 +63,6 @@ export default class TimelineCard extends React.Component {
   componentDidUpdate() {
     if (this.props.mode === 'mobile' || this.props.mode === 'laptop') {
       let elems = Array.from(document.querySelectorAll('.protograph-event-message-div'));
-      // for(let elem of elems) {
-      //   this.multiLineTruncate(elem.querySelector('.protograph-content-card').querySelector('.protograph-content-card-text'), elem);
-      // }
       elems.forEach((elem) => {
         this.multiLineTruncate(elem.querySelector('.protograph-content-card').querySelector('.protograph-content-card-text'), elem);
       });
@@ -78,7 +75,7 @@ export default class TimelineCard extends React.Component {
     }),
       wordArray = data.single_event.message.split(' '),
       props = this.props,
-      height = this.props.mode === 'laptop' ?  document.getElementById('protograph_card_title_div').clientHeight : document.getElementById('protograph_card_title_div_mobile').clientHeight
+      height = this.props.mode === 'laptop' ?  document.getElementById('protograph_card_title_div').clientHeight : (document.getElementById('protograph_div').clientHeight - 40)
     while(parent.getBoundingClientRect().height > height) {
       wordArray.pop();
       el.innerHTML = wordArray.join(' ') + '...' + '<br><button id="protograph_read_more_button" class="protograph-read-more-button">View more</button>' ;
@@ -171,7 +168,7 @@ export default class TimelineCard extends React.Component {
     let container = document.getElementById('protograph_content_div');
     let containerTop = container.getBoundingClientRect().top;
     let containerBottom = container.getBoundingClientRect().bottom;
-    let visibilityFrameSize = 300;
+    let visibilityFrameSize = 200;
     events.forEach((event) => {
       let offset = event.getBoundingClientRect().top - container.getBoundingClientRect().top + (event.getBoundingClientRect().height/2);
       let eventTop = event.getBoundingClientRect().top;
@@ -180,14 +177,6 @@ export default class TimelineCard extends React.Component {
         visibleEvents.push(event);
       }
     });
-    // for(let event of events) {
-    //   let offset = event.getBoundingClientRect().top - container.getBoundingClientRect().top + (event.getBoundingClientRect().height/2);
-    //   let eventTop = event.getBoundingClientRect().top;
-    //   let eventBottom = event.getBoundingClientRect().bottom;
-    //   if(eventTop < containerBottom && eventBottom > containerTop) {
-    //     visibleEvents.push(event);
-    //   }
-    // }
     container.style.paddingBottom = `${container.getBoundingClientRect().height/2 - events[events.length-1].getBoundingClientRect().height/2}px`;
     let centralEvents = [];
     visibleEvents.forEach((visibleEvent) => {
@@ -198,14 +187,6 @@ export default class TimelineCard extends React.Component {
         centralEvents.push(visibleEvent);
       }
     });
-    // for(let visibleEvent of visibleEvents) {
-    //   let scanLine = (container.getBoundingClientRect().bottom + container.getBoundingClientRect().top)/2;
-    //   let eventTop = visibleEvent.getBoundingClientRect().top;
-    //   let eventBottom = visibleEvent.getBoundingClientRect().bottom;
-    //   if((eventTop < (scanLine + visibilityFrameSize/2) && eventBottom > (scanLine + visibilityFrameSize/2)) || (eventTop < (scanLine - visibilityFrameSize/2) && eventBottom > (scanLine - visibilityFrameSize/2)) || (eventTop > (scanLine - visibilityFrameSize/2) && eventBottom < (scanLine + visibilityFrameSize/2))) {
-    //     centralEvents.push(visibleEvent);
-    //   }
-    // }
     if(visibleEvents.includes(events[0])) {
       centralEvents.splice(0, 0, events[0]);
     }
@@ -223,20 +204,6 @@ export default class TimelineCard extends React.Component {
         plot.style.fill = "#C0C0C0";
       }
     });
-    // for(let plot of circlePlots) {
-    //   if(centralEvents[0] && (plot.id === centralEvents[0].id)) {
-    //     plot.style.fill = "red";
-    //     if(centralEvents[0] === document.getElementsByClassName('protograph-first-event')[0] && this.props.mode === 'laptop') {
-    //       document.getElementById('protograph_date_div').style.marginTop = "20px";
-    //     }
-    //     else if (this.props.mode === 'laptop'){
-    //       document.getElementById('protograph_date_div').style.marginTop = `${plot.getBoundingClientRect().top - container.getBoundingClientRect().top - 35}px`;
-    //     }
-    //   }
-    //   else {
-    //     plot.style.fill = "#C0C0C0";
-    //   }
-    // }
     if(centralEvents[0]) {
       let timestamp = centralEvents[0].id.split('-');
       if(this.props.mode === 'laptop') {
@@ -261,22 +228,6 @@ export default class TimelineCard extends React.Component {
         event.getElementsByClassName('protograph-content-card')[0].parentElement.style.opacity = "0.10";
       }
     });
-    // for(event of events) {
-    //   if(centralEvents.includes(event)) {
-    //     event.getElementsByClassName('protograph-message-timestamp')[0].style.color = "black";
-    //     if(event === centralEvents[0]) {
-    //       event.getElementsByClassName('protograph-message-timestamp')[0].style.fontWeight = "bold";
-    //     }
-    //     else {
-    //       event.getElementsByClassName('protograph-message-timestamp')[0].style.fontWeight = "normal";
-    //     }
-    //     event.getElementsByClassName('protograph-content-card')[0].parentElement.style.opacity = "1";
-    //   }
-    //   else {
-    //     event.getElementsByClassName('protograph-message-timestamp')[0].style.color = "#808080";
-    //     event.getElementsByClassName('protograph-content-card')[0].parentElement.style.opacity = "0.10";
-    //   }
-    // }
   }
 
   moveEventToTop(e) {
@@ -299,30 +250,26 @@ export default class TimelineCard extends React.Component {
         return eventPoints[i].yCoord;
       }
     }
-    // eventPoints.forEach((point) => {
-    //   if(point.timestamp === eventTimestamp) {
-    //     // console.log(point.yCoord);
-    //     return point.yCoord;
-    //   }
-    // });
-    // return 0;
-    // for(let point of eventPoints) {
-    //   if(point.timestamp === eventTimestamp) {
-    //     return point.yCoord;
-    //   }
-    // }
   }
 
   showMainCard(e) {
     let line_height = 500,
       hideTitlePage = this.props.mode === 'laptop' ? document.getElementById('protograph_card_title_div') : document.getElementById('protograph_card_title_div_mobile');
     hideTitlePage.style.opacity = '0';
+    let that = this;
     setTimeout(function(){
       hideTitlePage.style.display = 'none';
       document.getElementById('protograph_card_main_div').style.display = 'block';
+      if(that.props.mode === 'mobile') {
+        document.getElementById('protograph_card_title_div_gradient').style.display = 'none';
+      }
     }, 500);
     setTimeout(function(){
+      document.getElementById('protograph_div').style.background = '#f5f5f5';
       document.getElementById('protograph_card_main_div').style.opacity = '1';
+      if(that.props.mode === 'mobile') {
+        document.querySelector('.protograph-card-div.mobile').style.padding = '20px 10px';
+      }
     }, 515);
   }
 
@@ -435,16 +382,14 @@ export default class TimelineCard extends React.Component {
         }
       }
       return (
-        <div id="protograph_div" className = "protograph-card-div">
+        <div id="protograph_div" className = "protograph-card-div laptop">
           <div id="protograph_card_title_div">
-            <div id="protograph_timeline_start_div">
-              <div id="protograph_timeline_details_div">
-                <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
-                <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
-              </div>
-              <img id="protograph_timeline_image" src={this.state.dataJSON.mandatory_config.timeline_image}/>
+            <div id="protograph_timeline_details_div">
+              <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
+              <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
               <button id="protograph_show_main_card_button" onClick={(e) => that.showMainCard(e)}>Lets time travel</button>
             </div>
+            <div id="protograph_timeline_image_div" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`}}></div>
           </div>
           <div id="protograph_card_main_div">
             <div id="protograph_date_div">
@@ -581,10 +526,10 @@ export default class TimelineCard extends React.Component {
         }
       }
       return (
-        <div id="protograph_div" className="protograph-card-div mobile" style={{width: `320px`}}>
+        <div id="protograph_div" className="protograph-card-div mobile" style={{width: `320px`}}  style={{width: `320px`, background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`, backgroundRepeat: "no-repeat", backgroundSize: "cover"}}>
+          <div id="protograph_card_title_div_gradient"></div>
           <div id="protograph_card_title_div_mobile">
             <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
-            <img id="protograph_timeline_image_mobile" src={this.state.dataJSON.mandatory_config.timeline_image}/>
             <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
             <button id="protograph_show_main_card_button_mobile" onClick={(e) => that.showMainCard(e)}>Lets time travel</button>
           </div>
