@@ -55,8 +55,9 @@
 			{
 				"single_event": {
 					"timestamp_date": "1960-03-21",
+					"header": "Sharpeville Massacre",
 					"message": "Police open fire on a crowd of unarmed anti-apartheid protesters in Sharpeville, killing 69 and injuring 180 others.",
-					"youtube_url": "http://timeglobalspin.files.wordpress.com/2013/06/130114134887.jpg?w=519",
+					"photo": "http://timeglobalspin.files.wordpress.com/2013/06/130114134887.jpg?w=519",
 					"media_caption": "An armed man stands beside the body of one of the sixty-nine black South Africans killed by police in the massacre at Sharpeville, South Africa, March 21, 1960."
 				}
 			},
