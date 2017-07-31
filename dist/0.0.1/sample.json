@@ -3,6 +3,7 @@
     "events": [
       {
         "single_event": {
+          "header": "The beginning in 1918",
           "timestamp_date": "1918-07-18",
           "message": "Rolihlahla Dalibhunga Mandela is born in Mvezo, South Africa. One of 13 children, he was the eldest child of his father’s third wife. A teacher later gave him the name Nelson."
         }
@@ -16,6 +17,7 @@
       },
       {
         "single_event": {
+          "header": "The marriage",
           "timestamp_date": "1944-07-15",
           "message": "Mandela marries Evelyn Ntoko Mase. They had four children, one of whom died at the age of 9 months. Nelson and Evelyn divorced in 1958."
         }

@@ -361,6 +361,9 @@ export default class TimelineCard extends React.Component {
               <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} onClick={(e) => that.moveEventToTop(e)} >
                 <p className="protograph-message-timestamp" style={{color: "black"}}>{timestamp}</p>
                 <div className="protograph-content-card">
+                  { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
+                    <h1 className='ui header'>{element.single_event.header}</h1>
+                  }
                   <p className="protograph-content-card-text">{element.single_event.message}</p>
                   {that.injectImage(element.single_event.photo)}
                   {that.injectYoutubeEmbed(element.single_event.youtube_url)}
@@ -382,6 +385,9 @@ export default class TimelineCard extends React.Component {
             <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle} onClick={(e) => that.moveEventToTop(e)} >
               <p className="protograph-message-timestamp">{timestamp}</p>
               <div className="protograph-content-card">
+                { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
+                  <h1 className='ui header'>{element.single_event.header}</h1>
+                }
                 <p className="protograph-content-card-text">{element.single_event.message}</p>
                 {that.injectImage(element.single_event.photo)}
                 {that.injectYoutubeEmbed(element.single_event.youtube_url)}
@@ -505,6 +511,9 @@ export default class TimelineCard extends React.Component {
               <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} onClick={(e) => that.moveEventToTop(e)} >
                 <p className="protograph-message-timestamp" style={{color: "black", fontWeight: "bold"}}>{timestamp}</p>
                 <div className="protograph-content-card">
+                  { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
+                    <h1 className='ui header'>{element.single_event.header}</h1>
+                  }
                   <p className="protograph-content-card-text">{element.single_event.message}</p>
                   {that.injectImage(element.single_event.photo)}
                   {that.injectYoutubeEmbed(element.single_event.youtube_url)}
@@ -526,6 +535,9 @@ export default class TimelineCard extends React.Component {
             <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle} onClick={(e) => that.moveEventToTop(e)} >
               <p className="protograph-message-timestamp">{timestamp}</p>
               <div className="protograph-content-card">
+                { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
+                  <h1 className='ui header'>{element.single_event.header}</h1>
+                }
                 <p className="protograph-content-card-text">{element.single_event.message}</p>
                 {that.injectImage(element.single_event.photo)}
                 {that.injectYoutubeEmbed(element.single_event.youtube_url)}
@@ -638,6 +650,9 @@ export default class TimelineCard extends React.Component {
               <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" >
                 <p className="protograph-message-timestamp" style={{color: "black", fontWeight: "bold"}}>{timestamp}</p>
                 <div className="protograph-content-card-screenshot">
+                  { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
+                    <h1 className='ui header'>{element.single_event.header}</h1>
+                  }
                   <p className="protograph-content-card-text">{element.single_event.message}</p>
                   {that.injectImage(element.single_event.photo)}
                   {that.injectYoutubeEmbed(element.single_event.youtube_url)}
@@ -650,6 +665,9 @@ export default class TimelineCard extends React.Component {
             <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle}>
               <p className="protograph-message-timestamp">{timestamp}</p>
               <div className="protograph-content-card-screenshot">
+                { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
+                  <h1 className='ui header'>{element.single_event.header}</h1>
+                }
                 <p className="protograph-protograph-content-card-text">{element.single_event.message}</p>
                 {that.injectImage(element.single_event.photo)}
                 {that.injectYoutubeEmbed(element.single_event.youtube_url)}

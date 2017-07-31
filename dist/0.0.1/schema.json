@@ -31,6 +31,11 @@
                     "id": "/properties/data/properties/events/items/properties/single_event/properties/timestamp_date",
                     "condition": {"element": "timestamp_mode", "value": "date"}
                   },
+                  "header": {
+                    "title": "Title",
+                    "type": "string",
+                    "id": "/properties/data/properties/events/items/properties/single_event/properties/header"
+                  },
                   "message": {
                     "title": "Text",
                     "type": "string",
@@ -42,6 +47,12 @@
                     "type": "string",
                     "format": "data-url",
                     "id": "/properties/data/properties/events/items/properties/single_event/properties/photo"
+                  },
+                  "photo_caption": {
+                    "title": "Image Caption",
+                    "type": "string",
+                    "id": "/properties/data/properties/events/items/properties/single_event/properties/photo_caption",
+                    "condition": {"element": "photo", "value": "date"}
                   },
                   "youtube_url": {
                     "title": "Youtube URL",
