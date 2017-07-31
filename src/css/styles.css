@@ -162,7 +162,7 @@ body ::-webkit-scrollbar {
 .protograph-event-photo {
   display: block;
   max-width: 100%;
-  height: auto;
+  max-height: 300px;
   margin: auto;
 }
 

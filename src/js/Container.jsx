@@ -56,11 +56,13 @@ export default class TimelineCard extends React.Component {
   }
 
   componentDidUpdate() {
-    if (this.props.mode === 'mobile' || this.props.mode === 'laptop') {
+    if (this.props.mode === 'mobile') {
       let elems = Array.from(document.querySelectorAll('.protograph-event-message-div'));
       elems.forEach((elem) => {
         this.multiLineTruncate(elem.querySelector('.protograph-content-card').querySelector('.protograph-content-card-text'), elem);
+        console.log(elem);
       });
+      // this.multiLineTruncate(elems[11].querySelector('.protograph-content-card').querySelector('.protograph-content-card-text'), elems[11]);
     }
   }
 
@@ -370,6 +372,7 @@ export default class TimelineCard extends React.Component {
       let eventDetails = events.map((element, pos) => {
         let timestampComponents = element.single_event.timestamp_date.split('-');
         let timestamp = `${that.getMonth(timestampComponents[1])} ${timestampComponents[2]}, ${timestampComponents[0]}`;
+        let asset = that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) ?  that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) : that.injectImage(element.single_event.photo, element.single_event.media_caption);
         if(pos == 0) {
             return (
               <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} onClick={(e) => that.moveEventToTop(e)} >
@@ -379,8 +382,9 @@ export default class TimelineCard extends React.Component {
                     <h3 className='ui header'>{element.single_event.header}</h3>
                   }
                   <p className="protograph-content-card-text">{element.single_event.message}</p>
-                  {that.injectImage(element.single_event.photo, element.single_event.media_caption)}
-                  {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)}
+                  {asset}
+                  {/* {that.injectImage(element.single_event.photo, element.single_event.media_caption)} */}
+                  {/* {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)} */}
                 </div>
                 <div id="protograph_scroll_down_indicator">
                   <p id="protograph_scroll_down_text" style={{marginBottom: "2px", height: "20px"}}>Scroll</p>
@@ -403,8 +407,9 @@ export default class TimelineCard extends React.Component {
                   <h3 className='ui header'>{element.single_event.header}</h3>
                 }
                 <p className="protograph-content-card-text">{element.single_event.message}</p>
-                {that.injectImage(element.single_event.photo, element.single_event.media_caption)}
-                {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)}
+                {asset}
+                {/* {that.injectImage(element.single_event.photo, element.single_event.media_caption)} */}
+                {/* {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)} */}
               </div>
             </div>
           );
@@ -439,7 +444,7 @@ export default class TimelineCard extends React.Component {
               <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
               <button id="protograph_show_main_card_button" onClick={(e) => that.showMainCard(e)}>Lets time travel</button>
             </div>
-            <div id="protograph_timeline_image_div" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`}}></div>
+            <div id="protograph_timeline_image_div" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`, backgroundRepeat: "no-repeat", backgroundSize: "cover"}}></div>
           </div>
           <div id="protograph_card_main_div">
             <div id="protograph_date_div">
@@ -453,7 +458,7 @@ export default class TimelineCard extends React.Component {
                 <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
                 <g>
                   {plotCircles}
-                  {assetIcons}
+                  {/* {assetIcons} */}
                   {yearCountText}
                 </g>
               </svg>
@@ -520,6 +525,7 @@ export default class TimelineCard extends React.Component {
       let eventDetails = events.map((element, pos) => {
         let timestampComponents = element.single_event.timestamp_date.split('-');
         let timestamp = `${that.getMonth(timestampComponents[1])} ${timestampComponents[2]}, ${timestampComponents[0]}`;
+        let asset = that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) ?  that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) : that.injectImage(element.single_event.photo, element.single_event.media_caption);
         if(pos == 0) {
             return (
               <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} onClick={(e) => that.moveEventToTop(e)} >
@@ -529,8 +535,9 @@ export default class TimelineCard extends React.Component {
                     <h3 className='ui header'>{element.single_event.header}</h3>
                   }
                   <p className="protograph-content-card-text">{element.single_event.message}</p>
-                  {that.injectImage(element.single_event.photo, element.single_event.media_caption)}
-                  {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)}
+                  {asset}
+                  {/* {that.injectImage(element.single_event.photo, element.single_event.media_caption)} */}
+                  {/* {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)} */}
                 </div>
                 <div id="protograph_scroll_down_indicator">
                   <p id="protograph_scroll_down_text" style={{marginBottom: "2px", height: "20px"}}>Scroll</p>
@@ -553,8 +560,9 @@ export default class TimelineCard extends React.Component {
                   <h3 className='ui header'>{element.single_event.header}</h3>
                 }
                 <p className="protograph-content-card-text">{element.single_event.message}</p>
-                {that.injectImage(element.single_event.photo, element.single_event.media_caption)}
-                {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)}
+                {asset}
+                {/* {that.injectImage(element.single_event.photo, element.single_event.media_caption)} */}
+                {/* {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)} */}
               </div>
             </div>
           );
@@ -659,6 +667,7 @@ export default class TimelineCard extends React.Component {
       let eventDetails = events.map((element, pos) => {
         let timestampComponents = element.single_event.timestamp_date.split('-');
         let timestamp = `${that.getMonth(timestampComponents[1])} ${timestampComponents[2]}, ${timestampComponents[0]}`;
+        let asset = that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) ?  that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) : that.injectImage(element.single_event.photo, element.single_event.media_caption);
         if(pos == 0) {
             return (
               <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" >
@@ -668,8 +677,9 @@ export default class TimelineCard extends React.Component {
                     <h3 className='ui header'>{element.single_event.header}</h3>
                   }
                   <p className="protograph-content-card-text">{element.single_event.message}</p>
-                  {that.injectImage(element.single_event.photo, element.single_event.media_caption)}
-                  {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)}
+                  {asset}
+                  {/* {that.injectImage(element.single_event.photo, element.single_event.media_caption)} */}
+                  {/* {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)} */}
                 </div>
               </div>
             );
