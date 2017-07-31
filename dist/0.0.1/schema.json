@@ -48,16 +48,15 @@
                     "format": "data-url",
                     "id": "/properties/data/properties/events/items/properties/single_event/properties/photo"
                   },
-                  "photo_caption": {
-                    "title": "Image Caption",
-                    "type": "string",
-                    "id": "/properties/data/properties/events/items/properties/single_event/properties/photo_caption",
-                    "condition": {"element": "photo", "value": "date"}
-                  },
                   "youtube_url": {
                     "title": "Youtube URL",
                     "type": "string",
                     "id": "/properties/data/properties/events/items/properties/single_event/properties/youtube_url"
+                  },
+                  "media_caption": {
+                    "title": "Media Caption",
+                    "type": "string",
+                    "id": "/properties/data/properties/events/items/properties/single_event/properties/media_caption",
                   }
                 },
                 "required":["timestamp_date", "message"]

@@ -141,6 +141,12 @@ body ::-webkit-scrollbar {
   text-align: left;
 }
 
+.protograph-content-card p.hint {
+  font-size: 11px;
+  color: gray;
+  text-align: center;
+}
+
 .protograph-event-message-div {
   margin-bottom: 30px;
   -webkit-transition: opacity 0.5s;

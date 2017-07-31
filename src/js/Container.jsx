@@ -128,21 +128,35 @@ export default class TimelineCard extends React.Component {
     }
   }
 
-  injectImage(photoExists) {
+  injectImage(photoExists, captionExists) {
     if (photoExists) {
-      return <img className="protograph-event-photo" src={photoExists} />;
+      return (
+        <div>
+        <img className="protograph-event-photo" src={photoExists} /> {
+          captionExists &&
+            <p className='hint'>{captionExists}</p>
+        }
+        </div>
+      )
     }
     else {
       return null;
     }
   }
 
-  injectYoutubeEmbed(urlExists) {
+  injectYoutubeEmbed(urlExists, captionExists) {
     var regex = /^(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?(?=.*v=((\w|-){11}))(?:\S+)?$/;
     if(urlExists) {
       if(regex.test(urlExists)){
         let embedUrl = "https://www.youtube.com/embed/" + urlExists.split('=')[1];
-        return <iframe className="protograph-youtube-embed" src={embedUrl} frameBorder="0" allowFullScreen></iframe>
+        return (
+          <div>
+            <iframe className="protograph-youtube-embed" src={embedUrl} frameBorder="0" allowFullScreen></iframe> {
+              captionExists &&
+                <p className='hint'>{captionExists}</p>
+            }
+          </div>
+        )
       }
       else {
         return null;
@@ -365,8 +379,8 @@ export default class TimelineCard extends React.Component {
                     <h1 className='ui header'>{element.single_event.header}</h1>
                   }
                   <p className="protograph-content-card-text">{element.single_event.message}</p>
-                  {that.injectImage(element.single_event.photo)}
-                  {that.injectYoutubeEmbed(element.single_event.youtube_url)}
+                  {that.injectImage(element.single_event.photo, element.single_event.media_caption)}
+                  {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)}
                 </div>
                 <div id="protograph_scroll_down_indicator">
                   <p id="protograph_scroll_down_text" style={{marginBottom: "2px", height: "20px"}}>Scroll</p>
@@ -389,8 +403,8 @@ export default class TimelineCard extends React.Component {
                   <h1 className='ui header'>{element.single_event.header}</h1>
                 }
                 <p className="protograph-content-card-text">{element.single_event.message}</p>
-                {that.injectImage(element.single_event.photo)}
-                {that.injectYoutubeEmbed(element.single_event.youtube_url)}
+                {that.injectImage(element.single_event.photo, element.single_event.media_caption)}
+                {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)}
               </div>
             </div>
           );
@@ -515,8 +529,8 @@ export default class TimelineCard extends React.Component {
                     <h1 className='ui header'>{element.single_event.header}</h1>
                   }
                   <p className="protograph-content-card-text">{element.single_event.message}</p>
-                  {that.injectImage(element.single_event.photo)}
-                  {that.injectYoutubeEmbed(element.single_event.youtube_url)}
+                  {that.injectImage(element.single_event.photo, element.single_event.media_caption)}
+                  {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)}
                 </div>
                 <div id="protograph_scroll_down_indicator">
                   <p id="protograph_scroll_down_text" style={{marginBottom: "2px", height: "20px"}}>Scroll</p>
@@ -539,8 +553,8 @@ export default class TimelineCard extends React.Component {
                   <h1 className='ui header'>{element.single_event.header}</h1>
                 }
                 <p className="protograph-content-card-text">{element.single_event.message}</p>
-                {that.injectImage(element.single_event.photo)}
-                {that.injectYoutubeEmbed(element.single_event.youtube_url)}
+                {that.injectImage(element.single_event.photo, element.single_event.media_caption)}
+                {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)}
               </div>
             </div>
           );
@@ -654,8 +668,8 @@ export default class TimelineCard extends React.Component {
                     <h1 className='ui header'>{element.single_event.header}</h1>
                   }
                   <p className="protograph-content-card-text">{element.single_event.message}</p>
-                  {that.injectImage(element.single_event.photo)}
-                  {that.injectYoutubeEmbed(element.single_event.youtube_url)}
+                  {that.injectImage(element.single_event.photo, element.single_event.media_caption)}
+                  {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)}
                 </div>
               </div>
             );
@@ -669,8 +683,8 @@ export default class TimelineCard extends React.Component {
                   <h1 className='ui header'>{element.single_event.header}</h1>
                 }
                 <p className="protograph-protograph-content-card-text">{element.single_event.message}</p>
-                {that.injectImage(element.single_event.photo)}
-                {that.injectYoutubeEmbed(element.single_event.youtube_url)}
+                {that.injectImage(element.single_event.photo, element.single_event.media_caption)}
+                {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)}
               </div>
             </div>
           );
