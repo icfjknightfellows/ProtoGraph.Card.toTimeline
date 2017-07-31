@@ -180,6 +180,7 @@ body ::-webkit-scrollbar {
   margin-top: 30px;
   cursor: pointer;
   border-radius: 4px;
+  animation: jiggle 2s infinite ease-in;
 }
 
 #protograph_show_main_card_button_mobile {
@@ -255,4 +256,19 @@ body ::-webkit-scrollbar {
 
 #protograph_screenshot_main_div {
   display: block;
+}
+
+@keyframes jiggle {
+  45%, 65% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.1, 0.9);
+  }
+  55% {
+    transform: scale(0.9, 1.1) translate(0, -5px);
+  }
+  60% {
+    transform: scale(1, 1) translate(0, -5px);
+  }
 }
