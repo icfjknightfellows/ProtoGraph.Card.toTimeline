@@ -118,7 +118,8 @@
 			{
 				"single_event": {
 					"timestamp_date": "1988-08-01",
-					"header": "Mandela is diagnosed with tuberculosis."
+					"header": "Mandela is diagnosed with tuberculosis.",
+          "youtube_url": "https://www.youtube.com/watch?v=jPUWUiXopDk"
 				}
 			},
 			{
@@ -150,7 +151,7 @@
 			{
 				"single_event": {
 					"timestamp_date": "1990-02-11",
-					"message": "Mandela is freed after 27 years.",
+					"header": "Mandela is freed after 27 years.",
 					"photo": "http://timeglobalspin.files.wordpress.com/2012/06/nelson_mandela_071.jpg?w=519",
 					"media_caption": "Mandela walks with his wife Winnie after being released from prison."
 				}
@@ -214,13 +215,14 @@
 			{
 				"single_event": {
 					"timestamp_date": "2004-06-01",
-					"message": "Mandela retires from public life."
+					"header": "Mandela retires from public life."
 				}
 			},
 			{
 				"single_event": {
 					"timestamp_date": "2005-01-06",
-					"message": "Death of a Son",
+					"header": "Death of a Son",
+          "message": "Mandela announces that his son Makgatho has died of AIDS and urges South Africans to treat AIDS as a “normal illness” rather than “something extraordinary for which people go to hell and not to heaven.”",
 					"photo": "http://timeglobalspin.files.wordpress.com/2013/06/130114134879.jpg?w=519",
 					"media_caption": "Makgatho Mandela in August 2000."
 				}
