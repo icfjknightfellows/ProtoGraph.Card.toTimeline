@@ -134,7 +134,7 @@ export default class TimelineCard extends React.Component {
         <div>
         <img className="protograph-event-photo" src={photoExists} /> {
           captionExists &&
-            <p className='hint'>{captionExists}</p>
+            <h6 className='ui header centered'>{captionExists}</h6>
         }
         </div>
       )
@@ -153,7 +153,7 @@ export default class TimelineCard extends React.Component {
           <div>
             <iframe className="protograph-youtube-embed" src={embedUrl} frameBorder="0" allowFullScreen></iframe> {
               captionExists &&
-                <p className='hint'>{captionExists}</p>
+                <h6 className='ui header centered'>{captionExists}</h6>
             }
           </div>
         )
@@ -376,7 +376,7 @@ export default class TimelineCard extends React.Component {
                 <p className="protograph-message-timestamp" style={{color: "black"}}>{timestamp}</p>
                 <div className="protograph-content-card">
                   { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
-                    <h1 className='ui header'>{element.single_event.header}</h1>
+                    <h3 className='ui header'>{element.single_event.header}</h3>
                   }
                   <p className="protograph-content-card-text">{element.single_event.message}</p>
                   {that.injectImage(element.single_event.photo, element.single_event.media_caption)}
@@ -400,7 +400,7 @@ export default class TimelineCard extends React.Component {
               <p className="protograph-message-timestamp">{timestamp}</p>
               <div className="protograph-content-card">
                 { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
-                  <h1 className='ui header'>{element.single_event.header}</h1>
+                  <h3 className='ui header'>{element.single_event.header}</h3>
                 }
                 <p className="protograph-content-card-text">{element.single_event.message}</p>
                 {that.injectImage(element.single_event.photo, element.single_event.media_caption)}
@@ -444,7 +444,7 @@ export default class TimelineCard extends React.Component {
           <div id="protograph_card_main_div">
             <div id="protograph_date_div">
               <div id="protograph_month_div">{this.getMonth(firstEventTimeComponents[1])}</div>
-              <div id="protograph_day_div">{firstEventTimeComponents[2]}</div>
+              <h1 id="protograph_day_div" className='ui header'>{firstEventTimeComponents[2]}</h1>
               <div id="protograph_year_div">{firstEventTimeComponents[0]}</div>
             </div>
             <div id="protograph_timeline_svg_div">
@@ -526,7 +526,7 @@ export default class TimelineCard extends React.Component {
                 <p className="protograph-message-timestamp" style={{color: "black", fontWeight: "bold"}}>{timestamp}</p>
                 <div className="protograph-content-card">
                   { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
-                    <h1 className='ui header'>{element.single_event.header}</h1>
+                    <h3 className='ui header'>{element.single_event.header}</h3>
                   }
                   <p className="protograph-content-card-text">{element.single_event.message}</p>
                   {that.injectImage(element.single_event.photo, element.single_event.media_caption)}
@@ -550,7 +550,7 @@ export default class TimelineCard extends React.Component {
               <p className="protograph-message-timestamp">{timestamp}</p>
               <div className="protograph-content-card">
                 { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
-                  <h1 className='ui header'>{element.single_event.header}</h1>
+                  <h3 className='ui header'>{element.single_event.header}</h3>
                 }
                 <p className="protograph-content-card-text">{element.single_event.message}</p>
                 {that.injectImage(element.single_event.photo, element.single_event.media_caption)}
@@ -665,7 +665,7 @@ export default class TimelineCard extends React.Component {
                 <p className="protograph-message-timestamp" style={{color: "black", fontWeight: "bold"}}>{timestamp}</p>
                 <div className="protograph-content-card-screenshot">
                   { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
-                    <h1 className='ui header'>{element.single_event.header}</h1>
+                    <h3 className='ui header'>{element.single_event.header}</h3>
                   }
                   <p className="protograph-content-card-text">{element.single_event.message}</p>
                   {that.injectImage(element.single_event.photo, element.single_event.media_caption)}
@@ -680,7 +680,7 @@ export default class TimelineCard extends React.Component {
               <p className="protograph-message-timestamp">{timestamp}</p>
               <div className="protograph-content-card-screenshot">
                 { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
-                  <h1 className='ui header'>{element.single_event.header}</h1>
+                  <h3 className='ui header'>{element.single_event.header}</h3>
                 }
                 <p className="protograph-protograph-content-card-text">{element.single_event.message}</p>
                 {that.injectImage(element.single_event.photo, element.single_event.media_caption)}
@@ -717,7 +717,7 @@ export default class TimelineCard extends React.Component {
             <div id="protograph_screenshot_main_div">
               <div id="protograph_date_div">
                 <div id="protograph_month_div">{this.getMonth(firstEventTimeComponents[1])}</div>
-                <div id="protograph_day_div">{firstEventTimeComponents[2]}</div>
+                <h1 id="protograph_day_div" className='ui header' >{firstEventTimeComponents[2]}</h1>
                 <div id="protograph_year_div">{firstEventTimeComponents[0]}</div>
               </div>
               <div id="protograph_timeline_svg_div">

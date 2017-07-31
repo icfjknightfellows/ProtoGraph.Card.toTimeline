@@ -56,7 +56,7 @@
                   "media_caption": {
                     "title": "Media Caption",
                     "type": "string",
-                    "id": "/properties/data/properties/events/items/properties/single_event/properties/media_caption",
+                    "id": "/properties/data/properties/events/items/properties/single_event/properties/media_caption"
                   }
                 },
                 "required":["timestamp_date", "message"]

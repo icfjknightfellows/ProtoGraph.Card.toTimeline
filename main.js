@@ -19,6 +19,7 @@ ProtoGraph.Card.toTimeline.prototype.getData = function (data) {
 
 ProtoGraph.Card.toTimeline.prototype.renderLaptop = function (data) {
   this.mode = 'laptop';
+  ReactDOM.unmountComponentAtNode(this.options.selector);
   ReactDOM.render(
     <TimelineCard
       dataURL={this.options.data_url}
@@ -35,6 +36,7 @@ ProtoGraph.Card.toTimeline.prototype.renderLaptop = function (data) {
 
 ProtoGraph.Card.toTimeline.prototype.renderMobile = function (data) {
   this.mode = 'mobile';
+  ReactDOM.unmountComponentAtNode(this.options.selector);
   ReactDOM.render(
     <TimelineCard
       dataURL={this.options.data_url}

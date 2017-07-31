@@ -14,6 +14,7 @@ ProtoGraph.Card.toTimeline.prototype.renderSEO = function (data) {
 ProtoGraph.Card.toTimeline.prototype.renderEdit = function (onPublishCallback) {
   this.mode = 'edit';
   this.onPublishCallback = onPublishCallback;
+  ReactDOM.unmountComponentAtNode(this.options.selector);
   ReactDOM.render(
     <EditTimelineCard
       dataURL={this.options.data_url}
