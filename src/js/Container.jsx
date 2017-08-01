@@ -176,6 +176,7 @@ export default class TimelineCard extends React.Component {
     let events = Array.from(document.getElementsByClassName('protograph-event-message-div'));
     let visibleEvents = [];
     let circlePlots = Array.from(document.getElementsByClassName('protograph-circle-plot'));
+    let layoverPlots = Array.from(document.getElementsByClassName('protograph-layover-plot'));
     let container = document.getElementById('protograph_content_div');
     let containerTop = container.getBoundingClientRect().top;
     let containerBottom = container.getBoundingClientRect().bottom;
@@ -200,14 +201,18 @@ export default class TimelineCard extends React.Component {
     });
     circlePlots.forEach((plot) => {
       if(centralEvents[0] && (plot.id === centralEvents[0].id)) {
-        // var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        // circle.setAttribute('cx',plot);
-        // console.log(svg);
-        // console.log(plot.cx.animVal.value);
-        // console.log(document.getElementById('protograph_svg_group'));
-        // <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" style={{fill: "red"}} onClick={(e) => that.handleEventCircleClick(e)} onMouseEnter={(e) => that.handleEventCircleEnter(e)} onMouseLeave={(e) => that.handleEventCircleLeave(e)} />
-        // var paintOverPlot = document.getElementById('protograph_svg_group').createElementNS("http://www.w3.org/2000/svg", 'circle');
-        // paintOverPlot.setAttribute("cx",plot.cx.animVal.value)
+        if(!document.getElementById(`${plot.cx.animVal.value}_${plot.cy.animVal.value}`)) {
+          let svg = document.getElementById('protograph_svg_group');
+          let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          circle.setAttribute('cx',plot.cx.animVal.value);
+          circle.setAttribute('cy',plot.cy.animVal.value);
+          circle.setAttribute('r',plot.r.animVal.value);
+          circle.setAttribute('fill','red');
+          circle.setAttribute('class','protograph-layover-plot');
+          circle.setAttribute('id', `${plot.cx.animVal.value}_${plot.cy.animVal.value}`);
+          circle.setAttribute('data-timestamp', `${centralEvents[0].id}`)
+          svg.appendChild(circle);
+        }
         plot.style.fill = "red";
         if(centralEvents[0] === document.getElementsByClassName('protograph-first-event')[0] && this.props.mode === 'laptop') {
           document.getElementById('protograph_date_div').style.marginTop = "20px";
@@ -218,6 +223,11 @@ export default class TimelineCard extends React.Component {
       }
       else {
         plot.style.fill = "#C0C0C0";
+      }
+    });
+    layoverPlots.forEach((plot) => {
+      if(plot.dataset.timestamp !== centralEvents[0].id) {
+        plot.parentElement.removeChild(plot);
       }
     });
     if(centralEvents[0]) {
@@ -652,10 +662,10 @@ export default class TimelineCard extends React.Component {
       var that = this;
       let plotCircles = eventPoints.map((element, pos) => {
         if(pos == 0) {
-          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" style={{fill: "#C0C0C0"}} />;
+          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" style={{fill: "red"}} onClick={(e) => that.handleEventCircleClick(e)} onMouseEnter={(e) => that.handleEventCircleEnter(e)} onMouseLeave={(e) => that.handleEventCircleLeave(e)} />;
         }
         else {
-          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" style={{fill: "#C0C0C0"}} />
+          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" style={{fill: "#C0C0C0"}} onClick={(e) => {that.handleEventCircleClick(e)}} onMouseEnter={(e) => that.handleEventCircleEnter(e)} onMouseLeave={(e) => that.handleEventCircleLeave(e)} />
         }
       });
       let assetIcons = events.map((element, pos) => {
@@ -678,8 +688,8 @@ export default class TimelineCard extends React.Component {
         let asset = that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) ?  that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) : that.injectImage(element.single_event.photo, element.single_event.media_caption);
         if(pos == 0) {
             return (
-              <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" >
-                <p className="protograph-message-timestamp" style={{color: "black", fontWeight: "bold"}}>{timestamp}</p>
+              <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" onClick={(e) => that.moveEventToTop(e)} >
+                <p className="protograph-message-timestamp" style={{color: "black"}}>{timestamp}</p>
                 <div className="protograph-content-card-screenshot">
                   { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
                     <h3 className='ui header'>{element.single_event.header}</h3>
@@ -689,20 +699,30 @@ export default class TimelineCard extends React.Component {
                   {/* {that.injectImage(element.single_event.photo, element.single_event.media_caption)} */}
                   {/* {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)} */}
                 </div>
+                <div id="protograph_scroll_down_indicator">
+                  <p id="protograph_scroll_down_text" style={{marginBottom: "2px", height: "20px"}}>Scroll</p>
+                  <svg id="protograph_scroll_down_arrow" height="25px" width="25px" viewBox="0 0 100 100">
+                    <line x1="10" y1="10" x2="50" y2="50" style={{stroke:"black", strokeWidth:5}} />
+                    <line x1="50" y1="50" x2="90" y2="10" style={{stroke:"black", strokeWidth:5}} />
+                    <line x1="10" y1="30" x2="50" y2="70" style={{stroke:"black", strokeWidth:5}} />
+                    <line x1="50" y1="70" x2="90" y2="30" style={{stroke:"black", strokeWidth:5}} />
+                  </svg>
+                </div>
               </div>
             );
         }
         else {
           return (
-            <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle}>
+            <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle} onClick={(e) => that.moveEventToTop(e)} >
               <p className="protograph-message-timestamp">{timestamp}</p>
               <div className="protograph-content-card-screenshot">
                 { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
                   <h3 className='ui header'>{element.single_event.header}</h3>
                 }
-                <p className="protograph-protograph-content-card-text">{element.single_event.message}</p>
-                {that.injectImage(element.single_event.photo, element.single_event.media_caption)}
-                {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)}
+                <p className="protograph-content-card-text">{element.single_event.message}</p>
+                {asset}
+                {/* {that.injectImage(element.single_event.photo, element.single_event.media_caption)} */}
+                {/* {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)} */}
               </div>
             </div>
           );
@@ -715,7 +735,7 @@ export default class TimelineCard extends React.Component {
         let currentEvent = new Date(currentEventComponents[0], currentEventComponents[1], currentEventComponents[2]);
         let nextEvent = new Date(nextEventComponents[0], nextEventComponents[1], nextEventComponents[2]);
         let ranges = [];
-        if(Math.round((nextEvent - currentEvent)/(msDay*365)) >= 5) {
+        if(Math.round((nextEvent - currentEvent)/(msDay*365)) >= 10) {
           let j;
           for(j = 0; j < eventPoints.length; j++) {
             if(eventPoints[j].timestamp === events[i].single_event.timestamp_date) {
@@ -731,11 +751,11 @@ export default class TimelineCard extends React.Component {
       }
       return (
         <div id="ProtoScreenshot">
-          <div id="protograph_div" className = "protograph-card-div">
+          <div id="protograph_div" className = "protograph-card-div laptop">
             <div id="protograph_screenshot_main_div">
               <div id="protograph_date_div">
                 <div id="protograph_month_div">{this.getMonth(firstEventTimeComponents[1])}</div>
-                <h1 id="protograph_day_div" className='ui header' >{firstEventTimeComponents[2]}</h1>
+                <h1 id="protograph_day_div" className='ui header'>{firstEventTimeComponents[2]}</h1>
                 <div id="protograph_year_div">{firstEventTimeComponents[0]}</div>
               </div>
               <div id="protograph_timeline_svg_div">
@@ -744,17 +764,16 @@ export default class TimelineCard extends React.Component {
                   <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
                   <g id="protograph_svg_group">
                     {plotCircles}
-                    {assetIcons}
                     {yearCountText}
                   </g>
                 </svg>
                 <p id="protograph_final_timestamp">{lastEventTimeComponents[0]}</p>
               </div>
-              <div id="protograph_content_div" style={{overflowY: "hidden"}}>
+              <div id="protograph_content_div"  style={{overflowY: "hidden"}}>
                 {eventDetails}
               </div>
             </div>
-          </div>
+        </div>
         </div>
       );
     }
