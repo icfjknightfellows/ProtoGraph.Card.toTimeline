@@ -1,6 +1,7 @@
 {
 	"data": {
-		"events": [{
+		"events": [
+			{
 				"single_event": {
 					"header": "A Child is Born",
 					"timestamp_date": "1918-07-18",

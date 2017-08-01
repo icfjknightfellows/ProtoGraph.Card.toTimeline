@@ -70,18 +70,6 @@
       "type": "object",
       "id": "/properties/mandatory_config",
       "properties": {
-        "timeline_mode": {
-          "title": "Timeline Mode",
-          "type": "string",
-          "id": "/properties/mandatory_config/properties/timeline_mode",
-          "enum": ["single"]
-        },
-        "timestamp_mode": {
-          "title": "Timestamp Mode",
-          "type": "string",
-          "id": "/properties/mandatory_config/properties/timestamp_mode",
-          "enum": ["date"]
-        },
         "timeline_title": {
           "title": "Timeline Title",
           "type": "string",

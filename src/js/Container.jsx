@@ -200,11 +200,19 @@ export default class TimelineCard extends React.Component {
     });
     circlePlots.forEach((plot) => {
       if(centralEvents[0] && (plot.id === centralEvents[0].id)) {
+        // var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        // circle.setAttribute('cx',plot);
+        // console.log(svg);
+        // console.log(plot.cx.animVal.value);
+        // console.log(document.getElementById('protograph_svg_group'));
+        // <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" style={{fill: "red"}} onClick={(e) => that.handleEventCircleClick(e)} onMouseEnter={(e) => that.handleEventCircleEnter(e)} onMouseLeave={(e) => that.handleEventCircleLeave(e)} />
+        // var paintOverPlot = document.getElementById('protograph_svg_group').createElementNS("http://www.w3.org/2000/svg", 'circle');
+        // paintOverPlot.setAttribute("cx",plot.cx.animVal.value)
         plot.style.fill = "red";
         if(centralEvents[0] === document.getElementsByClassName('protograph-first-event')[0] && this.props.mode === 'laptop') {
           document.getElementById('protograph_date_div').style.marginTop = "20px";
         }
-        else if (this.props.mode === 'laptop'){
+        else if (this.props.mode === 'laptop') {
           document.getElementById('protograph_date_div').style.marginTop = `${plot.getBoundingClientRect().top - container.getBoundingClientRect().top - 35}px`;
         }
       }
@@ -456,7 +464,7 @@ export default class TimelineCard extends React.Component {
               <p id="protograph_initial_timestamp">{firstEventTimeComponents[0]}</p>
               <svg id="protograph_timeline_svg" height={line_height} width={svgWidth}>
                 <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
-                <g>
+                <g id="protograph_svg_group">
                   {plotCircles}
                   {/* {assetIcons} */}
                   {yearCountText}
@@ -601,7 +609,7 @@ export default class TimelineCard extends React.Component {
             <div id="protograph_timeline_svg_div">
               <svg id="protograph_timeline_svg" height={line_height} width={svgWidth}>
                 <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
-                <g>
+                <g id="protograph_svg_group">
                   {plotCircles}
                 </g>
               </svg>
@@ -734,7 +742,7 @@ export default class TimelineCard extends React.Component {
                 <p id="protograph_initial_timestamp">{firstEventTimeComponents[0]}</p>
                 <svg id="protograph_timeline_svg" height={line_height} width={svgWidth}>
                   <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
-                  <g>
+                  <g id="protograph_svg_group">
                     {plotCircles}
                     {assetIcons}
                     {yearCountText}
