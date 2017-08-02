@@ -50,7 +50,8 @@
                   "photo": {
                     "title": "Image",
                     "type": "string",
-                    "format": "data-url",
+                    "format": "image",
+                    "ratio": "2/3",
                     "id": "/properties/data/properties/events/items/properties/single_event/properties/photo"
                   },
                   "media_caption": {
@@ -84,7 +85,8 @@
           "title": "Timeline Image",
           "type": "string",
           "id": "/properties/mandatory_config/properties/timeline_image",
-          "format": "data-url"
+          "format": "image",
+          "ratio": "2/3"
         }
       },
       "required": ["timeline_title", "timeline_description", "timeline_image"]
