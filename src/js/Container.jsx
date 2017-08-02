@@ -391,9 +391,9 @@ export default class TimelineCard extends React.Component {
         let timestampComponents = element.single_event.timestamp_date.split('-');
         let timestamp = `${that.getMonth(timestampComponents[1])} ${timestampComponents[2]}, ${timestampComponents[0]}`;
         let asset = that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) ?  that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) : that.injectImage(element.single_event.photo, element.single_event.media_caption);
-        // let textStyle = (typeof asset !== undefined) ? {display: "inline-block", width: "48%", marginRight: "4%"} : {undefined};
-        let textStyle = {undefined};
-        console.log(asset);
+        let textStyle = (asset != null) ? {display: "inline-block", width: "48%", marginRight: "4%"} : undefined;
+        // let textStyle = {undefined};
+        console.log(asset, textStyle);
         if(pos == 0) {
             return (
               <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} onClick={(e) => that.moveEventToTop(e)} >
