@@ -132,14 +132,26 @@ export default class TimelineCard extends React.Component {
 
   injectImage(photoExists, captionExists) {
     if (photoExists) {
-      return (
-        <div style={{display: "inline-block", width: "48%"}}>
-        <img className="protograph-event-photo" src={photoExists} /> {
-          captionExists &&
-            <h6 className='ui header centered'>{captionExists}</h6>
-        }
-        </div>
-      )
+      if(this.props.mode === 'laptop') {
+        return (
+          <div style={{display: "inline-block", width: "48%"}}>
+          <img className="protograph-event-photo" src={photoExists} /> {
+            captionExists &&
+              <h6 className='ui header centered'>{captionExists}</h6>
+          }
+          </div>
+        )
+      }
+      else {
+        return (
+          <div>
+          <img className="protograph-event-photo" src={photoExists} /> {
+            captionExists &&
+              <h6 className='ui header centered'>{captionExists}</h6>
+          }
+          </div>
+        )
+      }
     }
     else {
       return null;
@@ -151,14 +163,26 @@ export default class TimelineCard extends React.Component {
     if(urlExists) {
       if(regex.test(urlExists)){
         let embedUrl = "https://www.youtube.com/embed/" + urlExists.split('=')[1];
-        return (
-          <div>
-            <iframe className="protograph-youtube-embed" src={embedUrl} frameBorder="0" allowFullScreen></iframe> {
-              captionExists &&
-                <h6 className='ui header centered'>{captionExists}</h6>
-            }
-          </div>
-        )
+        if(this.props.mode === 'laptop') {
+          return (
+            <div style={{display: "inline-block", width: "48%"}}>
+              <iframe className="protograph-youtube-embed" src={embedUrl} frameBorder="0" allowFullScreen></iframe> {
+                captionExists &&
+                  <h6 className='ui header centered'>{captionExists}</h6>
+              }
+            </div>
+          )
+        }
+        else {
+          return (
+            <div>
+              <iframe className="protograph-youtube-embed" src={embedUrl} frameBorder="0" allowFullScreen></iframe> {
+                captionExists &&
+                  <h6 className='ui header centered'>{captionExists}</h6>
+              }
+            </div>
+          )
+        }
       }
       else {
         return null;
@@ -391,15 +415,15 @@ export default class TimelineCard extends React.Component {
         let timestampComponents = element.single_event.timestamp_date.split('-');
         let timestamp = `${that.getMonth(timestampComponents[1])} ${timestampComponents[2]}, ${timestampComponents[0]}`;
         let asset = that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) ?  that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) : that.injectImage(element.single_event.photo, element.single_event.media_caption);
-        let textStyle = (asset != null) ? {display: "inline-block", width: "48%", marginRight: "4%"} : undefined;
-        // let textStyle = {undefined};
+        let textStyle = (asset != null) ? {display: "inline-block", width: "48%", marginRight: "4%"} : {undefined};
+        // let textStyle = {display: "inline-block", width: "48%", marginRight: "4%"};
         console.log(asset, textStyle);
         if(pos == 0) {
             return (
               <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} onClick={(e) => that.moveEventToTop(e)} >
                 <p className="protograph-message-timestamp" style={{color: "black"}}>{timestamp}</p>
                 <div className="protograph-content-card">
-                  <div className="protograph-content-card-details" style={{textStyle}}>
+                  <div className="protograph-content-card-details" style={textStyle}>
                     { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
                       <h3 className='ui header'>{element.single_event.header}</h3>
                     }
@@ -426,7 +450,7 @@ export default class TimelineCard extends React.Component {
             <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle} onClick={(e) => that.moveEventToTop(e)} >
               <p className="protograph-message-timestamp">{timestamp}</p>
               <div className="protograph-content-card">
-                <div className="protograph-content-card-details" style={{textStyle}}>
+                <div className="protograph-content-card-details" style={textStyle}>
                   { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
                     <h3 className='ui header'>{element.single_event.header}</h3>
                   }
