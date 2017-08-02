@@ -86,7 +86,8 @@
           "id": "/properties/mandatory_config/properties/timeline_image",
           "format": "data-url"
         }
-      }
+      },
+      "required": ["timeline_title", "timeline_description", "timeline_image"]
     }
   }
 }
