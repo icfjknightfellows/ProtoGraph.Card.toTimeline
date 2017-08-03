@@ -26,7 +26,8 @@
 			{
 				"single_event": {
 					"header": "The National Party wins elections and begins enacting apartheid laws.",
-					"timestamp_date": "1948-01-01"
+					"timestamp_date": "1948-01-01",
+					"message": "Apartheid laws were enacted by the National Party."
 				}
 			},
 			{
@@ -65,13 +66,15 @@
 			{
 				"single_event": {
 					"timestamp_date": "1960-04-08",
-					"header": "The government bans the ANC and declares a state of emergency."
+					"header": "The government bans the ANC and declares a state of emergency.",
+					"message": "State of emergency is declared and ANC is banned."
 				}
 			},
 			{
 				"single_event": {
 					"timestamp_date": "1961-06-01",
-					"header": "Forms the ANC’s military wing, Umkhonto we Sizwe (Spear of the Nation)."
+					"header": "Forms the ANC’s military wing, Umkhonto we Sizwe (Spear of the Nation).",
+					"message": "ANC's military wing is formed."
 				}
 			},
 			{
@@ -107,7 +110,8 @@
 			{
 				"single_event": {
 					"timestamp_date": "1982-03-31",
-					"header": "Mandela is transferred to Pollsmoor, a maximum-security prison in southern Cape Town."
+					"header": "Mandela is transferred to Pollsmoor, a maximum-security prison in southern Cape Town.",
+					"message": "Mandela is transferred to a maximum-security prison in southern Cape Town."
 				}
 			},
 			{
@@ -121,12 +125,14 @@
 				"single_event": {
 					"timestamp_date": "1988-08-01",
 					"header": "Mandela is diagnosed with tuberculosis.",
-          "youtube_url": "https://www.youtube.com/watch?v=jPUWUiXopDk"
+          "youtube_url": "https://www.youtube.com/watch?v=jPUWUiXopDk",
+					"message": "Mandela is diagnosed with tuberculosis."
 				}
 			},
 			{
 				"single_event": {
 					"header": "Mandela is moved to the Cape winelands’ Victor Verster Prison, where he has his own bungalow.",
+					"message": "Mandela is moved to the Cape winelands’ Victor Verster Prison.",
 					"timestamp_date": "1988-12-07"
 				}
 			},
@@ -140,7 +146,8 @@
 			{
 				"single_event": {
 					"timestamp_date": "1989-12-13",
-					"header": "Meets with De Klerk."
+					"header": "Meets with De Klerk.",
+					"message": "Mandela meets with F.W. de Klerk."
 				}
 			},
 			{
@@ -154,6 +161,7 @@
 				"single_event": {
 					"timestamp_date": "1990-02-11",
 					"header": "Mandela is freed after 27 years.",
+					"message": "Mandela gains freedom after 27 years.",
 					"photo": "http://timeglobalspin.files.wordpress.com/2012/06/nelson_mandela_071.jpg?w=519",
 					"media_caption": "Mandela walks with his wife Winnie after being released from prison."
 				}
@@ -161,26 +169,30 @@
 			{
 				"single_event": {
 					"timestamp_date": "1991-07-01",
-					"header": "Mandela replaces Tambo as ANC president."
+					"header": "Mandela replaces Tambo as ANC president.",
+					"message": "Mandela replaces Tambo as ANC president."
 				}
 			},
 			{
 				"single_event": {
 					"timestamp_date": "1993-10-15",
 					"header": "Mandela and De Klerk win the Nobel Peace Prize.",
+					"message": "Mandela receives the Nobel Peace Prize.",
 					"photo": "http://timeglobalspin.files.wordpress.com/2012/06/nelson_mandela_091.jpg?w=519"
 				}
 			},
 			{
 				"single_event": {
 					"timestamp_date": "1994-04-27",
-					"header": "Mandela casts his vote in South Africa’s first democratic elections."
+					"header": "Mandela casts his vote in South Africa’s first democratic elections.",
+					"message": "Mandela casts his vote in South Africa’s first democratic elections."
 				}
 			},
 			{
 				"single_event": {
 					"timestamp_date": "1994-05-10",
 					"header": "Mandela is inaugurated as South Africa’s first black President.",
+					"message": "Mandela is inaugurated as South Africa’s first black President.",
 					"photo": "http://timeglobalspin.files.wordpress.com/2012/06/nelson_mandela_131.jpg?w=519",
 					"media_caption": "Mandela takes the oath of office."
 				}
@@ -198,6 +210,7 @@
 				"single_event": {
 					"timestamp_date": "1998-07-18",
 					"header": "On his 80th birthday, Mandela marries Graça Machel, the widow of a former Mozambican President.",
+					"message": "Mandela marries Graça Machel, on his 80th birthday.",
 					"photo": "http://timeglobalspin.files.wordpress.com/2013/06/130114134877.jpg?w=519"
 				}
 			},
@@ -205,19 +218,22 @@
 				"single_event": {
 					"timestamp_date": "1999-06-01",
 					"header": "Mandela steps down after one term as President. He was succeeded by Thabo Mbeki.",
+					"message": "Mandela is succeeded by Thabo Mbeki as President.",
 					"photo": "http://timeglobalspin.files.wordpress.com/2012/06/nelson_mandela_071.jpg?w=519"
 				}
 			},
 			{
 				"single_event": {
 					"timestamp_date": "2001-07-01",
-					"header": "Mandela is diagnosed with prostate cancer."
+					"header": "Mandela is diagnosed with prostate cancer.",
+					"message": "Mandela is diagnosed with prostate cancer."
 				}
 			},
 			{
 				"single_event": {
 					"timestamp_date": "2004-06-01",
-					"header": "Mandela retires from public life."
+					"header": "Mandela retires from public life.",
+					"message": "Mandela retires from public life."
 				}
 			},
 			{
@@ -254,6 +270,7 @@
 				"single_event": {
 					"timestamp_date": "2013-12-05",
 					"header": "The Loss of an Icon",
+					"message": "Nelson Mandela passes away.",
 					"photo": "http://timeglobalspin.files.wordpress.com/2013/12/time-mandela-cover.jpg?w=519",
 					"media_caption": "TIME's Nelson Mandela Commemorative Issue"
 				}

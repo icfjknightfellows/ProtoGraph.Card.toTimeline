@@ -9,7 +9,7 @@ export default class TimelineCard extends React.Component {
     let stateVar = {
       fetchingData: true,
       dataJSON: {
-        card_data: {},
+        data: {},
         mandatory_config: {}
       },
       schemaJSON: undefined,
@@ -44,7 +44,7 @@ export default class TimelineCard extends React.Component {
           this.setState({
             fetchingData: false,
             dataJSON: {
-              card_data: card.data.data,
+              data: card.data.data,
               mandatory_config: card.data.mandatory_config
             },
             schemaJSON: schema.data,
@@ -67,7 +67,7 @@ export default class TimelineCard extends React.Component {
   }
 
   multiLineTruncate(el, parent) {
-    let data = this.state.dataJSON.card_data.events.find(element => {
+    let data = this.state.dataJSON.data.events.find(element => {
       return element.single_event.timestamp_date === parent.id;
     }),
       wordArray = data.single_event.message.split(' '),
@@ -132,14 +132,26 @@ export default class TimelineCard extends React.Component {
 
   injectImage(photoExists, captionExists) {
     if (photoExists) {
-      return (
-        <div>
-        <img className="protograph-event-photo" src={photoExists} /> {
-          captionExists &&
-            <h6 className='ui header centered'>{captionExists}</h6>
-        }
-        </div>
-      )
+      if(this.props.mode === 'laptop') {
+        return (
+          <div style={{display: "inline-block", width: "48%"}}>
+          <img className="protograph-event-photo" src={photoExists} /> {
+            captionExists &&
+              <h6 className='ui header centered'>{captionExists}</h6>
+          }
+          </div>
+        )
+      }
+      else {
+        return (
+          <div>
+          <img className="protograph-event-photo" src={photoExists} /> {
+            captionExists &&
+              <h6 className='ui header centered'>{captionExists}</h6>
+          }
+          </div>
+        )
+      }
     }
     else {
       return null;
@@ -151,14 +163,26 @@ export default class TimelineCard extends React.Component {
     if(urlExists) {
       if(regex.test(urlExists)){
         let embedUrl = "https://www.youtube.com/embed/" + urlExists.split('=')[1];
-        return (
-          <div>
-            <iframe className="protograph-youtube-embed" src={embedUrl} frameBorder="0" allowFullScreen></iframe> {
-              captionExists &&
-                <h6 className='ui header centered'>{captionExists}</h6>
-            }
-          </div>
-        )
+        if(this.props.mode === 'laptop') {
+          return (
+            <div style={{display: "inline-block", width: "48%"}}>
+              <iframe className="protograph-youtube-embed" src={embedUrl} frameBorder="0" allowFullScreen></iframe> {
+                captionExists &&
+                  <h6 className='ui header centered'>{captionExists}</h6>
+              }
+            </div>
+          )
+        }
+        else {
+          return (
+            <div>
+              <iframe className="protograph-youtube-embed" src={embedUrl} frameBorder="0" allowFullScreen></iframe> {
+                captionExists &&
+                  <h6 className='ui header centered'>{captionExists}</h6>
+              }
+            </div>
+          )
+        }
       }
       else {
         return null;
@@ -343,7 +367,7 @@ export default class TimelineCard extends React.Component {
       return(<div>Loading</div>)
     } else {
       // let styles = this.state.dataJSON.configs ? {backgroundColor: this.state.dataJSON.configs.background_color} : {undefined}
-      let events = this.state.dataJSON.card_data.events;
+      let events = this.state.dataJSON.data.events;
       const line_height = 500;
       const extraLineSpace = 30;
       const svgWidth = 50;
@@ -391,15 +415,20 @@ export default class TimelineCard extends React.Component {
         let timestampComponents = element.single_event.timestamp_date.split('-');
         let timestamp = `${that.getMonth(timestampComponents[1])} ${timestampComponents[2]}, ${timestampComponents[0]}`;
         let asset = that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) ?  that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) : that.injectImage(element.single_event.photo, element.single_event.media_caption);
+        let textStyle = (asset != null) ? {display: "inline-block", width: "48%", marginRight: "4%"} : {undefined};
+        // let textStyle = {display: "inline-block", width: "48%", marginRight: "4%"};
+        console.log(asset, textStyle);
         if(pos == 0) {
             return (
               <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} onClick={(e) => that.moveEventToTop(e)} >
                 <p className="protograph-message-timestamp" style={{color: "black"}}>{timestamp}</p>
                 <div className="protograph-content-card">
-                  { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
-                    <h3 className='ui header'>{element.single_event.header}</h3>
-                  }
-                  <p className="protograph-content-card-text">{element.single_event.message}</p>
+                  <div className="protograph-content-card-details" style={textStyle}>
+                    { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
+                      <h3 className='ui header'>{element.single_event.header}</h3>
+                    }
+                    <p className="protograph-content-card-text">{element.single_event.message}</p>
+                  </div>
                   {asset}
                   {/* {that.injectImage(element.single_event.photo, element.single_event.media_caption)} */}
                   {/* {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)} */}
@@ -421,10 +450,12 @@ export default class TimelineCard extends React.Component {
             <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle} onClick={(e) => that.moveEventToTop(e)} >
               <p className="protograph-message-timestamp">{timestamp}</p>
               <div className="protograph-content-card">
-                { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
-                  <h3 className='ui header'>{element.single_event.header}</h3>
-                }
-                <p className="protograph-content-card-text">{element.single_event.message}</p>
+                <div className="protograph-content-card-details" style={textStyle}>
+                  { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
+                    <h3 className='ui header'>{element.single_event.header}</h3>
+                  }
+                  <p className="protograph-content-card-text">{element.single_event.message}</p>
+                </div>
                 {asset}
                 {/* {that.injectImage(element.single_event.photo, element.single_event.media_caption)} */}
                 {/* {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)} */}
@@ -456,34 +487,36 @@ export default class TimelineCard extends React.Component {
       }
       return (
         <div id="protograph_div" className = "protograph-card-div laptop">
-          <div id="protograph_card_title_div">
-            <div id="protograph_timeline_details_div">
-              <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
-              <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
-              <button id="protograph_show_main_card_button" onClick={(e) => that.showMainCard(e)}>Lets time travel</button>
+          <div id="protograph_div_content_wrapper laptop">
+            <div id="protograph_card_title_div">
+              <div id="protograph_timeline_details_div">
+                <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
+                <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
+                <button id="protograph_show_main_card_button" onClick={(e) => that.showMainCard(e)}>Lets time travel</button>
+              </div>
+              <div id="protograph_timeline_image_div" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`, backgroundRepeat: "no-repeat", backgroundSize: "cover"}}></div>
             </div>
-            <div id="protograph_timeline_image_div" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`, backgroundRepeat: "no-repeat", backgroundSize: "cover"}}></div>
-          </div>
-          <div id="protograph_card_main_div">
-            <div id="protograph_date_div">
-              <div id="protograph_month_div">{this.getMonth(firstEventTimeComponents[1])}</div>
-              <h1 id="protograph_day_div" className='ui header'>{firstEventTimeComponents[2]}</h1>
-              <div id="protograph_year_div">{firstEventTimeComponents[0]}</div>
-            </div>
-            <div id="protograph_timeline_svg_div">
-              <p id="protograph_initial_timestamp">{firstEventTimeComponents[0]}</p>
-              <svg id="protograph_timeline_svg" height={line_height} width={svgWidth}>
-                <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
-                <g id="protograph_svg_group">
-                  {plotCircles}
-                  {/* {assetIcons} */}
-                  {yearCountText}
-                </g>
-              </svg>
-              <p id="protograph_final_timestamp">{lastEventTimeComponents[0]}</p>
-            </div>
-            <div id="protograph_content_div" onScroll={(e) => that.handleScroll(e)}>
-              {eventDetails}
+            <div id="protograph_card_main_div">
+              <div id="protograph_date_div">
+                <div id="protograph_month_div">{this.getMonth(firstEventTimeComponents[1])}</div>
+                <h1 id="protograph_day_div" className='ui header'>{firstEventTimeComponents[2]}</h1>
+                <div id="protograph_year_div">{firstEventTimeComponents[0]}</div>
+              </div>
+              <div id="protograph_timeline_svg_div">
+                <p id="protograph_initial_timestamp">{firstEventTimeComponents[0]}</p>
+                <svg id="protograph_timeline_svg" height={line_height} width={svgWidth}>
+                  <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
+                  <g id="protograph_svg_group">
+                    {plotCircles}
+                    {/* {assetIcons} */}
+                    {yearCountText}
+                  </g>
+                </svg>
+                <p id="protograph_final_timestamp">{lastEventTimeComponents[0]}</p>
+              </div>
+              <div id="protograph_content_div" onScroll={(e) => that.handleScroll(e)}>
+                {eventDetails}
+              </div>
             </div>
           </div>
       </div>
@@ -496,7 +529,7 @@ export default class TimelineCard extends React.Component {
       return(<div>Loading</div>)
     } else {
       // let styles = this.state.dataJSON.configs ? {backgroundColor: this.state.dataJSON.configs.background_color} : {undefined}
-      let events = this.state.dataJSON.card_data.events;
+      let events = this.state.dataJSON.data.events;
       const line_height = 544;
       const extraLineSpace = 30;
       const svgWidth = 10;
@@ -608,8 +641,9 @@ export default class TimelineCard extends React.Component {
         }
       }
       return (
-        <div id="protograph_div" className="protograph-card-div mobile" style={{width: `320px`}}  style={{width: `320px`, background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`, backgroundRepeat: "no-repeat", backgroundSize: "cover"}}>
+        <div id="protograph_div" className="protograph-card-div mobile" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`, backgroundRepeat: "no-repeat", backgroundSize: "cover"}}>
           <div id="protograph_card_title_div_gradient"></div>
+          <div id="protograph_div_content_wrapper mobile">
           <div id="protograph_card_title_div_mobile">
             <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
             <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
@@ -628,6 +662,7 @@ export default class TimelineCard extends React.Component {
               {eventDetails}
             </div>
           </div>
+        </div>
       </div>
       )
     }
@@ -638,7 +673,7 @@ export default class TimelineCard extends React.Component {
       return(<div>Loading</div>)
     } else {
       // let styles = this.state.dataJSON.configs ? {backgroundColor: this.state.dataJSON.configs.background_color} : {undefined}
-      let events = this.state.dataJSON.card_data.events;
+      let events = this.state.dataJSON.data.events;
       const line_height = 500;
       const extraLineSpace = 30;
       const svgWidth = 50;

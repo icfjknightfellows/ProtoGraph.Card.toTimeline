@@ -10,7 +10,7 @@ export default class EditTimelineCard extends React.Component {
     this.state = {
       step: 1,
       dataJSON: {
-        card_data: {},
+        data: {},
         mandatory_config: {}
       },
       mode: "laptop",
@@ -42,7 +42,7 @@ export default class EditTimelineCard extends React.Component {
         .then(axios.spread((card, schema, opt_config, opt_config_schema) => {
           this.setState({
             dataJSON: {
-              card_data: card.data.data,
+              data: card.data.data,
               mandatory_config: card.data.mandatory_config
             },
             schemaJSON: schema.data,
@@ -73,7 +73,7 @@ export default class EditTimelineCard extends React.Component {
       case 2:
       this.setState((prevStep, prop) => {
         let dataJSON = prevStep.dataJSON;
-        dataJSON.card_data.events = formData.events;
+        dataJSON.data.events = formData.events;
         return {
           dataJSON: dataJSON
           // optionalConfigJSON: dataJSON
@@ -124,7 +124,7 @@ getFormData() {
       return this.state.dataJSON.mandatory_config;
       break;
     case 2:
-      return this.state.dataJSON.card_data;
+      return this.state.dataJSON.data;
       break;
   }
 }
