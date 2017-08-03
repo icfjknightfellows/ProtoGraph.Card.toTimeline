@@ -14,7 +14,8 @@ export default class TimelineCard extends React.Component {
       },
       schemaJSON: undefined,
       optionalConfigJSON: {},
-      optionalConfigSchemaJSON: undefined
+      optionalConfigSchemaJSON: undefined,
+      languageTexts: {}
     };
     if (this.props.dataJSON) {
       stateVar.fetchingData = false;
@@ -29,6 +30,9 @@ export default class TimelineCard extends React.Component {
     if (this.props.optionalConfigSchemaJSON) {
       stateVar.optionalConfigSchemaJSON = this.props.optionalConfigSchemaJSON;
     }
+    if (this.props.languageTexts) {
+      stateVar.languageTexts = this.props.languageTexts;
+    }
     this.state = stateVar;
   }
 
@@ -41,7 +45,7 @@ export default class TimelineCard extends React.Component {
     if (this.state.fetchingData){
       axios.all([axios.get(this.props.dataURL), axios.get(this.props.schemaURL), axios.get(this.props.optionalConfigURL), axios.get(this.props.optionalConfigSchemaURL)])
         .then(axios.spread((card, schema, opt_config, opt_config_schema) => {
-          this.setState({
+          let stateVar = {
             fetchingData: false,
             dataJSON: {
               data: card.data.data,
@@ -50,7 +54,9 @@ export default class TimelineCard extends React.Component {
             schemaJSON: schema.data,
             optionalConfigJSON: opt_config.data,
             optionalConfigSchemaJSON: opt_config_schema.data
-          });
+          }
+          stateVar.languageTexts = this.getLanguageTexts(stateVar.dataJSON.mandatory_config.language);
+          this.setState(stateVar);
         }));
     }
   }
@@ -60,7 +66,6 @@ export default class TimelineCard extends React.Component {
       let elems = Array.from(document.querySelectorAll('.protograph-event-message-div'));
       elems.forEach((elem) => {
         this.multiLineTruncate(elem.querySelector('.protograph-content-card').querySelector('.protograph-content-card-text'), elem);
-        console.log(elem);
       });
       // this.multiLineTruncate(elems[11].querySelector('.protograph-content-card').querySelector('.protograph-content-card-text'), elems[11]);
     }
@@ -87,6 +92,33 @@ export default class TimelineCard extends React.Component {
         }
       });
     }
+  }
+
+  getLanguageTexts(languageConfig) {
+    let language = languageConfig ? languageConfig : "english",
+      text_obj;
+    switch(language.toLowerCase()) {
+      case "hindi":
+        text_obj = {
+          button_text: "चलो समय यात्रा करे",
+          font: "'Hindi', sans-serif"
+        }
+        break;
+      default:
+        text_obj = {
+          button_text: "Let's time travel",
+          font: "'Helvetica Neue', sans-serif, aerial"
+        }
+        break;
+    }
+
+    // if(typeof text_obj === "object") {
+    //   text_obj.next = text_obj.next;
+    //   text_obj.restart = text_obj.restart;
+    //   text_obj.swipe = text_obj.swipe;
+    // }
+
+    return text_obj;
   }
 
   getMonth(num) {
@@ -289,7 +321,7 @@ export default class TimelineCard extends React.Component {
   }
 
   showMainCard(e) {
-    let line_height = 500,
+    let line_height = 340,
       hideTitlePage = this.props.mode === 'laptop' ? document.getElementById('protograph_card_title_div') : document.getElementById('protograph_card_title_div_mobile');
     hideTitlePage.style.opacity = '0';
     let that = this;
@@ -304,7 +336,7 @@ export default class TimelineCard extends React.Component {
       document.getElementById('protograph_div').style.background = '#f5f5f5';
       document.getElementById('protograph_card_main_div').style.opacity = '1';
       if(that.props.mode === 'mobile') {
-        document.querySelector('.protograph-card-div.mobile').style.padding = '20px 10px';
+        document.querySelector('.protograph-card-div.mobile').style.padding = '0 10px';
       }
     }, 515);
   }
@@ -337,7 +369,7 @@ export default class TimelineCard extends React.Component {
     let maxDifference = Math.abs(circlePlots.indexOf(circlePlots[circlePlots.length - 1]) - circlePlots.indexOf(circlePlots[0]));
     let difference = Math.abs(circlePlots.indexOf(e.target) - circlePlots.indexOf(currentPlot));
     let scrollDuration = (difference*1000)/maxDifference;
-    this.smoothScrollTo(document.getElementById('protograph_content_div'), selectedEvent.offsetTop - 150, scrollDuration);
+    this.smoothScrollTo(document.getElementById('protograph_content_div'), selectedEvent.offsetTop - 60, scrollDuration);
   }
 
   moveEventToTop(e) {
@@ -351,7 +383,7 @@ export default class TimelineCard extends React.Component {
     else {
       element = e.target.parentElement.parentElement;
     }
-    this.smoothScrollTo(document.getElementById('protograph_content_div'), element.offsetTop - 150, 250);
+    this.smoothScrollTo(document.getElementById('protograph_content_div'), element.offsetTop - 60, 250);
   }
 
   handleEventCircleEnter(e) {
@@ -368,7 +400,7 @@ export default class TimelineCard extends React.Component {
     } else {
       // let styles = this.state.dataJSON.configs ? {backgroundColor: this.state.dataJSON.configs.background_color} : {undefined}
       let events = this.state.dataJSON.data.events;
-      const line_height = 500;
+      const line_height = 340;
       const extraLineSpace = 30;
       const svgWidth = 50;
       const msDay = 60*60*24*1000;
@@ -416,13 +448,11 @@ export default class TimelineCard extends React.Component {
         let timestamp = `${that.getMonth(timestampComponents[1])} ${timestampComponents[2]}, ${timestampComponents[0]}`;
         let asset = that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) ?  that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) : that.injectImage(element.single_event.photo, element.single_event.media_caption);
         let textStyle = (asset != null) ? {display: "inline-block", width: "48%", marginRight: "4%"} : {undefined};
-        // let textStyle = {display: "inline-block", width: "48%", marginRight: "4%"};
-        console.log(asset, textStyle);
         if(pos == 0) {
             return (
               <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} onClick={(e) => that.moveEventToTop(e)} >
                 <p className="protograph-message-timestamp" style={{color: "black"}}>{timestamp}</p>
-                <div className="protograph-content-card">
+                <div className="protograph-content-card laptop">
                   <div className="protograph-content-card-details" style={textStyle}>
                     { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
                       <h3 className='ui header'>{element.single_event.header}</h3>
@@ -449,7 +479,7 @@ export default class TimelineCard extends React.Component {
           return (
             <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle} onClick={(e) => that.moveEventToTop(e)} >
               <p className="protograph-message-timestamp">{timestamp}</p>
-              <div className="protograph-content-card">
+              <div className="protograph-content-card laptop">
                 <div className="protograph-content-card-details" style={textStyle}>
                   { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
                     <h3 className='ui header'>{element.single_event.header}</h3>
@@ -471,7 +501,7 @@ export default class TimelineCard extends React.Component {
         let currentEvent = new Date(currentEventComponents[0], currentEventComponents[1], currentEventComponents[2]);
         let nextEvent = new Date(nextEventComponents[0], nextEventComponents[1], nextEventComponents[2]);
         let ranges = [];
-        if(Math.round((nextEvent - currentEvent)/(msDay*365)) >= 10) {
+        if(Math.round((nextEvent - currentEvent)/(msDay*365)) >= 20) {
           let j;
           for(j = 0; j < eventPoints.length; j++) {
             if(eventPoints[j].timestamp === events[i].single_event.timestamp_date) {
@@ -487,14 +517,14 @@ export default class TimelineCard extends React.Component {
       }
       return (
         <div id="protograph_div" className = "protograph-card-div laptop">
-          <div id="protograph_div_content_wrapper laptop">
+          <div id="protograph_div_content_wrapper" className="laptop">
             <div id="protograph_card_title_div">
               <div id="protograph_timeline_details_div">
                 <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
                 <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
-                <button id="protograph_show_main_card_button" onClick={(e) => that.showMainCard(e)}>Lets time travel</button>
+                <button id="protograph_show_main_card_button" onClick={(e) => that.showMainCard(e)}>{this.state.languageTexts.button_text}</button>
               </div>
-              <div id="protograph_timeline_image_div" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`, backgroundRepeat: "no-repeat", backgroundSize: "cover"}}></div>
+              <div id="protograph_timeline_image_div" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`}}></div>
             </div>
             <div id="protograph_card_main_div">
               <div id="protograph_date_div">
@@ -502,7 +532,7 @@ export default class TimelineCard extends React.Component {
                 <h1 id="protograph_day_div" className='ui header'>{firstEventTimeComponents[2]}</h1>
                 <div id="protograph_year_div">{firstEventTimeComponents[0]}</div>
               </div>
-              <div id="protograph_timeline_svg_div">
+              <div id="protograph_timeline_svg_div" className="laptop">
                 <p id="protograph_initial_timestamp">{firstEventTimeComponents[0]}</p>
                 <svg id="protograph_timeline_svg" height={line_height} width={svgWidth}>
                   <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
@@ -530,7 +560,7 @@ export default class TimelineCard extends React.Component {
     } else {
       // let styles = this.state.dataJSON.configs ? {backgroundColor: this.state.dataJSON.configs.background_color} : {undefined}
       let events = this.state.dataJSON.data.events;
-      const line_height = 544;
+      const line_height = 380;
       const extraLineSpace = 30;
       const svgWidth = 10;
       const msDay = 60*60*24*1000;
@@ -581,7 +611,7 @@ export default class TimelineCard extends React.Component {
             return (
               <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} onClick={(e) => that.moveEventToTop(e)} >
                 <p className="protograph-message-timestamp" style={{color: "black", fontWeight: "bold"}}>{timestamp}</p>
-                <div className="protograph-content-card">
+                <div className="protograph-content-card mobile">
                   { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
                     <h3 className='ui header'>{element.single_event.header}</h3>
                   }
@@ -606,7 +636,7 @@ export default class TimelineCard extends React.Component {
           return (
             <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle} onClick={(e) => that.moveEventToTop(e)} >
               <p className="protograph-message-timestamp">{timestamp}</p>
-              <div className="protograph-content-card">
+              <div className="protograph-content-card mobile">
                 { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
                   <h3 className='ui header'>{element.single_event.header}</h3>
                 }
@@ -626,7 +656,7 @@ export default class TimelineCard extends React.Component {
         let currentEvent = new Date(currentEventComponents[0], currentEventComponents[1], currentEventComponents[2]);
         let nextEvent = new Date(nextEventComponents[0], nextEventComponents[1], nextEventComponents[2]);
         let ranges = [];
-        if(Math.round((nextEvent - currentEvent)/(msDay*365)) >= 5) {
+        if(Math.round((nextEvent - currentEvent)/(msDay*365)) >= 20) {
           let j;
           for(j = 0; j < eventPoints.length; j++) {
             if(eventPoints[j].timestamp === events[i].single_event.timestamp_date) {
@@ -647,10 +677,10 @@ export default class TimelineCard extends React.Component {
           <div id="protograph_card_title_div_mobile">
             <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
             <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
-            <button id="protograph_show_main_card_button_mobile" onClick={(e) => that.showMainCard(e)}>Lets time travel</button>
+            <button id="protograph_show_main_card_button_mobile" onClick={(e) => that.showMainCard(e)}>{this.state.languageTexts.button_text}</button>
           </div>
           <div id="protograph_card_main_div">
-            <div id="protograph_timeline_svg_div">
+            <div id="protograph_timeline_svg_div" className="mobile">
               <svg id="protograph_timeline_svg" height={line_height} width={svgWidth}>
                 <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
                 <g id="protograph_svg_group">
@@ -770,7 +800,7 @@ export default class TimelineCard extends React.Component {
         let currentEvent = new Date(currentEventComponents[0], currentEventComponents[1], currentEventComponents[2]);
         let nextEvent = new Date(nextEventComponents[0], nextEventComponents[1], nextEventComponents[2]);
         let ranges = [];
-        if(Math.round((nextEvent - currentEvent)/(msDay*365)) >= 10) {
+        if(Math.round((nextEvent - currentEvent)/(msDay*365)) >= 20) {
           let j;
           for(j = 0; j < eventPoints.length; j++) {
             if(eventPoints[j].timestamp === events[i].single_event.timestamp_date) {

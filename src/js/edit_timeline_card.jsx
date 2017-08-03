@@ -40,7 +40,7 @@ export default class EditTimelineCard extends React.Component {
     if (typeof this.props.dataURL === "string"){
       axios.all([axios.get(this.props.dataURL), axios.get(this.props.schemaURL), axios.get(this.props.optionalConfigURL), axios.get(this.props.optionalConfigSchemaURL)])
         .then(axios.spread((card, schema, opt_config, opt_config_schema) => {
-          this.setState({
+          let stateVar = {
             dataJSON: {
               data: card.data.data,
               mandatory_config: card.data.mandatory_config
@@ -48,7 +48,9 @@ export default class EditTimelineCard extends React.Component {
             schemaJSON: schema.data,
             optionalConfigJSON: opt_config.data,
             optionalConfigSchemaJSON: opt_config_schema.data
-          });
+          }
+          stateVar.languageTexts = this.getLanguageTexts(stateVar.dataJSON.mandatory_config.language);
+          this.setState(stateVar);
         }))
         .catch((error) => {
           this.setState({
@@ -56,6 +58,34 @@ export default class EditTimelineCard extends React.Component {
           })
         });
     }
+  }
+
+  getLanguageTexts(languageConfig) {
+    let language = languageConfig ? languageConfig : "english",
+      text_obj;
+console.log(language);
+    switch(language.toLowerCase()) {
+      case "hindi":
+        text_obj = {
+          button_text: "चलो समय यात्रा करे",
+          font: "'Hindi', sans-serif"
+        }
+        break;
+      default:
+        text_obj = {
+          button_text: "Let's time travel",
+          font: "'Helvetica Neue', sans-serif, aerial"
+        }
+        break;
+    }
+
+    // if(typeof text_obj === "object") {
+    //   text_obj.next = text_obj.next;
+    //   text_obj.restart = text_obj.restart;
+    //   text_obj.swipe = text_obj.swipe;
+    // }
+
+    return text_obj;
   }
 
   onChangeHandler({formData}) {
@@ -103,7 +133,7 @@ export default class EditTimelineCard extends React.Component {
   }
 
   renderSEO() {
-    let seo_blockquote = `<blockquote><h3>${this.state.dataJSON.mandatory_config.timeline_title}</h3><p>${this.state.dataJSON.mandatory_config.timeline_description}</p></blockquote>`
+    let seo_blockquote = document.getElementById('protograph_div').outerHTML;
     return seo_blockquote;
   }
 
@@ -240,6 +270,7 @@ showLinkText() {
                   schemaJSON={this.state.schemaJSON}
                   optionalConfigJSON={this.state.optionalConfigJSON}
                   optionalConfigSchemaJSON={this.state.optionalConfigSchemaJSON}
+                  languageTexts={this.state.languageTexts}
                 />
               </div>
             </div>

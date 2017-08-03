@@ -14,6 +14,9 @@
           "title": "Event List",
           "minItems": "2",
           "items": {
+            "title": "Event",
+            "separator": "#",
+            "hideTitle": true,
             "type": "object",
             "id": "/properties/data/properties/events/items",
             "properties": {
@@ -87,9 +90,21 @@
           "id": "/properties/mandatory_config/properties/timeline_image",
           "format": "image",
           "ratio": "2/3"
+        },
+        "language": {
+          "type": "string",
+          "enum": [
+              "english",
+              "hindi"
+          ],
+          "enumNames": [
+              "English",
+              "Hindi"
+          ]
         }
       },
-      "required": ["timeline_title", "timeline_description", "timeline_image"]
+      "required": ["timeline_title", "timeline_description", "timeline_image", "language"]
     }
-  }
+  },
+  "required": ["data", "mandatory_config"]
 }
