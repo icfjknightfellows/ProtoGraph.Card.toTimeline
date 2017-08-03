@@ -79,11 +79,10 @@
 
             x.init({
               selector: document.querySelector('#timeline_div'),
-              data_url: './sample.json',
-              schema_url: './schema.json',
-              ui_schema_url: './ui_schema.json',
-              configuration_url: "./configuration_sample.json",
-              configuration_schema_url: './configuration_schema.json',
+              data_url: data_base_path + "/data.json",
+              schema_url: schema_base_path + "/schema.json",
+              configuration_url: data_base_path + "/view_cast.json",
+              configuration_schema_url: 'configuration_schema.json',
               onClickCallback: function () {
                 let h = x.getData().height;
                 that.send('resize_frame', {width: '100%', height: h})
