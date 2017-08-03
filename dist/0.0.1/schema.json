@@ -14,6 +14,7 @@
           "title": "Event List",
           "minItems": "2",
           "items": {
+            "title": "",
             "type": "object",
             "id": "/properties/data/properties/events/items",
             "properties": {
