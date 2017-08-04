@@ -78,13 +78,6 @@ console.log(language);
         }
         break;
     }
-
-    // if(typeof text_obj === "object") {
-    //   text_obj.next = text_obj.next;
-    //   text_obj.restart = text_obj.restart;
-    //   text_obj.swipe = text_obj.swipe;
-    // }
-
     return text_obj;
   }
 

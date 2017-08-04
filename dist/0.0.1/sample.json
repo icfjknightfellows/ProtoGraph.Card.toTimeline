@@ -1,54 +1,54 @@
 {
-	"data": {
-		"events": [
-			{
-				"single_event": {
-					"header": "A Child is Born",
-					"timestamp_date": "1918-07-18",
-					"message": "Rolihlahla Dalibhunga Mandela is born in Mvezo, South Africa. One of 13 children, he was the eldest child of his father’s third wife. A teacher later gave him the name Nelson."
-				}
-			},
-			{
-				"single_event": {
-					"header": "Law Firm",
-					"timestamp_date": "1952-08-01",
-					"message": "Mandela and Oliver Tambo found South Africa’s first black-run law firm.",
-					"photo": "http://timeglobalspin.files.wordpress.com/2013/06/130114134870.jpg?w=519",
-					"media_caption": "Mandela in the office of Mandela and Tambo"
-				}
-			},
-			{
-				"single_event": {
-					"header": "Arrest",
-					"timestamp_date": "1956-12-05",
-					"message": "Mandela is arrested and charged with high treason along with 155 other activists, all of whom are eventually acquitted. The trials of the last 30 defendants, including Mandela, did not end until March 29, 1961."
-				}
-			},
-			{
-				"single_event": {
-					"timestamp_date": "1988-08-01",
-					"header": "Mandela is diagnosed with tuberculosis.",
-					"youtube_url": "https://www.youtube.com/watch?v=jPUWUiXopDk",
-					"message": "Mandela is diagnosed with tuberculosis."
-					}
-			},
-			{
-				"single_event": {
-					"timestamp_date": "2013-12-05",
-					"header": "The Loss of an Icon",
-					"message": "Nelson Mandela passes away.",
-					"photo": "http://timeglobalspin.files.wordpress.com/2013/12/time-mandela-cover.jpg?w=519",
-					"media_caption": "TIME's Nelson Mandela Commemorative Issue"
-				}
-			}
-		]
-	},
-	"mandatory_config": {
-		"timeline_mode": "single",
-		"timestamp_mode": "date",
-		"timeline_title": "Mandela: A Life of Purpose",
-		"timeline_description": "Nelson Mandela, the revolutionary-turned-prisoner-turned-president who led South Africa out of apartheid and into an era of political and racial reconciliation, passed away on Dec. 5, 2013. He was 95. As both the father of his nation and its conscience, Mandela’s remarkable life changed history and its legacy resonates around the world.",
-		"timeline_image": "http://timeglobalspin.files.wordpress.com/2013/06/130114137421.jpg?w=519",
-		"language": "english"
-	}
+  "data": {
+    "events": [
+      {
+        "single_event": {
+          "header": "A Child is Born",
+          "timestamp_date": "1918-07-18",
+          "message": "Rolihlahla Dalibhunga Mandela is born in Mvezo, South Africa. One of 13 children, he was the eldest child of his father’s third wife. A teacher later gave him the name Nelson."
+        }
+      },
+      {
+        "single_event": {
+          "header": "Law Firm",
+          "timestamp_date": "1952-08-01",
+          "message": "Mandela and Oliver Tambo found South Africa’s first black-run law firm.",
+          "photo": "http://timeglobalspin.files.wordpress.com/2013/06/130114134870.jpg?w=519",
+          "media_caption": "Mandela in the office of Mandela and Tambo"
+        }
+      },
+      {
+        "single_event": {
+          "header": "Arrest",
+          "timestamp_date": "1956-12-05",
+          "message": "Mandela is arrested and charged with high treason along with 155 other activists, all of whom are eventually acquitted. The trials of the last 30 defendants, including Mandela, did not end until March 29, 1961."
+        }
+      },
+      {
+        "single_event": {
+          "timestamp_date": "1988-08-01",
+          "header": "Mandela is diagnosed with tuberculosis.",
+          "youtube_url": "https://www.youtube.com/watch?v=jPUWUiXopDk",
+          "message": "Mandela is diagnosed with tuberculosis."
+          }
+      },
+      {
+        "single_event": {
+          "timestamp_date": "2013-12-05",
+          "header": "The Loss of an Icon",
+          "message": "Nelson Mandela passes away.",
+          "photo": "http://timeglobalspin.files.wordpress.com/2013/12/time-mandela-cover.jpg?w=519",
+          "media_caption": "TIME's Nelson Mandela Commemorative Issue"
+        }
+      }
+    ]
+  },
+  "mandatory_config": {
+    "timeline_mode": "single",
+    "timestamp_mode": "date",
+    "timeline_title": "Mandela: A Life of Purpose",
+    "timeline_description": "Nelson Mandela, the revolutionary-turned-prisoner-turned-president who led South Africa out of apartheid and into an era of political and racial reconciliation, passed away on Dec. 5, 2013. He was 95. As both the father of his nation and its conscience, Mandela’s remarkable life changed history and its legacy resonates around the world.",
+    "timeline_image": "http://timeglobalspin.files.wordpress.com/2013/06/130114137421.jpg?w=519",
+    "language": "english"
+  }
 }

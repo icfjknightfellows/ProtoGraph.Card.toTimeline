@@ -100,7 +100,8 @@
           "enumNames": [
               "English",
               "Hindi"
-          ]
+          ],
+          "default": "english"
         }
       },
       "required": ["timeline_title", "timeline_description", "timeline_image", "language"]

@@ -2,15 +2,17 @@
     display: none !important;
 }
 
-#protograph_div_content_wrapper.laptop {
+#protograph_div_content_wrapper.protograph-laptop-mode {
   margin: 0 auto;
   width: 640px;
+  padding: 0 20px;
 }
 
 #protograph_card_main_div {
   opacity: 0;
   -webkit-transition: opacity 0.5s;
   transition: opacity 0.5s;
+  height: 420px;
 }
 
 #protograph_card_title_div {
@@ -68,12 +70,16 @@
   position: relative;
 }
 
-#protograph_timeline_svg_div.laptop {
+#protograph_timeline_svg_div.protograph-laptop-mode {
   bottom: 20px;
 }
 
-#protograph_timeline_svg_div.mobile {
-  bottom: 40px;
+#protograph_timeline_svg_div.protograph-mobile-mode {
+  bottom: 20px;
+}
+
+#protograph_timeline_svg_div.protograph-screenshot-mode {
+  bottom: 30px;
 }
 
 #protograph_content_div {
@@ -105,32 +111,51 @@
   transition: height 0.5s;
 }
 
-#protograph_div.laptop {
+#protograph_div.protograph-laptop-mode {
   height: 420px;
   /*width: 640px;*/
   background: #f5f5f5;
-  /*padding: 20px;*/
   overflow-x: auto;
   overflow-y: hidden;
 }
 
-#protograph_div.mobile {
-  position: relative;
-  height: 600px;
-  /*width: 320px;*/
-  width: 100%;
-  background: #f5f5f5;
-  /*overflow-x: scroll !important;*/
-  overflow-y: hidden;
+#protograph_div.protograph-screenshot-mode {
+  overflow: hidden;
+  padding: 10px 20px;
 }
 
-/*#protograph_div.mobile {
+#protograph_div.protograph-mobile-mode {
+  max-width: 320px;
   position: relative;
   height: 420px;
   width: 100%;
   background: #f5f5f5;
   overflow-y: hidden;
-}*/
+}
+
+#protograph_gradient_div.protograph-laptop-mode {
+  height: 20px;
+  width: 640px;
+  position: absolute;
+  z-index: 1;
+}
+
+#protograph_gradient_div.protograph-mobile-mode {
+  height: 20px;
+  width: 310px;
+  position: absolute;
+  z-index: 1;
+}
+
+#protograph_gradient_div.protograph-top-gradient {
+  background: linear-gradient(rgb(245, 245, 245), rgba(245, 245, 245, 0));
+}
+
+#protograph_gradient_div.protograph-bottom-gradient {
+  background: linear-gradient(rgba(245, 245, 245, 0), rgb(245, 245, 245));
+  position: relative;
+  bottom: 20px;
+}
 
 body ::-webkit-scrollbar {
   -webkit-appearance: none;
@@ -153,21 +178,14 @@ body ::-webkit-scrollbar {
   transition: fill 0.5s;
 }
 
-/*.protograph-content-card {
-  width: 100%;
-  padding: 16px;
-  background: white;
-  text-align: left;
-}*/
-
-.protograph-content-card.mobile {
+.protograph-content-card.protograph-mobile-mode {
   width: 100%;
   padding: 16px;
   background: white;
   text-align: left;
 }
 
-.protograph-content-card.laptop {
+.protograph-content-card.protograph-laptop-mode {
   width: 100%;
   padding: 16px;
   background: white;
@@ -274,7 +292,7 @@ body ::-webkit-scrollbar {
 
 .protograph-youtube-embed {
     width: 100%;
-    height: 300px;
+    height: auto;
 }
 
 .protograph-read-more-button {

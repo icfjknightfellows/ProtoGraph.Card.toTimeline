@@ -67,7 +67,6 @@ export default class TimelineCard extends React.Component {
       elems.forEach((elem) => {
         this.multiLineTruncate(elem.querySelector('.protograph-content-card').querySelector('.protograph-content-card-text'), elem);
       });
-      // this.multiLineTruncate(elems[11].querySelector('.protograph-content-card').querySelector('.protograph-content-card-text'), elems[11]);
     }
   }
 
@@ -77,10 +76,14 @@ export default class TimelineCard extends React.Component {
     }),
       wordArray = data.single_event.message.split(' '),
       props = this.props,
-      height = this.props.mode === 'laptop' ?  document.getElementById('protograph_card_title_div').clientHeight : (document.getElementById('protograph_div').clientHeight - 40)
+      // height = this.props.mode === 'laptop' ?  document.getElementById('protograph_card_title_div').clientHeight : (document.getElementById('protograph_div').clientHeight);
+      height = 420;
     while(parent.getBoundingClientRect().height > height) {
       wordArray.pop();
       el.innerHTML = wordArray.join(' ') + '...' + '<br><button id="protograph_read_more_button" class="protograph-read-more-button">View more</button>' ;
+      if(wordArray.length <= 0) {
+        break;
+      }
     }
     if(el.querySelector('.protograph-read-more-button') !== null){
       el.querySelector('.protograph-read-more-button').addEventListener('click', function() {
@@ -111,13 +114,6 @@ export default class TimelineCard extends React.Component {
         }
         break;
     }
-
-    // if(typeof text_obj === "object") {
-    //   text_obj.next = text_obj.next;
-    //   text_obj.restart = text_obj.restart;
-    //   text_obj.swipe = text_obj.swipe;
-    // }
-
     return text_obj;
   }
 
@@ -336,7 +332,7 @@ export default class TimelineCard extends React.Component {
       document.getElementById('protograph_div').style.background = '#f5f5f5';
       document.getElementById('protograph_card_main_div').style.opacity = '1';
       if(that.props.mode === 'mobile') {
-        document.querySelector('.protograph-card-div.mobile').style.padding = '0 10px';
+        document.querySelector('.protograph-card-div.protograph-mobile-mode').style.padding = '0 10px';
       }
     }, 515);
   }
@@ -452,7 +448,7 @@ export default class TimelineCard extends React.Component {
             return (
               <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} onClick={(e) => that.moveEventToTop(e)} >
                 <p className="protograph-message-timestamp" style={{color: "black"}}>{timestamp}</p>
-                <div className="protograph-content-card laptop">
+                <div className="protograph-content-card protograph-laptop-mode">
                   <div className="protograph-content-card-details" style={textStyle}>
                     { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
                       <h3 className='ui header'>{element.single_event.header}</h3>
@@ -460,8 +456,6 @@ export default class TimelineCard extends React.Component {
                     <p className="protograph-content-card-text">{element.single_event.message}</p>
                   </div>
                   {asset}
-                  {/* {that.injectImage(element.single_event.photo, element.single_event.media_caption)} */}
-                  {/* {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)} */}
                 </div>
                 <div id="protograph_scroll_down_indicator">
                   <p id="protograph_scroll_down_text" style={{marginBottom: "2px", height: "20px"}}>Scroll</p>
@@ -479,7 +473,7 @@ export default class TimelineCard extends React.Component {
           return (
             <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle} onClick={(e) => that.moveEventToTop(e)} >
               <p className="protograph-message-timestamp">{timestamp}</p>
-              <div className="protograph-content-card laptop">
+              <div className="protograph-content-card protograph-laptop-mode">
                 <div className="protograph-content-card-details" style={textStyle}>
                   { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
                     <h3 className='ui header'>{element.single_event.header}</h3>
@@ -487,8 +481,6 @@ export default class TimelineCard extends React.Component {
                   <p className="protograph-content-card-text">{element.single_event.message}</p>
                 </div>
                 {asset}
-                {/* {that.injectImage(element.single_event.photo, element.single_event.media_caption)} */}
-                {/* {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)} */}
               </div>
             </div>
           );
@@ -516,8 +508,8 @@ export default class TimelineCard extends React.Component {
         }
       }
       return (
-        <div id="protograph_div" className = "protograph-card-div laptop">
-          <div id="protograph_div_content_wrapper" className="laptop">
+        <div id="protograph_div" className = "protograph-card-div protograph-laptop-mode">
+          <div id="protograph_div_content_wrapper" className="protograph-laptop-mode">
             <div id="protograph_card_title_div">
               <div id="protograph_timeline_details_div">
                 <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
@@ -527,18 +519,18 @@ export default class TimelineCard extends React.Component {
               <div id="protograph_timeline_image_div" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`}}></div>
             </div>
             <div id="protograph_card_main_div">
+              <div id="protograph_gradient_div" className="protograph-top-gradient protograph-laptop-mode"></div>
               <div id="protograph_date_div">
                 <div id="protograph_month_div">{this.getMonth(firstEventTimeComponents[1])}</div>
                 <h1 id="protograph_day_div" className='ui header'>{firstEventTimeComponents[2]}</h1>
                 <div id="protograph_year_div">{firstEventTimeComponents[0]}</div>
               </div>
-              <div id="protograph_timeline_svg_div" className="laptop">
+              <div id="protograph_timeline_svg_div" className="protograph-laptop-mode">
                 <p id="protograph_initial_timestamp">{firstEventTimeComponents[0]}</p>
                 <svg id="protograph_timeline_svg" height={line_height} width={svgWidth}>
                   <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
                   <g id="protograph_svg_group">
                     {plotCircles}
-                    {/* {assetIcons} */}
                     {yearCountText}
                   </g>
                 </svg>
@@ -547,9 +539,10 @@ export default class TimelineCard extends React.Component {
               <div id="protograph_content_div" onScroll={(e) => that.handleScroll(e)}>
                 {eventDetails}
               </div>
+              <div id="protograph_gradient_div" className="protograph-bottom-gradient protograph-laptop-mode"></div>
             </div>
           </div>
-      </div>
+        </div>
       )
     }
   }
@@ -592,13 +585,13 @@ export default class TimelineCard extends React.Component {
       let assetIcons = events.map((element, pos) => {
         if(element.single_event.youtube_url){
           return (
-            <svg id={element.timestamp} key={element.timestamp} className="protograph-asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 25) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='src/images/play.svg' />"}}/>
+            <svg id={element.timestamp} key={element.timestamp} className="protograph-asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 20) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='src/images/play.svg' />"}}/>
 
           );
         }
         if(element.single_event.photo){
           return (
-            <svg id={element.timestamp} key={element.timestamp} className="protograph-asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 25) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='src/images/image.svg' />"}}/>
+            <svg id={element.timestamp} key={element.timestamp} className="protograph-asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 20) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='src/images/image.svg' />"}}/>
           );
         }
       });
@@ -611,14 +604,12 @@ export default class TimelineCard extends React.Component {
             return (
               <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} onClick={(e) => that.moveEventToTop(e)} >
                 <p className="protograph-message-timestamp" style={{color: "black", fontWeight: "bold"}}>{timestamp}</p>
-                <div className="protograph-content-card mobile">
+                <div className="protograph-content-card protograph-mobile-mode">
                   { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
                     <h3 className='ui header'>{element.single_event.header}</h3>
                   }
                   <p className="protograph-content-card-text">{element.single_event.message}</p>
                   {asset}
-                  {/* {that.injectImage(element.single_event.photo, element.single_event.media_caption)} */}
-                  {/* {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)} */}
                 </div>
                 <div id="protograph_scroll_down_indicator">
                   <p id="protograph_scroll_down_text" style={{marginBottom: "2px", height: "20px"}}>Scroll</p>
@@ -636,14 +627,12 @@ export default class TimelineCard extends React.Component {
           return (
             <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle} onClick={(e) => that.moveEventToTop(e)} >
               <p className="protograph-message-timestamp">{timestamp}</p>
-              <div className="protograph-content-card mobile">
+              <div className="protograph-content-card protograph-mobile-mode">
                 { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
                   <h3 className='ui header'>{element.single_event.header}</h3>
                 }
                 <p className="protograph-content-card-text">{element.single_event.message}</p>
                 {asset}
-                {/* {that.injectImage(element.single_event.photo, element.single_event.media_caption)} */}
-                {/* {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)} */}
               </div>
             </div>
           );
@@ -671,16 +660,17 @@ export default class TimelineCard extends React.Component {
         }
       }
       return (
-        <div id="protograph_div" className="protograph-card-div mobile" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`, backgroundRepeat: "no-repeat", backgroundSize: "cover"}}>
+        <div id="protograph_div" className="protograph-card-div protograph-mobile-mode" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`, backgroundRepeat: "no-repeat", backgroundSize: "cover"}}>
           <div id="protograph_card_title_div_gradient"></div>
-          <div id="protograph_div_content_wrapper mobile">
+          <div id="protograph_div_content_wrapper protograph-mobile-mode">
           <div id="protograph_card_title_div_mobile">
             <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
             <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
             <button id="protograph_show_main_card_button_mobile" onClick={(e) => that.showMainCard(e)}>{this.state.languageTexts.button_text}</button>
           </div>
           <div id="protograph_card_main_div">
-            <div id="protograph_timeline_svg_div" className="mobile">
+            <div id="protograph_gradient_div" className="protograph-top-gradient protograph-mobile-mode"></div>
+            <div id="protograph_timeline_svg_div" className="protograph-mobile-mode">
               <svg id="protograph_timeline_svg" height={line_height} width={svgWidth}>
                 <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
                 <g id="protograph_svg_group">
@@ -691,6 +681,7 @@ export default class TimelineCard extends React.Component {
             <div id="protograph_content_div" onScroll={(e) => that.handleScroll(e)} style={{width: "90.75%"}}>
               {eventDetails}
             </div>
+            <div id="protograph_gradient_div" className="protograph-bottom-gradient protograph-mobile-mode"></div>
           </div>
         </div>
       </div>
@@ -704,7 +695,7 @@ export default class TimelineCard extends React.Component {
     } else {
       // let styles = this.state.dataJSON.configs ? {backgroundColor: this.state.dataJSON.configs.background_color} : {undefined}
       let events = this.state.dataJSON.data.events;
-      const line_height = 500;
+      const line_height = 340;
       const extraLineSpace = 30;
       const svgWidth = 50;
       const msDay = 60*60*24*1000;
@@ -751,18 +742,19 @@ export default class TimelineCard extends React.Component {
         let timestampComponents = element.single_event.timestamp_date.split('-');
         let timestamp = `${that.getMonth(timestampComponents[1])} ${timestampComponents[2]}, ${timestampComponents[0]}`;
         let asset = that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) ?  that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) : that.injectImage(element.single_event.photo, element.single_event.media_caption);
+        let textStyle = (asset != null) ? {display: "inline-block", width: "48%", marginRight: "4%"} : {undefined};
         if(pos == 0) {
             return (
-              <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" onClick={(e) => that.moveEventToTop(e)} >
+              <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} onClick={(e) => that.moveEventToTop(e)} >
                 <p className="protograph-message-timestamp" style={{color: "black"}}>{timestamp}</p>
-                <div className="protograph-content-card-screenshot">
-                  { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
-                    <h3 className='ui header'>{element.single_event.header}</h3>
-                  }
-                  <p className="protograph-content-card-text">{element.single_event.message}</p>
+                <div className="protograph-content-card protograph-laptop-mode">
+                  <div className="protograph-content-card-details" style={textStyle}>
+                    { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
+                      <h3 className='ui header'>{element.single_event.header}</h3>
+                    }
+                    <p className="protograph-content-card-text">{element.single_event.message}</p>
+                  </div>
                   {asset}
-                  {/* {that.injectImage(element.single_event.photo, element.single_event.media_caption)} */}
-                  {/* {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)} */}
                 </div>
                 <div id="protograph_scroll_down_indicator">
                   <p id="protograph_scroll_down_text" style={{marginBottom: "2px", height: "20px"}}>Scroll</p>
@@ -780,14 +772,14 @@ export default class TimelineCard extends React.Component {
           return (
             <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle} onClick={(e) => that.moveEventToTop(e)} >
               <p className="protograph-message-timestamp">{timestamp}</p>
-              <div className="protograph-content-card-screenshot">
-                { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
-                  <h3 className='ui header'>{element.single_event.header}</h3>
-                }
-                <p className="protograph-content-card-text">{element.single_event.message}</p>
+              <div className="protograph-content-card protograph-laptop-mode">
+                <div className="protograph-content-card-details" style={textStyle}>
+                  { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
+                    <h3 className='ui header'>{element.single_event.header}</h3>
+                  }
+                  <p className="protograph-content-card-text">{element.single_event.message}</p>
+                </div>
                 {asset}
-                {/* {that.injectImage(element.single_event.photo, element.single_event.media_caption)} */}
-                {/* {that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption)} */}
               </div>
             </div>
           );
@@ -816,14 +808,15 @@ export default class TimelineCard extends React.Component {
       }
       return (
         <div id="ProtoScreenshot">
-          <div id="protograph_div" className = "protograph-card-div laptop">
+          <div id="protograph_div" className = "protograph-card-div protograph-laptop-mode protograph-screenshot-mode">
             <div id="protograph_screenshot_main_div">
+              <div id="protograph_gradient_div" className="protograph-top-gradient protograph-laptop-mode"></div>
               <div id="protograph_date_div">
                 <div id="protograph_month_div">{this.getMonth(firstEventTimeComponents[1])}</div>
                 <h1 id="protograph_day_div" className='ui header'>{firstEventTimeComponents[2]}</h1>
                 <div id="protograph_year_div">{firstEventTimeComponents[0]}</div>
               </div>
-              <div id="protograph_timeline_svg_div">
+              <div id="protograph_timeline_svg_div" className="protograph-laptop-mode protograph-screenshot-mode">
                 <p id="protograph_initial_timestamp">{firstEventTimeComponents[0]}</p>
                 <svg id="protograph_timeline_svg" height={line_height} width={svgWidth}>
                   <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
@@ -834,11 +827,12 @@ export default class TimelineCard extends React.Component {
                 </svg>
                 <p id="protograph_final_timestamp">{lastEventTimeComponents[0]}</p>
               </div>
-              <div id="protograph_content_div"  style={{overflowY: "hidden"}}>
+              <div id="protograph_content_div" style={{overflowY: "hidden"}}>
                 {eventDetails}
               </div>
+              <div id="protograph_gradient_div" className="protograph-bottom-gradient protograph-laptop-mode"></div>
             </div>
-        </div>
+          </div>
         </div>
       );
     }
