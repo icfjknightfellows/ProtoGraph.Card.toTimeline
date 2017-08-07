@@ -131,6 +131,7 @@
   width: 100%;
   background: #f5f5f5;
   overflow-y: hidden;
+  margin: 0 auto;
 }
 
 #protograph_gradient_div.protograph-laptop-mode {
