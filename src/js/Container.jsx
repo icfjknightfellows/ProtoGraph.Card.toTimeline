@@ -695,18 +695,14 @@ export default class TimelineCard extends React.Component {
     } else {
       return (
         <div id="ProtoScreenshot">
-          <div id="protograph_div" className = "protograph-card-div protograph-laptop-mode protograph-screenshot-mode">
-            <div id="protograph_screenshot_main_div">
-              <div id="protograph_gradient_div" className="protograph-top-gradient protograph-laptop-mode"></div>
+          <div id="protograph_div" className = "protograph-card-div protograph-screenshot-mode">
               <div id="protograph_card_title_div">
-              <div id="protograph_timeline_details_div">
-                <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
-                <p style={{height:80, overflowY: 'hidden'}}>{this.state.dataJSON.mandatory_config.timeline_description}</p>
-                <button id="protograph_show_main_card_button" style={{padding: '8px 10px', marginTop:0}} onClick={(e) => that.showMainCard(e)}>{this.state.languageTexts.button_text}</button>
-              </div>
-              <div id="protograph_timeline_image_div" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`}}></div>
-            </div>
-              <div id="protograph_gradient_div" className="protograph-bottom-gradient protograph-laptop-mode"></div>
+                <div id="protograph_timeline_details_div">
+                  <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
+                  <p style={{height:80, overflowY: 'hidden'}}>{this.state.dataJSON.mandatory_config.timeline_description}</p>
+                  <button id="protograph_show_main_card_button" style={{padding: '8px 10px', marginTop:0}} onClick={(e) => that.showMainCard(e)}>{this.state.languageTexts.button_text}</button>
+                </div>
+                <div id="protograph_timeline_image_div" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`}}></div>
             </div>
           </div>
         </div>
