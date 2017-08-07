@@ -13,6 +13,7 @@ export default class EditTimelineCard extends React.Component {
         data: {},
         mandatory_config: {}
       },
+      uiSchemaJSON: {},
       mode: "laptop",
       publishing: false,
       schemaJSON: undefined,
@@ -38,8 +39,8 @@ export default class EditTimelineCard extends React.Component {
   componentDidMount() {
     // get sample json data based on type i.e string or object
     if (typeof this.props.dataURL === "string"){
-      axios.all([axios.get(this.props.dataURL), axios.get(this.props.schemaURL), axios.get(this.props.optionalConfigURL), axios.get(this.props.optionalConfigSchemaURL)])
-        .then(axios.spread((card, schema, opt_config, opt_config_schema) => {
+      axios.all([axios.get(this.props.dataURL), axios.get(this.props.schemaURL), axios.get(this.props.optionalConfigURL), axios.get(this.props.optionalConfigSchemaURL), axios.get(this.props.uiSchemaURL)])
+        .then(axios.spread((card, schema, opt_config, opt_config_schema, uiSchema) => {
           let stateVar = {
             dataJSON: {
               data: card.data.data,
@@ -47,7 +48,8 @@ export default class EditTimelineCard extends React.Component {
             },
             schemaJSON: schema.data,
             optionalConfigJSON: opt_config.data,
-            optionalConfigSchemaJSON: opt_config_schema.data
+            optionalConfigSchemaJSON: opt_config_schema.data,
+            uiSchemaJSON: uiSchema.data
           }
           stateVar.languageTexts = this.getLanguageTexts(stateVar.dataJSON.mandatory_config.language);
           this.setState(stateVar);
@@ -63,7 +65,6 @@ export default class EditTimelineCard extends React.Component {
   getLanguageTexts(languageConfig) {
     let language = languageConfig ? languageConfig : "english",
       text_obj;
-console.log(language);
     switch(language.toLowerCase()) {
       case "hindi":
         text_obj = {
@@ -233,7 +234,7 @@ showLinkText() {
                   onChange = {((e) => this.onChangeHandler(e))}
                   formData={this.getFormData()}
                   referenceFormData={referenceFormData}
-                  uiSchema={this.state.uiSchemaJSON}
+                  uiSchema={this.state.uiSchemaJSON.data}
                   transformErrors={this.transformErrors}>
                   <a id="protograph_prev_link" onClick = {((e) => this.onPrevHandler(e))}>{this.showLinkText()} </a>
                   <button type="submit" className="ui primary button">{this.showButtonText()}</button>

@@ -1,1 +1,7 @@
-{}
+{
+  "data": {
+    "timeline_image": {
+      "ui:help": "The aspect ratio of the image should be 2:3"
+    }
+  }
+}

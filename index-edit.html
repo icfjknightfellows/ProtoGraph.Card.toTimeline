@@ -21,17 +21,16 @@
     <div id="timeline_div"></div>
 
     <script type="text/javascript">
-    var x = new ProtoGraph.Card.toTimeline();
-    x.init({
-      selector: document.querySelector('#timeline_div'),
-      data_url: './dist/0.0.1/sample.json',
-      schema_url: './dist/0.0.1/schema.json',
-      ui_schema_url: './dist/0.0.1/ui_schema.json',
-      configuration_url: './dist/0.0.1/configuration_sample.json',
-      configuration_schema_url: './dist/0.0.1/configuration_schema.json'
-    });
-
-    x.renderEdit();
+      var x = new ProtoGraph.Card.toTimeline();
+      x.init({
+        selector: document.querySelector('#timeline_div'),
+        data_url: './dist/0.0.1/sample.json',
+        schema_url: './dist/0.0.1/schema.json',
+        ui_schema_url: './dist/0.0.1/ui_schema.json',
+        configuration_url: './dist/0.0.1/configuration_sample.json',
+        configuration_schema_url: './dist/0.0.1/configuration_schema.json'
+      });
+      x.renderEdit();
     </script>
   </body>
 </html>
