@@ -693,143 +693,19 @@ export default class TimelineCard extends React.Component {
     if (this.state.schemaJSON === undefined ){
       return(<div>Loading</div>)
     } else {
-      // let styles = this.state.dataJSON.configs ? {backgroundColor: this.state.dataJSON.configs.background_color} : {undefined}
-      let events = this.state.dataJSON.data.events;
-      const line_height = 340;
-      const extraLineSpace = 30;
-      const svgWidth = 50;
-      const msDay = 60*60*24*1000;
-      let firstEventTimeComponents = events[0].single_event.timestamp_date.split('-');
-      let lastEventTimeComponents = events[events.length-1].single_event.timestamp_date.split('-');
-      let firstEventTimestamp = new Date(firstEventTimeComponents[0], firstEventTimeComponents[1], firstEventTimeComponents[2]);
-      let lastEventTimeStamp = new Date(lastEventTimeComponents[0], lastEventTimeComponents[1], lastEventTimeComponents[2]);
-      let maxTimeDifferenceInDays = Math.floor((lastEventTimeStamp - firstEventTimestamp)/msDay);
-      let eventTimestamps = events.map(element => element.single_event.timestamp_date.split('-'));
-      let eventPoints = [];
-      for(var i = 0; i < eventTimestamps.length; i++) {
-        let eventTimestamp = new Date(eventTimestamps[i][0], eventTimestamps[i][1], eventTimestamps[i][2])
-        let timeDifference = Math.floor((eventTimestamp - firstEventTimestamp)/msDay);
-        let newYCoord = 10;
-        if(maxTimeDifferenceInDays != 0){
-          newYCoord = ((timeDifference/maxTimeDifferenceInDays) * (line_height-2*extraLineSpace)) + extraLineSpace;
-        }
-        eventPoints.push({timestamp: eventTimestamps[i].join('-'), yCoord: newYCoord});
-      }
-      var that = this;
-      let plotCircles = eventPoints.map((element, pos) => {
-        if(pos == 0) {
-          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" style={{fill: "red"}} onClick={(e) => that.handleEventCircleClick(e)} onMouseEnter={(e) => that.handleEventCircleEnter(e)} onMouseLeave={(e) => that.handleEventCircleLeave(e)} />;
-        }
-        else {
-          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" style={{fill: "#C0C0C0"}} onClick={(e) => {that.handleEventCircleClick(e)}} onMouseEnter={(e) => that.handleEventCircleEnter(e)} onMouseLeave={(e) => that.handleEventCircleLeave(e)} />
-        }
-      });
-      let assetIcons = events.map((element, pos) => {
-        if(element.single_event.youtube_url){
-          return (
-            <svg id={element.timestamp} key={element.timestamp} className="protograph-asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 20) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='src/images/play.svg' />"}}/>
-
-          );
-        }
-        if(element.single_event.photo){
-          return (
-            <svg id={element.timestamp} key={element.timestamp} className="protograph-asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 20) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='src/images/image.svg' />"}}/>
-          );
-        }
-      });
-      let onStartStyle = {opacity: "0.10"};
-      let eventDetails = events.map((element, pos) => {
-        let timestampComponents = element.single_event.timestamp_date.split('-');
-        let timestamp = `${that.getMonth(timestampComponents[1])} ${timestampComponents[2]}, ${timestampComponents[0]}`;
-        let asset = that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) ?  that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) : that.injectImage(element.single_event.photo, element.single_event.media_caption);
-        let textStyle = (asset != null) ? {display: "inline-block", width: "48%", marginRight: "4%"} : {undefined};
-        if(pos == 0) {
-            return (
-              <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} onClick={(e) => that.moveEventToTop(e)} >
-                <p className="protograph-message-timestamp" style={{color: "black"}}>{timestamp}</p>
-                <div className="protograph-content-card protograph-laptop-mode">
-                  <div className="protograph-content-card-details" style={textStyle}>
-                    { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
-                      <h3 className='ui header'>{element.single_event.header}</h3>
-                    }
-                    <p className="protograph-content-card-text">{element.single_event.message}</p>
-                  </div>
-                  {asset}
-                </div>
-                <div id="protograph_scroll_down_indicator">
-                  <p id="protograph_scroll_down_text" style={{marginBottom: "2px", height: "20px"}}>Scroll</p>
-                  <svg id="protograph_scroll_down_arrow" height="25px" width="25px" viewBox="0 0 100 100">
-                    <line x1="10" y1="10" x2="50" y2="50" style={{stroke:"black", strokeWidth:5}} />
-                    <line x1="50" y1="50" x2="90" y2="10" style={{stroke:"black", strokeWidth:5}} />
-                    <line x1="10" y1="30" x2="50" y2="70" style={{stroke:"black", strokeWidth:5}} />
-                    <line x1="50" y1="70" x2="90" y2="30" style={{stroke:"black", strokeWidth:5}} />
-                  </svg>
-                </div>
-              </div>
-            );
-        }
-        else {
-          return (
-            <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle} onClick={(e) => that.moveEventToTop(e)} >
-              <p className="protograph-message-timestamp">{timestamp}</p>
-              <div className="protograph-content-card protograph-laptop-mode">
-                <div className="protograph-content-card-details" style={textStyle}>
-                  { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
-                    <h3 className='ui header'>{element.single_event.header}</h3>
-                  }
-                  <p className="protograph-content-card-text">{element.single_event.message}</p>
-                </div>
-                {asset}
-              </div>
-            </div>
-          );
-        }
-      });
-      let yearCountText = [];
-      for(let i = 0; i < events.length - 1; i++) {
-        let currentEventComponents = events[i].single_event.timestamp_date.split('-');
-        let nextEventComponents = events[i+1].single_event.timestamp_date.split('-');
-        let currentEvent = new Date(currentEventComponents[0], currentEventComponents[1], currentEventComponents[2]);
-        let nextEvent = new Date(nextEventComponents[0], nextEventComponents[1], nextEventComponents[2]);
-        let ranges = [];
-        if(Math.round((nextEvent - currentEvent)/(msDay*365)) >= 20) {
-          let j;
-          for(j = 0; j < eventPoints.length; j++) {
-            if(eventPoints[j].timestamp === events[i].single_event.timestamp_date) {
-              ranges.push({start: eventPoints[j].yCoord, end: eventPoints[j+1].yCoord, years: Math.round((nextEvent - currentEvent)/(msDay*365))})
-            }
-          }
-          for(j = 0; j < ranges.length; j++) {
-            let textPosition = ranges[j].start + (ranges[j].end - ranges[j].start)/2;
-            let rotateBy = `rotate(180 ${svgWidth/2},${textPosition})`;
-            yearCountText.push(<text key={textPosition} fontSize="12" writingMode="tb-rl" textAnchor="middle" x={svgWidth/2 + 10} y={textPosition} fill="#C0C0C0" transform={rotateBy}>{ranges[j].years} years</text>);
-          }
-        }
-      }
       return (
         <div id="ProtoScreenshot">
           <div id="protograph_div" className = "protograph-card-div protograph-laptop-mode protograph-screenshot-mode">
             <div id="protograph_screenshot_main_div">
               <div id="protograph_gradient_div" className="protograph-top-gradient protograph-laptop-mode"></div>
-              <div id="protograph_date_div">
-                <div id="protograph_month_div">{this.getMonth(firstEventTimeComponents[1])}</div>
-                <h1 id="protograph_day_div" className='ui header'>{firstEventTimeComponents[2]}</h1>
-                <div id="protograph_year_div">{firstEventTimeComponents[0]}</div>
+              <div id="protograph_card_title_div">
+              <div id="protograph_timeline_details_div">
+                <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
+                <p style={{height:80, overflowY: 'hidden'}}>{this.state.dataJSON.mandatory_config.timeline_description}</p>
+                <button id="protograph_show_main_card_button" style={{padding: '8px 10px', marginTop:0}} onClick={(e) => that.showMainCard(e)}>{this.state.languageTexts.button_text}</button>
               </div>
-              <div id="protograph_timeline_svg_div" className="protograph-laptop-mode protograph-screenshot-mode">
-                <p id="protograph_initial_timestamp">{firstEventTimeComponents[0]}</p>
-                <svg id="protograph_timeline_svg" height={line_height} width={svgWidth}>
-                  <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
-                  <g id="protograph_svg_group">
-                    {plotCircles}
-                    {yearCountText}
-                  </g>
-                </svg>
-                <p id="protograph_final_timestamp">{lastEventTimeComponents[0]}</p>
-              </div>
-              <div id="protograph_content_div" style={{overflowY: "hidden"}}>
-                {eventDetails}
-              </div>
+              <div id="protograph_timeline_image_div" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`}}></div>
+            </div>
               <div id="protograph_gradient_div" className="protograph-bottom-gradient protograph-laptop-mode"></div>
             </div>
           </div>
