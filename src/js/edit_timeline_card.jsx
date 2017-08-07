@@ -127,7 +127,11 @@ export default class EditTimelineCard extends React.Component {
   }
 
   renderSEO() {
-    let seo_blockquote = document.getElementById('protograph_div').outerHTML;
+    let data = this.state.dataJSON.data.events;
+    let blockquote_string = data.map((d, i) => {
+      return `<h3>${d.single_event.header}</h3><p>${d.single_event.message}</p><p>${d.single_event.timestamp_date}</p>` 
+    })
+    let seo_blockquote = '<blockquote>' + blockquote_string.join() + '</blockquote>'
     return seo_blockquote;
   }
 
