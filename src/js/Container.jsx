@@ -697,12 +697,11 @@ export default class TimelineCard extends React.Component {
         <div id="ProtoScreenshot">
           <div id="protograph_div" className = "protograph-card-div protograph-screenshot-mode">
               <div id="protograph_card_title_div">
-                <div id="protograph_timeline_details_div">
+                <div id="protograph_timeline_details_div" style={{width: '100%'}}>
                   <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
-                  <p style={{height:80, overflowY: 'hidden'}}>{this.state.dataJSON.mandatory_config.timeline_description}</p>
+                  <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
                   <button id="protograph_show_main_card_button" style={{padding: '8px 10px', marginTop:0}} onClick={(e) => that.showMainCard(e)}>{this.state.languageTexts.button_text}</button>
                 </div>
-                <div id="protograph_timeline_image_div" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`, marginLeft:0}}></div>
             </div>
           </div>
         </div>
