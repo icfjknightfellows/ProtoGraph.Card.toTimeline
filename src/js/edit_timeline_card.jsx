@@ -163,7 +163,7 @@ showLinkText() {
         return '';
         break;
       case 2:
-        return '< Back to building the card';
+        return '< Back';
         break;
     }
   }
@@ -171,7 +171,7 @@ showLinkText() {
   showButtonText() {
     switch(this.state.step) {
       case 1:
-        return 'Proceed to next step';
+        return 'Next';
         break;
       case 2:
         return 'Publish';
