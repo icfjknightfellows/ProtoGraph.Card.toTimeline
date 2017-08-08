@@ -702,7 +702,7 @@ export default class TimelineCard extends React.Component {
                   <p style={{height:80, overflowY: 'hidden'}}>{this.state.dataJSON.mandatory_config.timeline_description}</p>
                   <button id="protograph_show_main_card_button" style={{padding: '8px 10px', marginTop:0}} onClick={(e) => that.showMainCard(e)}>{this.state.languageTexts.button_text}</button>
                 </div>
-                <div id="protograph_timeline_image_div" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`}}></div>
+                <div id="protograph_timeline_image_div" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`, marginLeft:0}}></div>
             </div>
           </div>
         </div>
