@@ -40,6 +40,14 @@ export default class TimelineCard extends React.Component {
     return document.getElementById('protograph_div').getBoundingClientRect();
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.optionalConfigJSON) {
+     this.setState({
+       optionalConfigJSON: nextProps.optionalConfigJSON
+     });
+    }
+  }
+
   componentDidMount() {
     // get sample json data based on type i.e string or object
     if (this.state.fetchingData){
@@ -395,6 +403,7 @@ export default class TimelineCard extends React.Component {
       return(<div>Loading</div>)
     } else {
       // let styles = this.state.dataJSON.configs ? {backgroundColor: this.state.dataJSON.configs.background_color} : {undefined}
+      console.log(this.state.dataJSON);
       let events = this.state.dataJSON.data.events;
       const line_height = 340;
       const extraLineSpace = 30;
@@ -514,7 +523,7 @@ export default class TimelineCard extends React.Component {
               <div id="protograph_timeline_details_div">
                 <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
                 <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
-                <button id="protograph_show_main_card_button" onClick={(e) => that.showMainCard(e)}>{this.state.languageTexts.button_text}</button>
+                <button id="protograph_show_main_card_button" style={{backgroundColor: this.state.optionalConfigJSON.start_button_color, color: this.state.optionalConfigJSON.start_button_text_color}} onClick={(e) => that.showMainCard(e)}>{this.state.languageTexts.button_text}</button>
               </div>
               <div id="protograph_timeline_image_div" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`}}></div>
             </div>
@@ -666,7 +675,7 @@ export default class TimelineCard extends React.Component {
           <div id="protograph_card_title_div_mobile">
             <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
             <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
-            <button id="protograph_show_main_card_button_mobile" onClick={(e) => that.showMainCard(e)}>{this.state.languageTexts.button_text}</button>
+            <button id="protograph_show_main_card_button_mobile" style={{backgroundColor: this.state.optionalConfigJSON.start_button_color, color: this.state.optionalConfigJSON.start_button_text_color}} onClick={(e) => that.showMainCard(e)}>{this.state.languageTexts.button_text}</button>
           </div>
           <div id="protograph_card_main_div">
             <div id="protograph_gradient_div" className="protograph-top-gradient protograph-mobile-mode"></div>

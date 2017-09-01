@@ -1,3 +1,15 @@
+.list-inline {
+  padding-left: 0;
+}
+
+.list-inline > li {
+  list-style: none;
+}
+
+.btn.btn-info.btn-now, .btn.btn-warning.btn-clear {
+  display: none;
+}
+
 .proto-container {
   max-width: 1280px;
   width: 100%;

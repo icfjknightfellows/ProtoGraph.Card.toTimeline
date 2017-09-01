@@ -230,9 +230,7 @@ body ::-webkit-scrollbar {
 
 #protograph_show_main_card_button {
   height: 50px;
-  background-color: #337AFF;
   border: none;
-  color: white;
   padding: 15px 20px;
   text-align: center;
   text-decoration: none;
@@ -246,9 +244,7 @@ body ::-webkit-scrollbar {
 
 #protograph_show_main_card_button_mobile {
   height: 50px;
-  background-color: #337AFF;
   border: none;
-  color: white;
   padding: 15px 20px;
   text-align: center;
   text-decoration: none;

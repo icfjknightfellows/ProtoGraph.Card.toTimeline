@@ -1,7 +1,19 @@
 {
   "data": {
     "timeline_image": {
-      "ui:help": "The aspect ratio of the image should be 2:3"
+      "ui:help": "Use Image Bank to create a 2:3 aspect ratio image"
+    },
+    "events": {
+      "items": {
+        "single_event": {
+          "youtube_url": {
+            "ui:help": "Youtube URL is prioritised over Image URL"
+          },
+          "photo": {
+            "ui:help": "Use Image Bank to create a 1:1 aspect ratio image."
+          }
+        }
+      }
     }
   }
 }

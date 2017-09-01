@@ -95,15 +95,24 @@ export default class EditTimelineCard extends React.Component {
         });
         break;
       case 2:
+        this.setState((prevStep, prop) => {
+          let dataJSON = prevStep.dataJSON;
+          dataJSON.data.events = formData.events;
+          return {
+            dataJSON: dataJSON
+            // optionalConfigJSON: dataJSON
+          }
+        });
+        break;
+      case 3:
       this.setState((prevStep, prop) => {
-        let dataJSON = prevStep.dataJSON;
-        dataJSON.data.events = formData.events;
+        let optionalConfigJSON = prevStep.optionalConfigJSON;
+        optionalConfigJSON = formData;
         return {
-          dataJSON: dataJSON
-          // optionalConfigJSON: dataJSON
+          optionalConfigJSON: optionalConfigJSON
         }
       });
-        break;
+      break;
     }
   }
 
@@ -114,22 +123,27 @@ export default class EditTimelineCard extends React.Component {
           step: 2
         });
         break;
-        case 2:
-          if (typeof this.props.onPublishCallback === "function") {
-            this.setState({ publishing: true });
-            let publishCallback = this.props.onPublishCallback();
-            publishCallback.then((message) => {
-              this.setState({ publishing: false });
-            });
-          }
-          break;
+      case 2:
+        this.setState({
+          step: 3
+        });
+        break;
+      case 3:
+        if (typeof this.props.onPublishCallback === "function") {
+          this.setState({ publishing: true });
+          let publishCallback = this.props.onPublishCallback();
+          publishCallback.then((message) => {
+            this.setState({ publishing: false });
+          });
+        }
+        break;
     }
   }
 
   renderSEO() {
     let data = this.state.dataJSON.data.events;
     let blockquote_string = data.map((d, i) => {
-      return `<h3>${d.single_event.header}</h3><p>${d.single_event.message}</p><p>${d.single_event.timestamp_date}</p>` 
+      return `<h3>${d.single_event.header}</h3><p>${d.single_event.message}</p><p>${d.single_event.timestamp_date}</p>`
     })
     let seo_blockquote = '<blockquote>' + blockquote_string.join() + '</blockquote>'
     return seo_blockquote;
@@ -143,6 +157,8 @@ export default class EditTimelineCard extends React.Component {
       case 2:
         return this.state.schemaJSON.properties.data;
         break;
+      case 3:
+      return this.state.optionalConfigSchemaJSON;
       }
   }
 
@@ -154,6 +170,8 @@ getFormData() {
     case 2:
       return this.state.dataJSON.data;
       break;
+    case 3:
+    return this.state.optionalConfigJSON;
   }
 }
 
@@ -165,6 +183,9 @@ showLinkText() {
       case 2:
         return '< Back';
         break;
+      case 3:
+        return '< Back';
+        break;
     }
   }
 
@@ -174,6 +195,9 @@ showLinkText() {
         return 'Next';
         break;
       case 2:
+        return 'Next';
+        break;
+      case 3:
         return 'Publish';
         break;
     }
