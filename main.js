@@ -30,7 +30,11 @@ ProtoGraph.Card.toTimeline.prototype.renderLaptop = function (data) {
       clickCallback={this.options.onClickCallback}
       ref={(e) => {
         this.containerInstance = this.containerInstance || e;
-      }}/>,
+      }}
+      viewCastId={this.options.viewCastId}
+      piwikCallback={this.options.piwikCallback}
+
+          />,
     this.options.selector);
 }
 
@@ -47,7 +51,10 @@ ProtoGraph.Card.toTimeline.prototype.renderMobile = function (data) {
       clickCallback={this.options.onClickCallback}
       ref={(e) => {
         this.containerInstance = this.containerInstance || e;
-      }}/>,
+      }}
+      viewCastId={this.options.viewCastId}
+      piwikCallback={this.options.piwikCallback}
+          />,
     this.options.selector);
 }
 
@@ -62,6 +69,9 @@ ProtoGraph.Card.toTimeline.prototype.renderScreenshot = function (data) {
       mode={this.mode}
       ref={(e) => {
         this.containerInstance = this.containerInstance || e;
-      }}/>,
+      }}
+      viewCastId={this.options.viewCastId}
+      piwikCallback={this.options.piwikCallback}
+          />,
     this.options.selector);
 }

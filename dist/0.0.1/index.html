@@ -28,6 +28,8 @@
        siteId = '1';
        base_url = origin;
      }
+     // Uncomment below line when used in developent
+     // base_url = "https://dnt71st2q6cqr.cloudfront.net"
 
      if(siteId){
        var _paq = _paq || [];
@@ -99,6 +101,7 @@
        },
        events: {
          get_size: function(){
+           console.log("asd");
            var that = this;
            var intervalId = setInterval(function(){
              try {
@@ -107,6 +110,7 @@
              if(clientRect.height){
                var height = clientRect.height,
                    width = clientRect.width;
+               debugger;
                that.send("resize_frame", {height: height, width: width});
                clearInterval(intervalId);
              }
