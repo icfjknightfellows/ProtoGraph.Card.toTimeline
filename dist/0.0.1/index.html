@@ -29,7 +29,8 @@
        base_url = origin;
      }
      // Uncomment below line when used in developent
-     base_url = "https:dnt71st2q6cqr.cloudfront.net";
+    //  base_url = "https:dnt71st2q6cqr.cloudfront.net";
+    //  base_url = "https://cdn.protograph.pykih.com";
      siteId = 2;
      if(siteId){
        var _paq = _paq || [];
@@ -106,14 +107,13 @@
            var intervalId = setInterval(function(){
              try {
                clientRect = x.getData();
-             } catch (err) {}
-             if(clientRect.height){
-               var height = clientRect.height,
-                   width = clientRect.width;
-               debugger;
-               that.send("resize_frame", {height: height, width: width});
-               clearInterval(intervalId);
-             }
+               if(clientRect.height){
+                 var height = clientRect.height,
+                     width = clientRect.width;
+                 that.send("resize_frame", {height: height, width: width});
+                 clearInterval(intervalId);
+               }
+              } catch (err) {}
            }, 1000)
 
          },
