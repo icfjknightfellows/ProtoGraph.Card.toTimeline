@@ -33,7 +33,6 @@ ProtoGraph.Card.toTimeline.prototype.renderLaptop = function (data) {
       }}
       viewCastId={this.options.viewCastId}
       piwikCallback={this.options.piwikCallback}
-
           />,
     this.options.selector);
 }

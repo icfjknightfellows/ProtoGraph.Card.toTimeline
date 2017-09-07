@@ -64,10 +64,10 @@ export default class TimelineCard extends React.Component {
                optionalConfigSchemaJSON: opt_config_schema.data
              }
              stateVar.languageTexts = this.getLanguageTexts(stateVar.dataJSON.mandatory_config.language);
+             this.setState(stateVar);
              if (typeof this.props.piwikCallback === "function") {
                this.props.piwikCallback('toTimeline', 'loaded', this.props.viewCastId);
              }
-             this.setState(stateVar);
            }));
     }
   }
