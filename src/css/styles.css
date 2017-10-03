@@ -14,6 +14,9 @@ h6{
   color: #999 !important;
 }
 
+p {
+  font-size: 14px !important;
+}
 
 #protograph_div_content_wrapper.protograph-laptop-mode {
   margin: 0 auto;
