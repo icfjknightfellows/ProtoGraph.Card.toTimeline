@@ -623,7 +623,7 @@ export default class TimelineCard extends React.Component {
         if(pos == 0) {
             return (
               <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} onClick={(e) => that.moveEventToTop(e)} >
-                <p className="protograph-message-timestamp" style={{color: "black", fontWeight: "bold"}}>{timestamp}</p>
+                <p className="protograph-message-timestamp" style={{color: "black"}}>{timestamp}</p>
                 <div className="protograph-content-card protograph-mobile-mode">
                   { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
                     <h3 className='ui header'>{element.single_event.header}</h3>
