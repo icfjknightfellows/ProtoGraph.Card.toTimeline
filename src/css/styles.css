@@ -1,6 +1,19 @@
 .rjsf option[value='']{
     display: none !important;
 }
+h1.ui.header, h2.ui.header, h3.ui.header, h4.ui.header, h5.ui.header, h6.ui.header{
+  margin-bottom: 5px;
+  padding-bottom: 0px;
+  margin-top: 5px;
+  padding-top: 0px;
+}
+
+h6{
+  font-weight: 400 !important; 
+  font-size: 0.8em; 
+  color: #999 !important;
+}
+
 
 #protograph_div_content_wrapper.protograph-laptop-mode {
   margin: 0 auto;
