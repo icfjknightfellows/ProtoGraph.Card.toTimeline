@@ -325,7 +325,8 @@ export default class TimelineCard extends React.Component {
   }
 
   showMainCard(e) {
-    let line_height = 340,
+    let line_height = 390,
+    // let line_height = 340,
       hideTitlePage = this.props.mode === 'laptop' ? document.getElementById('protograph_card_title_div') : document.getElementById('protograph_card_title_div_mobile');
     hideTitlePage.style.opacity = '0';
     let that = this;
@@ -405,7 +406,8 @@ export default class TimelineCard extends React.Component {
       // let styles = this.state.dataJSON.configs ? {backgroundColor: this.state.dataJSON.configs.background_color} : {undefined}
       console.log(this.state.dataJSON);
       let events = this.state.dataJSON.data.events;
-      const line_height = 340;
+      const line_height = 390;
+      // const line_height = 340;
       const extraLineSpace = 30;
       const svgWidth = 50;
       const msDay = 60*60*24*1000;
