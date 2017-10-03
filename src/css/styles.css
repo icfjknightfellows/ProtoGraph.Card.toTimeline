@@ -4,7 +4,8 @@
 
 #protograph_div_content_wrapper.protograph-laptop-mode {
   margin: 0 auto;
-  width: 640px;
+  /*width: 640px;*/
+  width: 540px;
   padding: 0 20px;
 }
 
@@ -85,7 +86,8 @@
 #protograph_content_div {
   position: relative;
   display: inline-block;
-  width: 83.5%;
+  width: 300px;
+  /*width: 83.5%;*/
   height: 420px;
   overflow-y: scroll;
 }
@@ -115,7 +117,7 @@
   height: 420px;
   /*width: 640px;*/
   background: #f5f5f5;
-  overflow-x: auto;
+  overflow-x: hidden;
   overflow-y: hidden;
 }
 
@@ -216,9 +218,12 @@ body ::-webkit-scrollbar {
 
 .protograph-message-timestamp {
   text-align: left;
-  margin-bottom: 5px;
+  margin-bottom: 0px;
   font-size: 0.9em;
   color: #808080;
+  background-color: white;
+  padding-left: 15px;
+  padding-top: 15px;
 }
 
 .protograph-event-photo {
@@ -260,7 +265,7 @@ body ::-webkit-scrollbar {
 #protograph_timeline_image_div {
   display: inline-block;
   height: 380px;
-  width: 270px;
+  width: 300px;
   margin-top: 20px;
   margin-left: 10%;
   background-repeat: no-repeat !important;
@@ -280,7 +285,8 @@ body ::-webkit-scrollbar {
   vertical-align: top;
   display: inline-block;
   text-align: left;
-  width: 45%;
+  /*width: 45%;*/
+  width: 180px;
 }
 
 #protograph_timeline_start_div {

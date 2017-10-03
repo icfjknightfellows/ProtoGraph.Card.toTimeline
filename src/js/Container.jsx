@@ -69,41 +69,41 @@ export default class TimelineCard extends React.Component {
     }
   }
 
-  componentDidUpdate() {
-    if (this.props.mode === 'mobile') {
-      let elems = Array.from(document.querySelectorAll('.protograph-event-message-div'));
-      elems.forEach((elem) => {
-        this.multiLineTruncate(elem.querySelector('.protograph-content-card').querySelector('.protograph-content-card-text'), elem);
-      });
-    }
-  }
+  // componentDidUpdate() {
+  //   if (this.props.mode === 'mobile') {
+  //     let elems = Array.from(document.querySelectorAll('.protograph-event-message-div'));
+  //     elems.forEach((elem) => {
+  //       this.multiLineTruncate(elem.querySelector('.protograph-content-card').querySelector('.protograph-content-card-text'), elem);
+  //     });
+  //   }
+  // }
 
-  multiLineTruncate(el, parent) {
-    let data = this.state.dataJSON.data.events.find(element => {
-      return element.single_event.timestamp_date === parent.id;
-    }),
-      wordArray = data.single_event.message.split(' '),
-      props = this.props,
-      // height = this.props.mode === 'laptop' ?  document.getElementById('protograph_card_title_div').clientHeight : (document.getElementById('protograph_div').clientHeight);
-      height = 420;
-    while(parent.getBoundingClientRect().height > height) {
-      wordArray.pop();
-      el.innerHTML = wordArray.join(' ') + '...' + '<br><button id="protograph_read_more_button" class="protograph-read-more-button">View more</button>' ;
-      if(wordArray.length <= 0) {
-        break;
-      }
-    }
-    if(el.querySelector('.protograph-read-more-button') !== null){
-      el.querySelector('.protograph-read-more-button').addEventListener('click', function() {
-        el.querySelector('.protograph-read-more-button').style.display = 'none'
-        el.style.height = 'auto';
-        el.innerHTML = data.single_event.message;
-        if(typeof props.clickCallback === 'function') {
-          props.clickCallback();
-        }
-      });
-    }
-  }
+  // multiLineTruncate(el, parent) {
+  //   let data = this.state.dataJSON.data.events.find(element => {
+  //     return element.single_event.timestamp_date === parent.id;
+  //   }),
+  //     wordArray = data.single_event.message.split(' '),
+  //     props = this.props,
+  //     // height = this.props.mode === 'laptop' ?  document.getElementById('protograph_card_title_div').clientHeight : (document.getElementById('protograph_div').clientHeight);
+  //     height = 420;
+  //   while(parent.getBoundingClientRect().height > height) {
+  //     wordArray.pop();
+  //     el.innerHTML = wordArray.join(' ') + '...' + '<br><button id="protograph_read_more_button" class="protograph-read-more-button">View more</button>' ;
+  //     if(wordArray.length <= 0) {
+  //       break;
+  //     }
+  //   }
+  //   if(el.querySelector('.protograph-read-more-button') !== null){
+  //     el.querySelector('.protograph-read-more-button').addEventListener('click', function() {
+  //       el.querySelector('.protograph-read-more-button').style.display = 'none'
+  //       el.style.height = 'auto';
+  //       el.innerHTML = data.single_event.message;
+  //       if(typeof props.clickCallback === 'function') {
+  //         props.clickCallback();
+  //       }
+  //     });
+  //   }
+  // }
 
   getLanguageTexts(languageConfig) {
     let language = languageConfig ? languageConfig : "english",
@@ -170,20 +170,20 @@ export default class TimelineCard extends React.Component {
     if (photoExists) {
       if(this.props.mode === 'laptop') {
         return (
-          <div style={{display: "inline-block", width: "48%"}}>
+          <div style={{marginBottom: 10}}>
           <img className="protograph-event-photo" src={photoExists} /> {
             captionExists &&
-              <h6 className='ui header centered'>{captionExists}</h6>
+              <h6 className='ui header'>{captionExists}</h6>
           }
           </div>
         )
       }
       else {
         return (
-          <div>
+          <div style={{marginBottom: 10}}>
           <img className="protograph-event-photo" src={photoExists} /> {
             captionExists &&
-              <h6 className='ui header centered'>{captionExists}</h6>
+              <h6 className='ui header'>{captionExists}</h6>
           }
           </div>
         )
@@ -201,20 +201,20 @@ export default class TimelineCard extends React.Component {
         let embedUrl = "https://www.youtube.com/embed/" + urlExists.split('=')[1];
         if(this.props.mode === 'laptop') {
           return (
-            <div style={{display: "inline-block", width: "48%"}}>
+            <div style={{marginBottom: 10}}>
               <iframe className="protograph-youtube-embed" src={embedUrl} frameBorder="0" allowFullScreen></iframe> {
                 captionExists &&
-                  <h6 className='ui header centered'>{captionExists}</h6>
+                  <h6 className='ui header'>{captionExists}</h6>
               }
             </div>
           )
         }
         else {
           return (
-            <div>
+            <div style={{marginBottom: 10}}>
               <iframe className="protograph-youtube-embed" src={embedUrl} frameBorder="0" allowFullScreen></iframe> {
                 captionExists &&
-                  <h6 className='ui header centered'>{captionExists}</h6>
+                  <h6 className='ui header'>{captionExists}</h6>
               }
             </div>
           )
@@ -302,7 +302,7 @@ export default class TimelineCard extends React.Component {
       if(centralEvents.includes(event)) {
         event.getElementsByClassName('protograph-message-timestamp')[0].style.color = "black";
         if(event === centralEvents[0]) {
-          event.getElementsByClassName('protograph-message-timestamp')[0].style.fontWeight = "bold";
+          // event.getElementsByClassName('protograph-message-timestamp')[0].style.fontWeight = "bold";
         }
         else {
           event.getElementsByClassName('protograph-message-timestamp')[0].style.fontWeight = "normal";
@@ -331,7 +331,7 @@ export default class TimelineCard extends React.Component {
     let that = this;
     setTimeout(function(){
       hideTitlePage.style.display = 'none';
-      document.getElementById('protograph_card_main_div').style.display = 'block';
+      that.props.mode === 'laptop' ? document.getElementById('protograph_card_main_div').style.display = 'flex' : document.getElementById('protograph_card_main_div').style.display = 'block';
       if(that.props.mode === 'mobile') {
         document.getElementById('protograph_card_title_div_gradient').style.display = 'none';
       }
@@ -452,13 +452,14 @@ export default class TimelineCard extends React.Component {
         let timestampComponents = element.single_event.timestamp_date.split('-');
         let timestamp = `${that.getMonth(timestampComponents[1])} ${timestampComponents[2]}, ${timestampComponents[0]}`;
         let asset = that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) ?  that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) : that.injectImage(element.single_event.photo, element.single_event.media_caption);
-        let textStyle = (asset != null) ? {display: "inline-block", width: "48%", marginRight: "4%"} : {undefined};
+        // let textStyle = (asset != null) ? {display: "inline-block", width: "48%", marginRight: "4%"} : {undefined};
+        let textStyle = (asset != null) ? {marginRight: "4%"} : {undefined};
         if(pos == 0) {
             return (
               <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} onClick={(e) => that.moveEventToTop(e)} >
                 <p className="protograph-message-timestamp" style={{color: "black"}}>{timestamp}</p>
                 <div className="protograph-content-card protograph-laptop-mode">
-                  <div className="protograph-content-card-details" style={textStyle}>
+                  <div className="protograph-content-card-details">
                     { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
                       <h3 className='ui header'>{element.single_event.header}</h3>
                     }
@@ -483,13 +484,13 @@ export default class TimelineCard extends React.Component {
             <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle} onClick={(e) => that.moveEventToTop(e)} >
               <p className="protograph-message-timestamp">{timestamp}</p>
               <div className="protograph-content-card protograph-laptop-mode">
-                <div className="protograph-content-card-details" style={textStyle}>
+                <div className="protograph-content-card-details">
                   { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
                     <h3 className='ui header'>{element.single_event.header}</h3>
                   }
+                  {asset}
                   <p className="protograph-content-card-text">{element.single_event.message}</p>
                 </div>
-                {asset}
               </div>
             </div>
           );
@@ -528,27 +529,35 @@ export default class TimelineCard extends React.Component {
               <div id="protograph_timeline_image_div" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`}}></div>
             </div>
             <div id="protograph_card_main_div">
+              <div>
+                <div style={{width:180, opacity:0.05}}>
+                  <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
+                  <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
+                </div>
+              </div>
               <div id="protograph_gradient_div" className="protograph-top-gradient protograph-laptop-mode"></div>
-              <div id="protograph_date_div">
-                <div id="protograph_month_div">{this.getMonth(firstEventTimeComponents[1])}</div>
-                <h1 id="protograph_day_div" className='ui header'>{firstEventTimeComponents[2]}</h1>
-                <div id="protograph_year_div">{firstEventTimeComponents[0]}</div>
+              <div style={{marginLeft:-85}}>
+                <div id="protograph_date_div">
+                  <div id="protograph_month_div">{this.getMonth(firstEventTimeComponents[1])}</div>
+                  <h1 id="protograph_day_div" className='ui header'>{firstEventTimeComponents[2]}</h1>
+                  <div id="protograph_year_div">{firstEventTimeComponents[0]}</div>
+                </div>
+                <div id="protograph_timeline_svg_div" className="protograph-laptop-mode">
+                  <p id="protograph_initial_timestamp">{firstEventTimeComponents[0]}</p>
+                  <svg id="protograph_timeline_svg" height={line_height} width={svgWidth}>
+                    <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
+                    <g id="protograph_svg_group">
+                      {plotCircles}
+                      {yearCountText}
+                    </g>
+                  </svg>
+                  <p id="protograph_final_timestamp">{lastEventTimeComponents[0]}</p>
+                </div>
+                <div id="protograph_content_div" onScroll={(e) => that.handleScroll(e)}>
+                  {eventDetails}
+                </div>
+                <div id="protograph_gradient_div" className="protograph-bottom-gradient protograph-laptop-mode"></div>
               </div>
-              <div id="protograph_timeline_svg_div" className="protograph-laptop-mode">
-                <p id="protograph_initial_timestamp">{firstEventTimeComponents[0]}</p>
-                <svg id="protograph_timeline_svg" height={line_height} width={svgWidth}>
-                  <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
-                  <g id="protograph_svg_group">
-                    {plotCircles}
-                    {yearCountText}
-                  </g>
-                </svg>
-                <p id="protograph_final_timestamp">{lastEventTimeComponents[0]}</p>
-              </div>
-              <div id="protograph_content_div" onScroll={(e) => that.handleScroll(e)}>
-                {eventDetails}
-              </div>
-              <div id="protograph_gradient_div" className="protograph-bottom-gradient protograph-laptop-mode"></div>
             </div>
           </div>
         </div>
@@ -640,8 +649,8 @@ export default class TimelineCard extends React.Component {
                 { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
                   <h3 className='ui header'>{element.single_event.header}</h3>
                 }
-                <p className="protograph-content-card-text">{element.single_event.message}</p>
                 {asset}
+                <p className="protograph-content-card-text">{element.single_event.message}</p>
               </div>
             </div>
           );
@@ -669,7 +678,7 @@ export default class TimelineCard extends React.Component {
         }
       }
       return (
-        <div id="protograph_div" className="protograph-card-div protograph-mobile-mode" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`, backgroundRepeat: "no-repeat", backgroundSize: "cover"}}>
+        <div id="protograph_div" className="protograph-card-div protograph-mobile-mode" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`, backgroundRepeat: "no-repeat", backgroundSize: "cover", padding: 0}}>
           <div id="protograph_card_title_div_gradient"></div>
           <div id="protograph_div_content_wrapper protograph-mobile-mode">
           <div id="protograph_card_title_div_mobile">
