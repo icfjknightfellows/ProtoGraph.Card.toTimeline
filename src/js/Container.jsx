@@ -532,7 +532,7 @@ export default class TimelineCard extends React.Component {
             </div>
             <div id="protograph_card_main_div">
               <div>
-                <div style={{width:180, opacity:0.05}}>
+                <div style={{width:180, opacity:0}}>
                   <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
                   <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
                 </div>
