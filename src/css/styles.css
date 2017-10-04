@@ -9,8 +9,8 @@ h1.ui.header, h2.ui.header, h3.ui.header, h4.ui.header, h5.ui.header, h6.ui.head
 }
 
 h6{
-  font-weight: 400 !important; 
-  font-size: 0.8em; 
+  font-weight: 400 !important;
+  font-size: 0.8em;
   color: #999 !important;
 }
 
@@ -26,7 +26,7 @@ p {
 }
 
 #protograph_card_main_div {
-  opacity: 0;
+  display: none;
   -webkit-transition: opacity 0.5s;
   transition: opacity 0.5s;
   height: 420px;

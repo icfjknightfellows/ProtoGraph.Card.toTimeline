@@ -339,7 +339,7 @@ export default class TimelineCard extends React.Component {
     }, 500);
     setTimeout(function(){
       document.getElementById('protograph_div').style.background = '#f5f5f5';
-      document.getElementById('protograph_card_main_div').style.opacity = '1';
+      that.props.mode === 'laptop' ? document.getElementById('protograph_card_main_div').style.display = 'flex' : document.getElementById('protograph_card_main_div').style.display = 'block';
       if(that.props.mode === 'mobile') {
         document.querySelector('.protograph-card-div.protograph-mobile-mode').style.padding = '0 10px';
       }
