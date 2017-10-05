@@ -17,6 +17,7 @@ h6{
 p {
   font-size: 14px !important;
 }
+body ::-webkit-scrollbar{-webkit-appearance:none;width:0}
 
 #protograph_div_content_wrapper.protograph-laptop-mode {
   margin: 0 auto;
@@ -176,11 +177,6 @@ p {
   background: linear-gradient(rgba(245, 245, 245, 0), rgb(245, 245, 245));
   position: relative;
   bottom: 20px;
-}
-
-body ::-webkit-scrollbar {
-  -webkit-appearance: none;
-  width: 0px;
 }
 
 #protograph_initial_timestamp {
