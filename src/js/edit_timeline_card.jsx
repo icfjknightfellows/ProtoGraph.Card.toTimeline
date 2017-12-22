@@ -217,7 +217,7 @@ showLinkText() {
     if (mode === 'laptop'){
       document.getElementById('protograph_card_title_div_gradient').style.display = 'block';
     } else {
-      
+
     }
     this.setState((prevState, props) => {
       let newMode;
@@ -271,7 +271,12 @@ showLinkText() {
                   uiSchema={this.state.uiSchemaJSON.data}
                   transformErrors={this.transformErrors}>
                   <a id="protograph_prev_link" onClick = {((e) => this.onPrevHandler(e))}>{this.showLinkText()} </a>
-                  <button type="submit" className="ui primary button">{this.showButtonText()}</button>
+                  <button
+                    type="submit"
+                    className={`${this.state.publishing ? 'ui primary loading disabled button' : ''} default-button protograph-primary-button`}
+                  >
+                    {this.showButtonText()}
+                  </button>
                 </JSONSchemaForm>
               </div>
               <div className="twelve wide column proto-card-preview proto-share-card-div">
