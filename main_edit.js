@@ -22,6 +22,7 @@ ProtoGraph.Card.toTimeline.prototype.renderEdit = function (onPublishCallback) {
       uiSchemaURL={this.options.ui_schema_url}
       optionalConfigURL={this.options.configuration_url}
       optionalConfigSchemaURL={this.options.configuration_schema_url}
+      siteConfigURL={this.options.site_config_url}
       onPublishCallback={this.onPublishCallback}
       mode={this.mode}
       ref={(e) => {

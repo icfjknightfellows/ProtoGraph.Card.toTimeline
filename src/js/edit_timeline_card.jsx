@@ -39,8 +39,14 @@ export default class EditTimelineCard extends React.Component {
   componentDidMount() {
     // get sample json data based on type i.e string or object
     if (typeof this.props.dataURL === "string"){
-      axios.all([axios.get(this.props.dataURL), axios.get(this.props.schemaURL), axios.get(this.props.optionalConfigURL), axios.get(this.props.optionalConfigSchemaURL), axios.get(this.props.uiSchemaURL)])
-        .then(axios.spread((card, schema, opt_config, opt_config_schema, uiSchema) => {
+      axios.all([
+        axios.get(this.props.dataURL),
+        axios.get(this.props.schemaURL),
+        axios.get(this.props.optionalConfigURL),
+        axios.get(this.props.optionalConfigSchemaURL),
+        axios.get(this.props.uiSchemaURL),
+        axios.get(this.props.siteConfigURL)
+      ]).then(axios.spread((card, schema, opt_config, opt_config_schema, uiSchema, site_configs) => {
           let stateVar = {
             dataJSON: {
               data: card.data.data,
@@ -49,9 +55,15 @@ export default class EditTimelineCard extends React.Component {
             schemaJSON: schema.data,
             optionalConfigJSON: opt_config.data,
             optionalConfigSchemaJSON: opt_config_schema.data,
-            uiSchemaJSON: uiSchema.data
-          }
+            uiSchemaJSON: uiSchema.data,
+            siteConfigs: site_configs.data
+          };
+
+          stateVar.dataJSON.mandatory_config.language = stateVar.siteConfigs.primary_language.toLowerCase();
           stateVar.languageTexts = this.getLanguageTexts(stateVar.dataJSON.mandatory_config.language);
+
+          stateVar.optionalConfigJSON.start_button_color = stateVar.siteConfigs.house_colour;
+          stateVar.optionalConfigJSON.start_button_text_color = stateVar.siteConfigs.font_colour;
           this.setState(stateVar);
         }))
         .catch((error) => {
@@ -83,7 +95,6 @@ export default class EditTimelineCard extends React.Component {
   }
 
   onChangeHandler({formData}) {
-    // console.log(formData, this.state.step, "...................")
     switch (this.state.step) {
       case 1:
         this.setState((prevStep, prop) => {
@@ -104,15 +115,6 @@ export default class EditTimelineCard extends React.Component {
           }
         });
         break;
-      case 3:
-      this.setState((prevStep, prop) => {
-        let optionalConfigJSON = prevStep.optionalConfigJSON;
-        optionalConfigJSON = formData;
-        return {
-          optionalConfigJSON: optionalConfigJSON
-        }
-      });
-      break;
     }
   }
 
@@ -124,11 +126,6 @@ export default class EditTimelineCard extends React.Component {
         });
         break;
       case 2:
-        this.setState({
-          step: 3
-        });
-        break;
-      case 3:
         if (typeof this.props.onPublishCallback === "function") {
           this.setState({ publishing: true });
           let publishCallback = this.props.onPublishCallback();
@@ -170,8 +167,6 @@ getFormData() {
     case 2:
       return this.state.dataJSON.data;
       break;
-    case 3:
-    return this.state.optionalConfigJSON;
   }
 }
 
@@ -181,8 +176,6 @@ showLinkText() {
         return '';
         break;
       case 2:
-        return '< Back';
-        break;
       case 3:
         return '< Back';
         break;
@@ -195,9 +188,6 @@ showLinkText() {
         return 'Next';
         break;
       case 2:
-        return 'Next';
-        break;
-      case 3:
         return 'Publish';
         break;
     }

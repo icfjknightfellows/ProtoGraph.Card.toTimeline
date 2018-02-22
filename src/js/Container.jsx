@@ -51,8 +51,13 @@ export default class TimelineCard extends React.Component {
   componentDidMount() {
     // get sample json data based on type i.e string or object
     if (this.state.fetchingData){
-      axios.all([axios.get(this.props.dataURL), axios.get(this.props.schemaURL), axios.get(this.props.optionalConfigURL), axios.get(this.props.optionalConfigSchemaURL)])
-        .then(axios.spread((card, schema, opt_config, opt_config_schema) => {
+      axios.all([
+        axios.get(this.props.dataURL),
+        axios.get(this.props.schemaURL),
+        axios.get(this.props.optionalConfigURL),
+        axios.get(this.props.optionalConfigSchemaURL),
+        axios.get(this.props.siteConfigURL)
+      ]).then(axios.spread((card, schema, opt_config, opt_config_schema, site_configs) => {
           let stateVar = {
             fetchingData: false,
             dataJSON: {
@@ -61,9 +66,15 @@ export default class TimelineCard extends React.Component {
             },
             schemaJSON: schema.data,
             optionalConfigJSON: opt_config.data,
-            optionalConfigSchemaJSON: opt_config_schema.data
-          }
+            optionalConfigSchemaJSON: opt_config_schema.data,
+            siteConfigs: site_configs.data
+          };
+
+          stateVar.dataJSON.mandatory_config.language = stateVar.siteConfigs.primary_language.toLowerCase();
           stateVar.languageTexts = this.getLanguageTexts(stateVar.dataJSON.mandatory_config.language);
+
+          stateVar.optionalConfigJSON.start_button_color = stateVar.siteConfigs.house_colour;
+          stateVar.optionalConfigJSON.start_button_text_color = stateVar.siteConfigs.font_colour;
           this.setState(stateVar);
         }));
     }
