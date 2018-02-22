@@ -290,10 +290,9 @@ showLinkText() {
                 <TimelineCard
                   mode={this.state.mode}
                   dataJSON={this.state.dataJSON}
-                  schemaJSON={this.state.schemaJSON}
                   optionalConfigJSON={this.state.optionalConfigJSON}
-                  optionalConfigSchemaJSON={this.state.optionalConfigSchemaJSON}
                   languageTexts={this.state.languageTexts}
+                  siteConfigs={this.state.siteConfigs}
                 />
               </div>
             </div>
