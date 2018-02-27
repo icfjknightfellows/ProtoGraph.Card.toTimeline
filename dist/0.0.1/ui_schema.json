@@ -1,5 +1,8 @@
 {
   "data": {
+    "section": {
+      "ui:widget": "hidden"
+    },
     "timeline_image": {
       "ui:help": "Use Image Bank to create a 2:3 aspect ratio image"
     },

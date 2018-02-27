@@ -8,6 +8,12 @@
       "id": "/properties/data",
       "type": "object",
       "properties": {
+        "section": {
+          "id": "/properties/data/properties/section",
+          "type": "string",
+          "title": "Section",
+          "default": ""
+        },
         "events": {
           "id": "/properties/data/properties/events",
           "type": "array",

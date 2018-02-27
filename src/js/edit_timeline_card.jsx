@@ -100,6 +100,7 @@ export default class EditTimelineCard extends React.Component {
         this.setState((prevStep, prop) => {
           let dataJSON = prevStep.dataJSON;
           dataJSON.mandatory_config = formData;
+          dataJSON.data.section = formData.timeline_title;
           return {
             dataJSON: dataJSON
           }
