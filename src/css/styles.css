@@ -368,6 +368,14 @@ body ::-webkit-scrollbar{-webkit-appearance:none;width:0}
 .card-tags{
   height: 22px;
   margin: 12px;
+  z-index: 2;
+}
+.black-overlay{
+  background-color: rgba(0,0,0,0.4535);
+  height:100%;
+  width:100%;
+  position: absolute;
+  top: 0;
 }
 .card-tags .publisher-icon{
 	height: 25px;

@@ -102,7 +102,7 @@ export default class TimelineCard extends React.Component {
   componentDidUpdate(){
     let events = Array.from(document.getElementsByClassName('single-event')),
     card = document.getElementsByClassName('timeline-card')[0],
-    min = 100000000000,
+    min = Infinity,
     event;
     if(!card){
       return;
@@ -125,7 +125,7 @@ export default class TimelineCard extends React.Component {
   handleScroll(){
     let events = Array.from(document.getElementsByClassName('single-event')),
     card = document.getElementsByClassName('timeline-card')[0],
-    min = 100000000000,
+    min = Infinity,
     event, curr;
     Array.from(document.getElementsByClassName('active')).forEach((e)=>{
       e.classList.remove('active');
@@ -211,11 +211,11 @@ export default class TimelineCard extends React.Component {
         topLabel = dateformat(new Date(topDate), "mmm yyyy"),
         bottomLabel = dateformat(new Date(bottomDate), "mmm yyyy"),
         percent = 100*(this.state.curr / data.data.events.length)+"%";
-      let genreColor = "rgba(51, 51, 51, 0.75)",
-        genreFontColor = "#fff";
-        if(this.state.dataJSON.mandatory_config.interactive){
-          genreColor = this.state.optionalConfigJSON.house_colour;
-          genreFontColor = this.state.optionalConfigJSON.font_colour;
+      let genreColor = this.state.optionalConfigJSON.house_colour,
+        genreFontColor = this.state.optionalConfigJSON.font_colour;
+        if(!this.state.dataJSON.mandatory_config.interactive){
+          genreColor = "rgba(51, 51, 51, 0.75)",
+          genreFontColor = "#fff";
         }
         if(this.state.dataJSON.mandatory_config.sponsored){
           genreColor = this.state.optionalConfigJSON.reverse_house_colour;
@@ -278,7 +278,7 @@ export default class TimelineCard extends React.Component {
                 </div>
               </div>
               <div className="proto-col-4" onScroll={()=>this.handleScroll()}>
-                <div className="progress-line">
+                <div className="progress-line" id="progress_desktop">
                   <div className="progress-start-lable">{topLabel}</div>
                   <div className="progress-container">
                     <div className="progress-after" style={{height: percent}}></div>
@@ -326,11 +326,11 @@ export default class TimelineCard extends React.Component {
         topLabel = dateformat(new Date(topDate), "mmm yyyy"),
         bottomLabel = dateformat(new Date(bottomDate), "mmm yyyy"),
         percent = 100*(this.state.curr / data.data.events.length)+"%";
-        let genreColor = "rgba(51, 51, 51, 0.75)",
-        genreFontColor = "#fff";
-        if(this.state.dataJSON.mandatory_config.interactive){
-          genreColor = this.state.optionalConfigJSON.house_colour;
-          genreFontColor = this.state.optionalConfigJSON.font_colour;
+      let genreColor = this.state.optionalConfigJSON.house_colour,
+        genreFontColor = this.state.optionalConfigJSON.font_colour;
+        if(!this.state.dataJSON.mandatory_config.interactive){
+          genreColor = "rgba(51, 51, 51, 0.75)",
+          genreFontColor = "#fff";
         }
         if(this.state.dataJSON.mandatory_config.sponsored){
           genreColor = this.state.optionalConfigJSON.reverse_house_colour;
@@ -361,7 +361,7 @@ export default class TimelineCard extends React.Component {
             <div className="first-view view">
               <div className="proto-col-4">
                 <div className="cover-image">
-                  <img style={{height:"100%", width:"100%"}}src={data.mandatory_config.timeline_image}/>
+                  <img style={{height:"100%", width:"100%"}} src={data.mandatory_config.timeline_image}/>
                   <div className="card-tags"  style={{position: "absolute",top:0}}>
                     {fav ?
                     <div className="publisher-icon" style={{backgroundColor:this.state.dataJSON.mandatory_config.iconbgcolor || 'white'}}>
@@ -374,17 +374,19 @@ export default class TimelineCard extends React.Component {
                           {this.state.dataJSON.mandatory_config.sponsored ?'Sponsored': this.state.dataJSON.mandatory_config.subgenre}
                       </div>
                   </div>
-                  <div className="cover-content">
-                    <div className="title font-white">{data.mandatory_config.timeline_title}</div>
-                    <div className="description font-white">{data.mandatory_config.timeline_description}</div>
-                    <div onClick={()=>{document.getElementsByClassName('totimelinecard')[0].classList.add('flipped');this.setState({ready:true})}} className="call-to-action-button">Let's time travel</div>
+                  <div className="black-overlay">
+                    <div className="cover-content">
+                      <div className="title font-white">{data.mandatory_config.timeline_title}</div>
+                      <div className="description font-white">{data.mandatory_config.timeline_description}</div>
+                      <div onClick={()=>{document.getElementsByClassName('totimelinecard')[0].classList.add('flipped');this.setState({ready:true})}} className="call-to-action-button">Let's time travel</div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
             <div className="second-view view">
               <div className="proto-col-4" onScroll={()=>this.handleScroll()}>
-                <div className="progress-line">
+                <div className="progress-line" id="progress_mobile">
                   <div className="progress-start-lable">{topLabel}</div>
                   <div className="progress-container">
                     <div className="progress-after" style={{height: percent}}></div>

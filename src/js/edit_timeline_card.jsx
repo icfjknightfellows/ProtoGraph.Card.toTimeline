@@ -19,7 +19,8 @@ export default class EditTimelineCard extends React.Component {
       schemaJSON: undefined,
       errorOnFetchingData: undefined,
       optionalConfigJSON: {},
-      optionalConfigSchemaJSON: undefined
+      optionalConfigSchemaJSON: undefined,
+      render: true
     }
     this.toggleMode = this.toggleMode.bind(this);
   }
@@ -214,8 +215,13 @@ showLinkText() {
         newMode = prevState.mode
       }
       return {
-        mode: newMode
+        mode: newMode,
+        render: false
       }
+    }, ()=>{
+      this.setState({
+        render: true
+      })
     });
   }
 
@@ -284,13 +290,13 @@ showLinkText() {
                   </div>
                 </div>
                 {/* {this.renderLaptop()} */}
-                <TimelineCard
+                {this.state.render && <TimelineCard
                   mode={this.state.mode}
                   dataJSON={this.state.dataJSON}
                   optionalConfigJSON={this.state.optionalConfigJSON}
                   languageTexts={this.state.languageTexts}
                   siteConfigs={this.state.siteConfigs}
-                />
+                />}
               </div>
             </div>
           </div>
