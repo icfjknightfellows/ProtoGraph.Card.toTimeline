@@ -107,6 +107,44 @@
             "Hindi"
           ],
           "title": "Language"
+        },
+        "series":{
+          "title": "Series",
+          "type": "string",
+          "minLength":3,
+          "maxLength": 20
+        },
+        "genre":{
+          "title": "Intersection",
+          "type": "string",
+          "minLength":3,
+          "maxLength": 15
+        },
+        "subgenre":{
+          "title": "Sub Intersection",
+          "type": "string",
+          "minLength":3,
+          "maxLength": 15
+        },
+        "iconbgcolor":{
+          "title":"Background color of icon",
+          "type":"string",
+          "format":"color",
+          "default":"white"
+        },
+        "sponsored":{
+          "title":"Is it sponsored?",
+          "type":"boolean"
+        },
+        "interactive":{
+          "title":"Is it interactive?",
+          "type":"boolean"
+        },
+        "domainurl":{
+          "type":"string"
+        },
+        "faviconurl":{
+          "type":"string"
         }
       },
       "required": ["timeline_title", "timeline_description", "timeline_image", "language"]

@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
+import dateformat from 'dateformat';
 
 export default class TimelineCard extends React.Component {
   constructor(props) {
@@ -14,7 +15,9 @@ export default class TimelineCard extends React.Component {
       },
       optionalConfigJSON: {},
       languageTexts: {},
-      siteConfigs: this.props.siteConfigs
+      siteConfigs: this.props.siteConfigs,
+      ready:false,
+      curr: 1
     };
 
     if (this.props.dataJSON) {
@@ -76,42 +79,6 @@ export default class TimelineCard extends React.Component {
     }
   }
 
-  // componentDidUpdate() {
-  //   if (this.props.mode === 'mobile') {
-  //     let elems = Array.from(document.querySelectorAll('.protograph-event-message-div'));
-  //     elems.forEach((elem) => {
-  //       this.multiLineTruncate(elem.querySelector('.protograph-content-card').querySelector('.protograph-content-card-text'), elem);
-  //     });
-  //   }
-  // }
-
-  // multiLineTruncate(el, parent) {
-  //   let data = this.state.dataJSON.data.events.find(element => {
-  //     return element.single_event.timestamp_date === parent.id;
-  //   }),
-  //     wordArray = data.single_event.message.split(' '),
-  //     props = this.props,
-  //     // height = this.props.mode === 'laptop' ?  document.getElementById('protograph_card_title_div').clientHeight : (document.getElementById('protograph_div').clientHeight);
-  //     height = 420;
-  //   while(parent.getBoundingClientRect().height > height) {
-  //     wordArray.pop();
-  //     el.innerHTML = wordArray.join(' ') + '...' + '<br><button id="protograph_read_more_button" class="protograph-read-more-button">View more</button>' ;
-  //     if(wordArray.length <= 0) {
-  //       break;
-  //     }
-  //   }
-  //   if(el.querySelector('.protograph-read-more-button') !== null){
-  //     el.querySelector('.protograph-read-more-button').addEventListener('click', function() {
-  //       el.querySelector('.protograph-read-more-button').style.display = 'none'
-  //       el.style.height = 'auto';
-  //       el.innerHTML = data.single_event.message;
-  //       if(typeof props.clickCallback === 'function') {
-  //         props.clickCallback();
-  //       }
-  //     });
-  //   }
-  // }
-
   getLanguageTexts(languageConfig) {
     let language = languageConfig ? languageConfig : "english",
       text_obj;
@@ -132,445 +99,220 @@ export default class TimelineCard extends React.Component {
     return text_obj;
   }
 
-  getMonth(num) {
-    switch(num) {
-      case '01':
-      return 'Jan';
-      break;
-      case '02':
-      return 'Feb';
-      break;
-      case '03':
-      return 'Mar';
-      break;
-      case '04':
-      return 'Apr';
-      break;
-      case '05':
-      return 'May';
-      break;
-      case '06':
-      return 'Jun';
-      break;
-      case '07':
-      return 'Jul';
-      break;
-      case '08':
-      return 'Aug';
-      break;
-      case '09':
-      return 'Sep';
-      break;
-      case '10':
-      return 'Oct';
-      break;
-      case '11':
-      return 'Nov';
-      break;
-      case '12':
-      return 'Dec';
-      break;
+  componentDidUpdate(){
+    let events = Array.from(document.getElementsByClassName('single-event')),
+    card = document.getElementsByClassName('timeline-card')[0],
+    min = 100000000000,
+    event;
+    if(!card){
+      return;
     }
+    Array.from(document.getElementsByClassName('active')).forEach((e)=>{
+      e.classList.remove('active');
+    })
+    events.forEach((e)=>{
+      let top = e.getBoundingClientRect().top;
+      if(top > 0 &&  top < min){
+        event = e;
+        min = top;
+      }
+    })
+    if ((card.scrollHeight - card.clientHeight) === card.scrollTop) {
+      event = events[events.length - 1];
+    }
+    event.classList.add('active');
+  }
+  handleScroll(){
+    let events = Array.from(document.getElementsByClassName('single-event')),
+    card = document.getElementsByClassName('timeline-card')[0],
+    min = 100000000000,
+    event, curr;
+    Array.from(document.getElementsByClassName('active')).forEach((e)=>{
+      e.classList.remove('active');
+    })
+    events.forEach((e,i)=>{
+      let top = e.getBoundingClientRect().top;
+      if(top > 0 &&  top < min){
+        event = e;
+        min = top;
+        curr = i+1;
+      }
+    })
+    if ((card.scrollHeight - card.clientHeight) === card.scrollTop) {
+      event = events[events.length - 1];
+      curr = events.length;
+    }
+    event.classList.add('active');
+    this.setState({
+      curr:curr
+    })
+  }
+  
+  matchDomain(domain, url) {
+    let url_domain = this.getDomainFromURL(url).replace(/^(https?:\/\/)?(www\.)?/, ''),
+      domain_has_subdomain = this.subDomain(domain),
+      url_has_subdomain = this.subDomain(url_domain);
+
+    if (domain_has_subdomain) {
+      return (domain === url_domain) || (domain.indexOf(url_domain));
+    }
+    if (url_has_subdomain) {
+      return (domain === url_domain) || (url_domain.indexOf(domain))
+    }
+    return (domain === url_domain)
   }
 
-  injectImage(photoExists, captionExists) {
-    if (photoExists) {
-      if(this.props.mode === 'laptop') {
-        return (
-          <div style={{marginBottom: 10}}>
-          <img className="protograph-event-photo" src={photoExists} /> {
-            captionExists &&
-              <h6 className='ui header'>{captionExists}</h6>
-          }
-          </div>
-        )
-      }
-      else {
-        return (
-          <div style={{marginBottom: 10}}>
-          <img className="protograph-event-photo" src={photoExists} /> {
-            captionExists &&
-              <h6 className='ui header'>{captionExists}</h6>
-          }
-          </div>
-        )
-      }
-    }
-    else {
-      return null;
-    }
+  getDomainFromURL(url) {
+    let a = document.createElement('a');
+    a.href = url;
+    return a.hostname;
   }
-
-  injectYoutubeEmbed(urlExists, captionExists) {
-    var regex = /^(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?(?=.*v=((\w|-){11}))(?:\S+)?$/;
-    if(urlExists) {
-      if(regex.test(urlExists)){
-        let embedUrl = "https://www.youtube.com/embed/" + urlExists.split('=')[1];
-        if(this.props.mode === 'laptop') {
-          return (
-            <div style={{marginBottom: 10}}>
-              <iframe className="protograph-youtube-embed" src={embedUrl} frameBorder="0" allowFullScreen></iframe> {
-                captionExists &&
-                  <h6 className='ui header'>{captionExists}</h6>
-              }
-            </div>
-          )
-        }
-        else {
-          return (
-            <div style={{marginBottom: 10}}>
-              <iframe className="protograph-youtube-embed" src={embedUrl} frameBorder="0" allowFullScreen></iframe> {
-                captionExists &&
-                  <h6 className='ui header'>{captionExists}</h6>
-              }
-            </div>
-          )
-        }
-      }
-      else {
-        return null;
-      }
+  subDomain(url) {
+    if(!url){
+      url = "";
     }
-    else {
-      return null;
+    // IF THERE, REMOVE WHITE SPACE FROM BOTH ENDS
+    url = url.replace(new RegExp(/^\s+/), ""); // START
+    url = url.replace(new RegExp(/\s+$/), ""); // END
+
+    // IF FOUND, CONVERT BACK SLASHES TO FORWARD SLASHES
+    url = url.replace(new RegExp(/\\/g), "/");
+
+    // IF THERE, REMOVES 'http://', 'https://' or 'ftp://' FROM THE START
+    url = url.replace(new RegExp(/^http\:\/\/|^https\:\/\/|^ftp\:\/\//i), "");
+
+    // IF THERE, REMOVES 'www.' FROM THE START OF THE STRING
+    url = url.replace(new RegExp(/^www\./i), "");
+
+    // REMOVE COMPLETE STRING FROM FIRST FORWARD SLASH ON
+    url = url.replace(new RegExp(/\/(.*)/), "");
+
+    // REMOVES '.??.??' OR '.???.??' FROM END - e.g. '.CO.UK', '.COM.AU'
+    if (url.match(new RegExp(/\.[a-z]{2,3}\.[a-z]{2}$/i))) {
+      url = url.replace(new RegExp(/\.[a-z]{2,3}\.[a-z]{2}$/i), "");
+
+      // REMOVES '.??' or '.???' or '.????' FROM END - e.g. '.US', '.COM', '.INFO'
+    } else if (url.match(new RegExp(/\.[a-z]{2,4}$/i))) {
+      url = url.replace(new RegExp(/\.[a-z]{2,4}$/i), "");
     }
+
+    // CHECK TO SEE IF THERE IS A DOT '.' LEFT IN THE STRING
+    var subDomain = (url.match(new RegExp(/\./g))) ? true : false;
+
+    return (subDomain);
   }
-
-  handleScroll(e) {
-    document.getElementById('protograph_scroll_down_arrow').style.height = 0;
-    document.getElementById('protograph_scroll_down_text').style.height = 0;
-    document.getElementById('protograph_scroll_down_text').innerHTML = "";
-    let events = Array.from(document.getElementsByClassName('protograph-event-message-div'));
-    let visibleEvents = [];
-    let circlePlots = Array.from(document.getElementsByClassName('protograph-circle-plot'));
-    let layoverPlots = Array.from(document.getElementsByClassName('protograph-layover-plot'));
-    let container = document.getElementById('protograph_content_div');
-    let containerTop = container.getBoundingClientRect().top;
-    let containerBottom = container.getBoundingClientRect().bottom;
-    let visibilityFrameSize = 200;
-    events.forEach((event) => {
-      let offset = event.getBoundingClientRect().top - container.getBoundingClientRect().top + (event.getBoundingClientRect().height/2);
-      let eventTop = event.getBoundingClientRect().top;
-      let eventBottom = event.getBoundingClientRect().bottom;
-      if(eventTop < containerBottom && eventBottom > containerTop) {
-        visibleEvents.push(event);
-      }
-    });
-    container.style.paddingBottom = `${container.getBoundingClientRect().height/2 - events[events.length-1].getBoundingClientRect().height/2}px`;
-    let centralEvents = [];
-    visibleEvents.forEach((visibleEvent) => {
-      let scanLine = (container.getBoundingClientRect().bottom + container.getBoundingClientRect().top)/2;
-      let eventTop = visibleEvent.getBoundingClientRect().top;
-      let eventBottom = visibleEvent.getBoundingClientRect().bottom;
-      if((eventTop < (scanLine + visibilityFrameSize/2) && eventBottom > (scanLine + visibilityFrameSize/2)) || (eventTop < (scanLine - visibilityFrameSize/2) && eventBottom > (scanLine - visibilityFrameSize/2)) || (eventTop > (scanLine - visibilityFrameSize/2) && eventBottom < (scanLine + visibilityFrameSize/2))) {
-        centralEvents.push(visibleEvent);
-      }
-    });
-    circlePlots.forEach((plot) => {
-      if(centralEvents[0] && (plot.id === centralEvents[0].id)) {
-        if(!document.getElementById(`${plot.cx.animVal.value}_${plot.cy.animVal.value}`)) {
-          let svg = document.getElementById('protograph_svg_group');
-          let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-          circle.setAttribute('cx',plot.cx.animVal.value);
-          circle.setAttribute('cy',plot.cy.animVal.value);
-          circle.setAttribute('r',plot.r.animVal.value);
-          circle.setAttribute('fill','red');
-          circle.setAttribute('class','protograph-layover-plot');
-          circle.setAttribute('id', `${plot.cx.animVal.value}_${plot.cy.animVal.value}`);
-          circle.setAttribute('data-timestamp', `${centralEvents[0].id}`)
-          svg.appendChild(circle);
-        }
-        plot.style.fill = "red";
-        if(centralEvents[0] === document.getElementsByClassName('protograph-first-event')[0] && this.props.mode === 'laptop') {
-          document.getElementById('protograph_date_div').style.marginTop = "20px";
-        }
-        else if (this.props.mode === 'laptop') {
-          document.getElementById('protograph_date_div').style.marginTop = `${plot.getBoundingClientRect().top - container.getBoundingClientRect().top - 35}px`;
-        }
-      }
-      else {
-        plot.style.fill = "#C0C0C0";
-      }
-    });
-    layoverPlots.forEach((plot) => {
-      if(plot.dataset.timestamp !== centralEvents[0].id) {
-        plot.parentElement.removeChild(plot);
-      }
-    });
-    if(centralEvents[0]) {
-      let timestamp = centralEvents[0].id.split('-');
-      if(this.props.mode === 'laptop') {
-        document.getElementById('protograph_month_div').innerHTML = this.getMonth(timestamp[1]);
-        document.getElementById('protograph_day_div').innerHTML = timestamp[2];
-        document.getElementById('protograph_year_div').innerHTML = timestamp[0];
-      }
-    }
-    events.forEach((event) => {
-      if(centralEvents.includes(event)) {
-        event.getElementsByClassName('protograph-message-timestamp')[0].style.color = "black";
-        if(event === centralEvents[0]) {
-          // event.getElementsByClassName('protograph-message-timestamp')[0].style.fontWeight = "bold";
-        }
-        else {
-          event.getElementsByClassName('protograph-message-timestamp')[0].style.fontWeight = "normal";
-        }
-        event.getElementsByClassName('protograph-content-card')[0].parentElement.style.opacity = "1";
-      }
-      else {
-        event.getElementsByClassName('protograph-message-timestamp')[0].style.color = "#808080";
-        event.getElementsByClassName('protograph-content-card')[0].parentElement.style.opacity = "0.10";
-      }
-    });
-  }
-
-  getEventYCoord(eventTimestamp, eventPoints) {
-    for(let i = 0; i < eventPoints.length; i++) {
-      if(eventPoints[i].timestamp === eventTimestamp) {
-        return eventPoints[i].yCoord;
-      }
-    }
-  }
-
-  showMainCard(e) {
-    let line_height = 390,
-    // let line_height = 340,
-      hideTitlePage = this.props.mode === 'laptop' ? document.getElementById('protograph_card_title_div') : document.getElementById('protograph_card_title_div_mobile');
-    hideTitlePage.style.opacity = '0';
-    let that = this;
-    setTimeout(function(){
-      hideTitlePage.style.display = 'none';
-      that.props.mode === 'laptop' ? document.getElementById('protograph_card_main_div').style.display = 'flex' : document.getElementById('protograph_card_main_div').style.display = 'block';
-      if(that.props.mode === 'mobile') {
-        document.getElementById('protograph_card_title_div_gradient').style.display = 'none';
-      }
-    }, 500);
-    setTimeout(function(){
-      document.getElementById('protograph_div').style.background = '#f5f5f5';
-      that.props.mode === 'laptop' ? document.getElementById('protograph_card_main_div').style.display = 'flex' : document.getElementById('protograph_card_main_div').style.display = 'block';
-      if(that.props.mode === 'mobile') {
-        document.querySelector('.protograph-card-div.protograph-mobile-mode').style.padding = '0 10px';
-      }
-    }, 515);
-  }
-
-  smoothScrollTo(element, to, duration) {
-    if (duration <= 0) return;
-    let difference = to - element.scrollTop;
-    let perTick = difference / duration * 10;
-    let that = this;
-    setTimeout(function() {
-        element.scrollTop = element.scrollTop + perTick;
-        if (element.scrollTop === to) return;
-        that.smoothScrollTo(element, to, duration - 10);
-    }, 10);
-}
-
-  handleEventCircleClick(e) {
-    let events = Array.from(document.getElementsByClassName('protograph-event-message-div'));
-    let circlePlots = Array.from(document.getElementsByClassName('protograph-circle-plot'));
-    let selectedEvent = events.find((event) => {
-      if(event.id === e.target.id) {
-        return event;
-      }
-    });
-    let currentPlot = circlePlots.find((plot) => {
-      if(plot.style.fill === 'red') {
-        return plot;
-      }
-    });
-    let maxDifference = Math.abs(circlePlots.indexOf(circlePlots[circlePlots.length - 1]) - circlePlots.indexOf(circlePlots[0]));
-    let difference = Math.abs(circlePlots.indexOf(e.target) - circlePlots.indexOf(currentPlot));
-    let scrollDuration = (difference*1000)/maxDifference;
-    this.smoothScrollTo(document.getElementById('protograph_content_div'), selectedEvent.offsetTop - 60, scrollDuration);
-  }
-
-  moveEventToTop(e) {
-    let element;
-    if(e.target.classList.contains('protograph-event-message-div')) {
-      element = e.target;
-    }
-    else if(e.target.parentElement.classList.contains('protograph-event-message-div')) {
-      element = e.target.parentElement;
-    }
-    else {
-      element = e.target.parentElement.parentElement;
-    }
-    this.smoothScrollTo(document.getElementById('protograph_content_div'), element.offsetTop - 60, 250);
-  }
-
-  handleEventCircleEnter(e) {
-    e.target.style.r = '7';
-  }
-
-  handleEventCircleLeave(e, prevFill) {
-    e.target.style.r = '5';
-  }
-
   renderLaptop() {
     if (this.state.fetchingData){
       return(<div>Loading</div>)
     } else {
-      // let styles = this.state.dataJSON.configs ? {backgroundColor: this.state.dataJSON.configs.background_color} : {undefined}
-      console.log(this.state.dataJSON);
-      let events = this.state.dataJSON.data.events;
-      const line_height = 390;
-      // const line_height = 340;
-      const extraLineSpace = 30;
-      const svgWidth = 50;
-      const msDay = 60*60*24*1000;
-      let firstEventTimeComponents = events[0].single_event.timestamp_date.split('-');
-      let lastEventTimeComponents = events[events.length-1].single_event.timestamp_date.split('-');
-      let firstEventTimestamp = new Date(firstEventTimeComponents[0], firstEventTimeComponents[1], firstEventTimeComponents[2]);
-      let lastEventTimeStamp = new Date(lastEventTimeComponents[0], lastEventTimeComponents[1], lastEventTimeComponents[2]);
-      let maxTimeDifferenceInDays = Math.floor((lastEventTimeStamp - firstEventTimestamp)/msDay);
-      let eventTimestamps = events.map(element => element.single_event.timestamp_date.split('-'));
-      let eventPoints = [];
-      for(var i = 0; i < eventTimestamps.length; i++) {
-        let eventTimestamp = new Date(eventTimestamps[i][0], eventTimestamps[i][1], eventTimestamps[i][2])
-        let timeDifference = Math.floor((eventTimestamp - firstEventTimestamp)/msDay);
-        let newYCoord = 10;
-        if(maxTimeDifferenceInDays != 0){
-          newYCoord = ((timeDifference/maxTimeDifferenceInDays) * (line_height-2*extraLineSpace)) + extraLineSpace;
+      let data = this.state.dataJSON;
+      let topDate = data.data.events[0].single_event.timestamp_date,
+        bottomDate = data.data.events[data.data.events.length - 1].single_event.timestamp_date,
+        topLabel = dateformat(new Date(topDate), "mmm yyyy"),
+        bottomLabel = dateformat(new Date(bottomDate), "mmm yyyy"),
+        percent = 100*(this.state.curr / data.data.events.length)+"%";
+      let genreColor = "rgba(51, 51, 51, 0.75)",
+        genreFontColor = "#fff";
+        if(this.state.dataJSON.mandatory_config.interactive){
+          genreColor = this.state.optionalConfigJSON.house_colour;
+          genreFontColor = this.state.optionalConfigJSON.font_colour;
         }
-        eventPoints.push({timestamp: eventTimestamps[i].join('-'), yCoord: newYCoord});
-      }
-      var that = this;
-      let plotCircles = eventPoints.map((element, pos) => {
-        if(pos == 0) {
-          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" style={{fill: "red"}} onClick={(e) => that.handleEventCircleClick(e)} onMouseEnter={(e) => that.handleEventCircleEnter(e)} onMouseLeave={(e) => that.handleEventCircleLeave(e)} />;
+        if(this.state.dataJSON.mandatory_config.sponsored){
+          genreColor = this.state.optionalConfigJSON.reverse_house_colour;
+          genreFontColor = this.state.optionalConfigJSON.reverse_font_colour;
         }
-        else {
-          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" style={{fill: "#C0C0C0"}} onClick={(e) => {that.handleEventCircleClick(e)}} onMouseEnter={(e) => that.handleEventCircleEnter(e)} onMouseLeave={(e) => that.handleEventCircleLeave(e)} />
+        let fav = this.state.dataJSON.mandatory_config.faviconurl;
+        let str = this.state.dataJSON.mandatory_config.url;
+        let arr = str && str.split("/");
+        let name = undefined;
+        let dom = arr && arr[2];
+        if (this.matchDomain(this.state.domain, str)) {
+          fav = undefined;
         }
-      });
-      let assetIcons = events.map((element, pos) => {
-        if(element.single_event.youtube_url){
-          return (
-            <svg id={element.timestamp} key={element.timestamp} className="protograph-asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 20) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='src/images/play.svg' />"}}/>
-
-          );
+        let series = window.vertical_name || this.state.dataJSON.mandatory_config.series,
+        genre = this.state.dataJSON.mandatory_config.genre;
+        let padding = "1px 1px 1px 5px";
+        if (!genre && series) {
+          padding = "2.5px 5px";
         }
-        if(element.single_event.photo){
-          return (
-            <svg id={element.timestamp} key={element.timestamp} className="protograph-asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 20) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='src/images/image.svg' />"}}/>
-          );
+        if (!series && !genre) {
+          padding = '0px';
         }
-      });
-      let onStartStyle = {opacity: "0.10"};
-      let eventDetails = events.map((element, pos) => {
-        let timestampComponents = element.single_event.timestamp_date.split('-');
-        let timestamp = `${that.getMonth(timestampComponents[1])} ${timestampComponents[2]}, ${timestampComponents[0]}`;
-        let asset = that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) ?  that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) : that.injectImage(element.single_event.photo, element.single_event.media_caption);
-        // let textStyle = (asset != null) ? {display: "inline-block", width: "48%", marginRight: "4%"} : {undefined};
-        let textStyle = (asset != null) ? {marginRight: "4%"} : {undefined};
-        if(pos == 0) {
-            return (
-              <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} onClick={(e) => that.moveEventToTop(e)} >
-                <p className="protograph-message-timestamp" style={{color: "black"}}>{timestamp}</p>
-                <div className="protograph-content-card protograph-laptop-mode">
-                  <div className="protograph-content-card-details">
-                    { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
-                      <h3 className='ui header'>{element.single_event.header}</h3>
-                    }
-                    <p className="protograph-content-card-text">{element.single_event.message}</p>
+        if (genre && !series) {
+          padding = "1px";
+        }
+        return(
+          <div className="totimelinecard parent-card-desktop">
+            <div className="first-view view">
+              <div className="proto-col-3 view-in-desktop">
+                <div className="card-tags">
+                  {fav ?
+                  <div className="publisher-icon" style={{backgroundColor:this.state.dataJSON.mandatory_config.iconbgcolor || 'white'}}>
+                    <img className="favicon" src = {fav}/>
+                  </div> : null}
+                  <div className="series-name" style={{ padding: padding }}>{series}{genre ? <div className="genre" style={{backgroundColor: genreColor, color: genreFontColor, marginLeft: series?'3px' :'0px' }}>
+                    {genre } </div> : null}
+                    </div>
+                      <div className="sub-genre-dark" style={{fontStyle:this.state.dataJSON.mandatory_config.sponsored? 'italic': 'normal', textDecoration:this.state.dataJSON.mandatory_config.sponsored? 'underline' : 'none'}}>
+                        {this.state.dataJSON.mandatory_config.sponsored ?'Sponsored': this.state.dataJSON.mandatory_config.subgenre}
+                      </div>
+                </div>
+                <div className="cover-content">
+                  <div className="title">{data.mandatory_config.timeline_title}</div>
+                  <div className="description">{data.mandatory_config.timeline_description}</div>
+                  <div onClick={()=>{document.getElementsByClassName('totimelinecard')[0].classList.add('flipped');this.setState({ready:true})}} className="call-to-action-button">Let's time travel</div>
+                </div>
+              </div>
+              <div className="proto-col-4">
+                <div className="cover-image">
+                  <img style={{height:"100%", width:"100%"}}src={data.mandatory_config.timeline_image}/>
+                </div>
+              </div>
+            </div>
+            <div className="second-view view">
+              <div className="proto-col-3 view-in-desktop" style={{opacity:"0.3"}}>
+                <div className="tag-area"></div>
+                <div className="cover-content" style={{bottom:52}}>
+                  <div className="title">{data.mandatory_config.timeline_title}</div>
+                  <div className="description">{data.mandatory_config.timeline_description}</div>
+                </div>
+              </div>
+              <div className="proto-col-4" onScroll={()=>this.handleScroll()}>
+                <div className="progress-line">
+                  <div className="progress-start-lable">{topLabel}</div>
+                  <div className="progress-container">
+                    <div className="progress-after" style={{height: percent}}></div>
+                    <div className="progress"></div>
                   </div>
-                  {asset}
+                  <div className="progress-end-lable">{bottomLabel}</div>
                 </div>
-                <div id="protograph_scroll_down_indicator">
-                  <p id="protograph_scroll_down_text" style={{marginBottom: "2px", height: "20px"}}>Scroll</p>
-                  <svg id="protograph_scroll_down_arrow" height="25px" width="25px" viewBox="0 0 100 100">
-                    <line x1="10" y1="10" x2="50" y2="50" style={{stroke:"black", strokeWidth:5}} />
-                    <line x1="50" y1="50" x2="90" y2="10" style={{stroke:"black", strokeWidth:5}} />
-                    <line x1="10" y1="30" x2="50" y2="70" style={{stroke:"black", strokeWidth:5}} />
-                    <line x1="50" y1="70" x2="90" y2="30" style={{stroke:"black", strokeWidth:5}} />
-                  </svg>
+                <div className="main-content">
+                  <div className="timeline-card">
+                    {
+                      data.data.events.map((d,i)=>{
+                        let date = dateformat(new Date(d.single_event.timestamp_date), "mmm dd, yyyy")
+                        return(
+                          <div key={i} className="single-event">
+                            <div className="timeline-time">{date}</div>
+                            <div className="quiz-answer">
+                              {d.single_event.header}
+                            </div>
+                            {d.single_event.photo && <div className="quiz-answer-image">
+                              <img src={d.single_event.photo} style={{height:"100%", width:"100%"}} />
+                            </div>}
+                            <p>
+                              {d.single_event.message}
+                            </p>
+                          </div>
+                        )
+                      })
+                    }
+                  </div>
                 </div>
-              </div>
-            );
-        }
-        else {
-          return (
-            <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle} onClick={(e) => that.moveEventToTop(e)} >
-              <p className="protograph-message-timestamp">{timestamp}</p>
-              <div className="protograph-content-card protograph-laptop-mode">
-                <div className="protograph-content-card-details">
-                  { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
-                    <h3 className='ui header'>{element.single_event.header}</h3>
-                  }
-                  {asset}
-                  <p className="protograph-content-card-text">{element.single_event.message}</p>
-                </div>
-              </div>
-            </div>
-          );
-        }
-      });
-      let yearCountText = [];
-      for(let i = 0; i < events.length - 1; i++) {
-        let currentEventComponents = events[i].single_event.timestamp_date.split('-');
-        let nextEventComponents = events[i+1].single_event.timestamp_date.split('-');
-        let currentEvent = new Date(currentEventComponents[0], currentEventComponents[1], currentEventComponents[2]);
-        let nextEvent = new Date(nextEventComponents[0], nextEventComponents[1], nextEventComponents[2]);
-        let ranges = [];
-        if(Math.round((nextEvent - currentEvent)/(msDay*365)) >= 20) {
-          let j;
-          for(j = 0; j < eventPoints.length; j++) {
-            if(eventPoints[j].timestamp === events[i].single_event.timestamp_date) {
-              ranges.push({start: eventPoints[j].yCoord, end: eventPoints[j+1].yCoord, years: Math.round((nextEvent - currentEvent)/(msDay*365))})
-            }
-          }
-          for(j = 0; j < ranges.length; j++) {
-            let textPosition = ranges[j].start + (ranges[j].end - ranges[j].start)/2;
-            let rotateBy = `rotate(180 ${svgWidth/2},${textPosition})`;
-            yearCountText.push(<text key={textPosition} fontSize="12" writingMode="tb-rl" textAnchor="middle" x={svgWidth/2 + 10} y={textPosition} fill="#C0C0C0" transform={rotateBy}>{ranges[j].years} years</text>);
-          }
-        }
-      }
-      return (
-        <div id="protograph_div" className = "protograph-card-div protograph-laptop-mode">
-          <div id="protograph_div_content_wrapper" className="protograph-laptop-mode">
-            <div id="protograph_card_title_div">
-              <div id="protograph_timeline_details_div">
-                <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
-                <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
-                <button id="protograph_show_main_card_button" style={{backgroundColor: this.state.optionalConfigJSON.start_button_color, color: this.state.optionalConfigJSON.start_button_text_color}} onClick={(e) => that.showMainCard(e)}>{this.state.languageTexts.button_text}</button>
-              </div>
-              <div id="protograph_timeline_image_div" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`}}></div>
-            </div>
-            <div id="protograph_card_main_div">
-              <div>
-                <div style={{width:180, opacity:0}}>
-                  <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
-                  <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
-                </div>
-              </div>
-              <div id="protograph_gradient_div" className="protograph-top-gradient protograph-laptop-mode"></div>
-              <div style={{marginLeft:-85}}>
-                <div id="protograph_date_div">
-                  <div id="protograph_month_div">{this.getMonth(firstEventTimeComponents[1])}</div>
-                  <h1 id="protograph_day_div" className='ui header'>{firstEventTimeComponents[2]}</h1>
-                  <div id="protograph_year_div">{firstEventTimeComponents[0]}</div>
-                </div>
-                <div id="protograph_timeline_svg_div" className="protograph-laptop-mode">
-                  <p id="protograph_initial_timestamp">{firstEventTimeComponents[0]}</p>
-                  <svg id="protograph_timeline_svg" height={line_height} width={svgWidth}>
-                    <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
-                    <g id="protograph_svg_group">
-                      {plotCircles}
-                      {yearCountText}
-                    </g>
-                  </svg>
-                  <p id="protograph_final_timestamp">{lastEventTimeComponents[0]}</p>
-                </div>
-                <div id="protograph_content_div" onScroll={(e) => that.handleScroll(e)}>
-                  {eventDetails}
-                </div>
-                <div id="protograph_gradient_div" className="protograph-bottom-gradient protograph-laptop-mode"></div>
               </div>
             </div>
           </div>
-        </div>
-      )
+        )
     }
   }
 
@@ -578,141 +320,105 @@ export default class TimelineCard extends React.Component {
     if (this.state.fetchingData){
       return(<div>Loading</div>)
     } else {
-      // let styles = this.state.dataJSON.configs ? {backgroundColor: this.state.dataJSON.configs.background_color} : {undefined}
-      let events = this.state.dataJSON.data.events;
-      const line_height = 380;
-      const extraLineSpace = 30;
-      const svgWidth = 10;
-      const msDay = 60*60*24*1000;
-      let firstEventTimeComponents = events[0].single_event.timestamp_date.split('-');
-      let lastEventTimeComponents = events[events.length-1].single_event.timestamp_date.split('-');
-      let firstEventTimestamp = new Date(firstEventTimeComponents[0], firstEventTimeComponents[1], firstEventTimeComponents[2]);
-      let lastEventTimeStamp = new Date(lastEventTimeComponents[0], lastEventTimeComponents[1], lastEventTimeComponents[2]);
-      let maxTimeDifferenceInDays = Math.floor((lastEventTimeStamp - firstEventTimestamp)/msDay);
-      let eventTimestamps = events.map(element => element.single_event.timestamp_date.split('-'));
-      let eventPoints = [];
-      for(var i = 0; i < eventTimestamps.length; i++) {
-        let eventTimestamp = new Date(eventTimestamps[i][0], eventTimestamps[i][1], eventTimestamps[i][2])
-        let timeDifference = Math.floor((eventTimestamp - firstEventTimestamp)/msDay);
-        let newYCoord = 10;
-        if(maxTimeDifferenceInDays != 0){
-          newYCoord = ((timeDifference/maxTimeDifferenceInDays) * (line_height-2*extraLineSpace)) + extraLineSpace;
+      let data = this.state.dataJSON;
+      let topDate = data.data.events[0].single_event.timestamp_date,
+        bottomDate = data.data.events[data.data.events.length - 1].single_event.timestamp_date,
+        topLabel = dateformat(new Date(topDate), "mmm yyyy"),
+        bottomLabel = dateformat(new Date(bottomDate), "mmm yyyy"),
+        percent = 100*(this.state.curr / data.data.events.length)+"%";
+        let genreColor = "rgba(51, 51, 51, 0.75)",
+        genreFontColor = "#fff";
+        if(this.state.dataJSON.mandatory_config.interactive){
+          genreColor = this.state.optionalConfigJSON.house_colour;
+          genreFontColor = this.state.optionalConfigJSON.font_colour;
         }
-        eventPoints.push({timestamp: eventTimestamps[i].join('-'), yCoord: newYCoord});
-      }
-      var that = this;
-      let plotCircles = eventPoints.map((element, pos) => {
-        if(pos == 0) {
-          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" style={{fill: "red"}} onClick={(e) => {that.handleEventCircleClick(e)}} />;
+        if(this.state.dataJSON.mandatory_config.sponsored){
+          genreColor = this.state.optionalConfigJSON.reverse_house_colour;
+          genreFontColor = this.state.optionalConfigJSON.reverse_font_colour;
         }
-        else {
-          return <circle id={element.timestamp} key={element.timestamp} className="protograph-circle-plot" cx={svgWidth/2} cy={element.yCoord} r="5" style={{fill: "#C0C0C0"}} onClick={(e) => {that.handleEventCircleClick(e)}} />
+        let fav = this.state.dataJSON.mandatory_config.faviconurl;
+        let str = this.state.dataJSON.mandatory_config.url;
+        let arr = str && str.split("/");
+        let name = undefined;
+        let dom = arr && arr[2];
+        if (this.matchDomain(this.state.domain, str)) {
+          fav = undefined;
         }
-      });
-      let assetIcons = events.map((element, pos) => {
-        if(element.single_event.youtube_url){
-          return (
-            <svg id={element.timestamp} key={element.timestamp} className="protograph-asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 20) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='src/images/play.svg' />"}}/>
-
-          );
+        let series = window.vertical_name || this.state.dataJSON.mandatory_config.series,
+        genre = this.state.dataJSON.mandatory_config.genre;
+        let padding = "1px 1px 1px 5px";
+        if (!genre && series) {
+          padding = "2.5px 5px";
         }
-        if(element.single_event.photo){
-          return (
-            <svg id={element.timestamp} key={element.timestamp} className="protograph-asset-svg" dangerouslySetInnerHTML={{__html: "<image" + " x=" + (svgWidth/2 - 20) + " y=" + (that.getEventYCoord(element.single_event.timestamp_date, eventPoints) - 7) + " width=15" + " height=15" + " xlink:href='src/images/image.svg' />"}}/>
-          );
+        if (!series && !genre) {
+          padding = '0px';
         }
-      });
-      let onStartStyle = {opacity: "0.10"};
-      let eventDetails = events.map((element, pos) => {
-        let timestampComponents = element.single_event.timestamp_date.split('-');
-        let timestamp = `${that.getMonth(timestampComponents[1])} ${timestampComponents[2]}, ${timestampComponents[0]}`;
-        let asset = that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) ?  that.injectYoutubeEmbed(element.single_event.youtube_url, element.single_event.media_caption) : that.injectImage(element.single_event.photo, element.single_event.media_caption);
-        if(pos == 0) {
-            return (
-              <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div protograph-first-event" style={{marginTop: line_height/2 - 51}} onClick={(e) => that.moveEventToTop(e)} >
-                <p className="protograph-message-timestamp" style={{color: "black"}}>{timestamp}</p>
-                <div className="protograph-content-card protograph-mobile-mode">
-                  { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
-                    <h3 className='ui header'>{element.single_event.header}</h3>
-                  }
-                  <p className="protograph-content-card-text">{element.single_event.message}</p>
-                  {asset}
-                </div>
-                <div id="protograph_scroll_down_indicator">
-                  <p id="protograph_scroll_down_text" style={{marginBottom: "2px", height: "20px"}}>Scroll</p>
-                  <svg id="protograph_scroll_down_arrow" height="25px" width="25px" viewBox="0 0 100 100">
-                    <line x1="10" y1="10" x2="50" y2="50" style={{stroke:"black", strokeWidth:5}} />
-                    <line x1="50" y1="50" x2="90" y2="10" style={{stroke:"black", strokeWidth:5}} />
-                    <line x1="10" y1="30" x2="50" y2="70" style={{stroke:"black", strokeWidth:5}} />
-                    <line x1="50" y1="70" x2="90" y2="30" style={{stroke:"black", strokeWidth:5}} />
-                  </svg>
+        if (genre && !series) {
+          padding = "1px";
+        }
+        return(
+          <div className="totimelinecard parent-card-mobile">
+            <div className="first-view view">
+              <div className="proto-col-4">
+                <div className="cover-image">
+                  <img style={{height:"100%", width:"100%"}}src={data.mandatory_config.timeline_image}/>
+                  <div className="card-tags"  style={{position: "absolute",top:0}}>
+                    {fav ?
+                    <div className="publisher-icon" style={{backgroundColor:this.state.dataJSON.mandatory_config.iconbgcolor || 'white'}}>
+                      <img className="favicon" src = {fav}/>
+                    </div> : null}
+                    <div className="series-name" style={{ padding: padding }}>{series}{genre ? <div className="genre" style={{backgroundColor: genreColor, color: genreFontColor, marginLeft: series?'3px' :'0px' }}>
+                      {genre } </div> : null}
+                      </div>
+                      <div className="sub-genre-light" style={{fontStyle:this.state.dataJSON.mandatory_config.sponsored? 'italic': 'normal', textDecoration:this.state.dataJSON.mandatory_config.sponsored? 'underline' : 'none'}}>
+                          {this.state.dataJSON.mandatory_config.sponsored ?'Sponsored': this.state.dataJSON.mandatory_config.subgenre}
+                      </div>
+                  </div>
+                  <div className="cover-content">
+                    <div className="title font-white">{data.mandatory_config.timeline_title}</div>
+                    <div className="description font-white">{data.mandatory_config.timeline_description}</div>
+                    <div onClick={()=>{document.getElementsByClassName('totimelinecard')[0].classList.add('flipped');this.setState({ready:true})}} className="call-to-action-button">Let's time travel</div>
+                  </div>
                 </div>
               </div>
-            );
-        }
-        else {
-          return (
-            <div id={element.single_event.timestamp_date} key={element.single_event.timestamp_date} className="protograph-event-message-div" style={onStartStyle} onClick={(e) => that.moveEventToTop(e)} >
-              <p className="protograph-message-timestamp">{timestamp}</p>
-              <div className="protograph-content-card protograph-mobile-mode">
-                { typeof element.single_event.header !== "undefined" && element.single_event.header !== "" &&
-                  <h3 className='ui header'>{element.single_event.header}</h3>
-                }
-                {asset}
-                <p className="protograph-content-card-text">{element.single_event.message}</p>
+            </div>
+            <div className="second-view view">
+              <div className="proto-col-4" onScroll={()=>this.handleScroll()}>
+                <div className="progress-line">
+                  <div className="progress-start-lable">{topLabel}</div>
+                  <div className="progress-container">
+                    <div className="progress-after" style={{height: percent}}></div>
+                    <div className="progress"></div>
+                  </div>
+                  <div className="progress-end-lable">{bottomLabel}</div>
+                </div>
+                <div className="main-content">
+                  <div className="timeline-card">
+                    {
+                      data.data.events.map((d,i)=>{
+                        let date = dateformat(new Date(d.single_event.timestamp_date), "mmm dd, yyyy")
+                        return(
+                          <div key={i} className="single-event">
+                            <div className="timeline-time">{date}</div>
+                            <div className="quiz-answer">
+                              {d.single_event.header}
+                            </div>
+                            {d.single_event.photo && <div className="quiz-answer-image">
+                              <img src={d.single_event.photo} style={{height:"100%", width:"100%"}} />
+                            </div>}
+                            <p>
+                              {d.single_event.message}
+                            </p>
+                          </div>
+                        )
+                      })
+                    }
+                  </div>
+                </div>
               </div>
             </div>
-          );
-        }
-      });
-      let yearCountText = [];
-      for(let i = 0; i < events.length - 1; i++) {
-        let currentEventComponents = events[i].single_event.timestamp_date.split('-');
-        let nextEventComponents = events[i+1].single_event.timestamp_date.split('-');
-        let currentEvent = new Date(currentEventComponents[0], currentEventComponents[1], currentEventComponents[2]);
-        let nextEvent = new Date(nextEventComponents[0], nextEventComponents[1], nextEventComponents[2]);
-        let ranges = [];
-        if(Math.round((nextEvent - currentEvent)/(msDay*365)) >= 20) {
-          let j;
-          for(j = 0; j < eventPoints.length; j++) {
-            if(eventPoints[j].timestamp === events[i].single_event.timestamp_date) {
-              ranges.push({start: eventPoints[j].yCoord, end: eventPoints[j+1].yCoord, years: Math.round((nextEvent - currentEvent)/(msDay*365))})
-            }
-          }
-          for(j = 0; j < ranges.length; j++) {
-            let textPosition = ranges[j].start + (ranges[j].end - ranges[j].start)/2;
-            let rotateBy = `rotate(180 ${svgWidth/2},${textPosition})`;
-            yearCountText.push(<text key={textPosition} fontSize="12" writingMode="tb-rl" textAnchor="middle" x={svgWidth/2 + 10} y={textPosition} fill="#C0C0C0" transform={rotateBy}>{ranges[j].years} years</text>);
-          }
-        }
-      }
-      return (
-        <div id="protograph_div" className="protograph-card-div protograph-mobile-mode" style={{background: `url(${this.state.dataJSON.mandatory_config.timeline_image})`, backgroundRepeat: "no-repeat", backgroundSize: "cover", padding: 0}}>
-          <div id="protograph_card_title_div_gradient"></div>
-          <div id="protograph_div_content_wrapper protograph-mobile-mode">
-          <div id="protograph_card_title_div_mobile">
-            <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
-            <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
-            <button id="protograph_show_main_card_button_mobile" style={{backgroundColor: this.state.optionalConfigJSON.start_button_color, color: this.state.optionalConfigJSON.start_button_text_color}} onClick={(e) => that.showMainCard(e)}>{this.state.languageTexts.button_text}</button>
           </div>
-          <div id="protograph_card_main_div">
-            <div id="protograph_gradient_div" className="protograph-top-gradient protograph-mobile-mode"></div>
-            <div id="protograph_timeline_svg_div" className="protograph-mobile-mode">
-              <svg id="protograph_timeline_svg" height={line_height} width={svgWidth}>
-                <line x1={svgWidth/2} y1="0" x2={svgWidth/2} y2={line_height} style={{stroke: "#dcdcdc", strokeWidth: "1"}} />
-                <g id="protograph_svg_group">
-                  {plotCircles}
-                </g>
-              </svg>
-            </div>
-            <div id="protograph_content_div" onScroll={(e) => that.handleScroll(e)} style={{width: "90.75%"}}>
-              {eventDetails}
-            </div>
-            <div id="protograph_gradient_div" className="protograph-bottom-gradient protograph-mobile-mode"></div>
-          </div>
-        </div>
-      </div>
-      )
+        )
     }
   }
 

@@ -206,12 +206,6 @@ showLinkText() {
   toggleMode(e) {
     let element = e.target.closest('a'),
       mode = element.getAttribute('data-mode');
-
-    if (mode === 'laptop'){
-      document.getElementById('protograph_card_title_div_gradient').style.display = 'block';
-    } else {
-
-    }
     this.setState((prevState, props) => {
       let newMode;
       if (mode !== prevState.mode) {
