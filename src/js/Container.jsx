@@ -205,14 +205,14 @@ export default class TimelineCard extends React.Component {
     if (this.state.fetchingData){
       return(<div>Loading</div>)
     } else {
-      let data = this.state.dataJSON;
-      let topDate = data.data.events[0].single_event.timestamp_date,
-        bottomDate = data.data.events[data.data.events.length - 1].single_event.timestamp_date,
-        topLabel = dateformat(new Date(topDate), "mmm yyyy"),
-        bottomLabel = dateformat(new Date(bottomDate), "mmm yyyy"),
-        percent = 100*(this.state.curr / data.data.events.length)+"%";
-      let genreColor = this.state.optionalConfigJSON.house_colour,
-        genreFontColor = this.state.optionalConfigJSON.font_colour;
+      let data = this.state.dataJSON,
+          topDate = data.data.events[0].single_event.timestamp_date,
+          bottomDate = data.data.events[data.data.events.length - 1].single_event.timestamp_date,
+          topLabel = dateformat(new Date(topDate), "mmm yyyy"),
+          bottomLabel = dateformat(new Date(bottomDate), "mmm yyyy"),
+          percent = 100*(this.state.curr / data.data.events.length)+"%",
+          genreColor = this.state.optionalConfigJSON.house_colour,
+          genreFontColor = this.state.optionalConfigJSON.font_colour;
         if(!this.state.dataJSON.mandatory_config.interactive){
           genreColor = "rgba(51, 51, 51, 0.75)",
           genreFontColor = "#fff";
@@ -221,17 +221,17 @@ export default class TimelineCard extends React.Component {
           genreColor = this.state.optionalConfigJSON.reverse_house_colour;
           genreFontColor = this.state.optionalConfigJSON.reverse_font_colour;
         }
-        let fav = this.state.dataJSON.mandatory_config.faviconurl;
-        let str = this.state.dataJSON.mandatory_config.url;
-        let arr = str && str.split("/");
-        let name = undefined;
-        let dom = arr && arr[2];
+        let fav = this.state.dataJSON.mandatory_config.faviconurl,
+            str = this.state.dataJSON.mandatory_config.url,
+            arr = str && str.split("/"),
+            name = undefined,
+            dom = arr && arr[2];
         if (this.matchDomain(this.state.domain, str)) {
           fav = undefined;
         }
         let series = window.vertical_name || this.state.dataJSON.mandatory_config.series,
-        genre = this.state.dataJSON.mandatory_config.genre;
-        let padding = "1px 1px 1px 5px";
+        genre = this.state.dataJSON.mandatory_config.genre,
+        padding = "1px 1px 1px 5px";
         if (!genre && series) {
           padding = "2.5px 5px";
         }
@@ -260,7 +260,7 @@ export default class TimelineCard extends React.Component {
                 <div className="proto-cover-content">
                   <div className="proto-title">{data.mandatory_config.timeline_title}</div>
                   <div className="proto-description">{data.mandatory_config.timeline_description}</div>
-                  <div onClick={()=>{document.getElementsByClassName('proto-totimelinecard')[0].classList.add('proto-flipped');this.setState({ready:true})}} className="proto-call-to-action-button">Let's time travel</div>
+                  <div onClick={()=>{document.getElementsByClassName('proto-totimelinecard')[0].classList.add('proto-flipped');this.setState({ready:true})}} className="proto-call-to-action-button">{this.state.languageTexts.button_text}</div>
                 </div>
               </div>
               <div className="proto-col-4">
@@ -320,14 +320,14 @@ export default class TimelineCard extends React.Component {
     if (this.state.fetchingData){
       return(<div>Loading</div>)
     } else {
-      let data = this.state.dataJSON;
-      let topDate = data.data.events[0].single_event.timestamp_date,
-        bottomDate = data.data.events[data.data.events.length - 1].single_event.timestamp_date,
-        topLabel = dateformat(new Date(topDate), "mmm yyyy"),
-        bottomLabel = dateformat(new Date(bottomDate), "mmm yyyy"),
-        percent = 100*(this.state.curr / data.data.events.length)+"%";
-      let genreColor = this.state.optionalConfigJSON.house_colour,
-        genreFontColor = this.state.optionalConfigJSON.font_colour;
+      let data = this.state.dataJSON,
+          topDate = data.data.events[0].single_event.timestamp_date,
+          bottomDate = data.data.events[data.data.events.length - 1].single_event.timestamp_date,
+          topLabel = dateformat(new Date(topDate), "mmm yyyy"),
+          bottomLabel = dateformat(new Date(bottomDate), "mmm yyyy"),
+          percent = 100*(this.state.curr / data.data.events.length)+"%",
+          genreColor = this.state.optionalConfigJSON.house_colour,
+          genreFontColor = this.state.optionalConfigJSON.font_colour;
         if(!this.state.dataJSON.mandatory_config.interactive){
           genreColor = "rgba(51, 51, 51, 0.75)",
           genreFontColor = "#fff";
@@ -336,17 +336,17 @@ export default class TimelineCard extends React.Component {
           genreColor = this.state.optionalConfigJSON.reverse_house_colour;
           genreFontColor = this.state.optionalConfigJSON.reverse_font_colour;
         }
-        let fav = this.state.dataJSON.mandatory_config.faviconurl;
-        let str = this.state.dataJSON.mandatory_config.url;
-        let arr = str && str.split("/");
-        let name = undefined;
-        let dom = arr && arr[2];
+        let fav = this.state.dataJSON.mandatory_config.faviconurl,
+            str = this.state.dataJSON.mandatory_config.url,
+            arr = str && str.split("/"),
+            name = undefined,
+            dom = arr && arr[2];
         if (this.matchDomain(this.state.domain, str)) {
           fav = undefined;
         }
         let series = window.vertical_name || this.state.dataJSON.mandatory_config.series,
-        genre = this.state.dataJSON.mandatory_config.genre;
-        let padding = "1px 1px 1px 5px";
+        genre = this.state.dataJSON.mandatory_config.genre,
+        padding = "1px 1px 1px 5px";
         if (!genre && series) {
           padding = "2.5px 5px";
         }
@@ -435,7 +435,7 @@ export default class TimelineCard extends React.Component {
                 <div id="protograph_timeline_details_div" style={{width: '100%'}}>
                   <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
                   <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
-                  <button id="protograph_show_main_card_button" style={{padding: '8px 10px', marginTop:0}} onClick={(e) => that.showMainCard(e)}>{this.state.languageTexts.button_text}</button>
+                  <button id="protograph_show_main_card_button" style={{padding: '8px 10px', marginTop:0}}>{this.state.languageTexts.button_text}</button>
                 </div>
             </div>
           </div>
