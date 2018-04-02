@@ -57,7 +57,7 @@
                     "id": "/properties/data/properties/events/items/properties/single_event/properties/youtube_url"
                   },
                   "photo": {
-                    "title": "OR Image URL",
+                    "title": "Image URL",
                     "type": "string",
                     "pattern": "((?:https?\\:\/\/|www\\.)(?:[-a-z0-9]+\\.)*[-a-z0-9]+.*)",
                     "id": "/properties/data/properties/events/items/properties/single_event/properties/photo"

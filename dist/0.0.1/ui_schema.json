@@ -13,10 +13,14 @@
       "items": {
         "single_event": {
           "youtube_url": {
-            "ui:help": "Youtube URL is prioritised over Image URL"
+            "ui:help": "Youtube URL is prioritised over Image URL",
+            "ui:widget":"hidden"
           },
           "photo": {
             "ui:help": "Use Image Bank to create a 1:1 aspect ratio image."
+          },
+          "media_caption":{
+            "ui:widget":"hidden"
           }
         }
       }

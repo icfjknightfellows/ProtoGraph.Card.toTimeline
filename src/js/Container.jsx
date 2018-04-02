@@ -100,8 +100,8 @@ export default class TimelineCard extends React.Component {
   }
 
   componentDidUpdate(){
-    let events = Array.from(document.getElementsByClassName('single-event')),
-    card = document.getElementsByClassName('timeline-card')[0],
+    let events = Array.from(document.getElementsByClassName('proto-single-event')),
+    card = document.getElementsByClassName('proto-timeline-card')[0],
     min = Infinity,
     event;
     if(!card){
@@ -123,8 +123,8 @@ export default class TimelineCard extends React.Component {
     event.classList.add('active');
   }
   handleScroll(){
-    let events = Array.from(document.getElementsByClassName('single-event')),
-    card = document.getElementsByClassName('timeline-card')[0],
+    let events = Array.from(document.getElementsByClassName('proto-single-event')),
+    card = document.getElementsByClassName('proto-timeline-card')[0],
     min = Infinity,
     event, curr;
     Array.from(document.getElementsByClassName('active')).forEach((e)=>{
@@ -242,62 +242,62 @@ export default class TimelineCard extends React.Component {
           padding = "1px";
         }
         return(
-          <div className="totimelinecard parent-card-desktop">
-            <div className="first-view view">
-              <div className="proto-col-3 view-in-desktop">
-                <div className="card-tags">
+          <div className="proto-totimelinecard proto-parent-card-desktop">
+            <div className="proto-first-view proto-view">
+              <div className="proto-col-3 proto-view-in-desktop">
+                <div className="proto-card-tags">
                   {fav ?
-                  <div className="publisher-icon" style={{backgroundColor:this.state.dataJSON.mandatory_config.iconbgcolor || 'white'}}>
-                    <img className="favicon" src = {fav}/>
+                  <div className="proto-publisher-icon" style={{backgroundColor:this.state.dataJSON.mandatory_config.iconbgcolor || 'white'}}>
+                    <img className="proto-favicon" src = {fav}/>
                   </div> : null}
-                  <div className="series-name" style={{ padding: padding }}>{series}{genre ? <div className="genre" style={{backgroundColor: genreColor, color: genreFontColor, marginLeft: series?'3px' :'0px' }}>
+                  <div className="proto-series-name" style={{ padding: padding }}>{series}{genre ? <div className="proto-genre" style={{backgroundColor: genreColor, color: genreFontColor, marginLeft: series?'3px' :'0px' }}>
                     {genre } </div> : null}
                     </div>
-                      <div className="sub-genre-dark" style={{fontStyle:this.state.dataJSON.mandatory_config.sponsored? 'italic': 'normal', textDecoration:this.state.dataJSON.mandatory_config.sponsored? 'underline' : 'none'}}>
+                      <div className="proto-sub-genre-dark" style={{fontStyle:this.state.dataJSON.mandatory_config.sponsored? 'italic': 'normal', textDecoration:this.state.dataJSON.mandatory_config.sponsored? 'underline' : 'none'}}>
                         {this.state.dataJSON.mandatory_config.sponsored ?'Sponsored': this.state.dataJSON.mandatory_config.subgenre}
                       </div>
                 </div>
-                <div className="cover-content">
-                  <div className="title">{data.mandatory_config.timeline_title}</div>
-                  <div className="description">{data.mandatory_config.timeline_description}</div>
-                  <div onClick={()=>{document.getElementsByClassName('totimelinecard')[0].classList.add('flipped');this.setState({ready:true})}} className="call-to-action-button">Let's time travel</div>
+                <div className="proto-cover-content">
+                  <div className="proto-title">{data.mandatory_config.timeline_title}</div>
+                  <div className="proto-description">{data.mandatory_config.timeline_description}</div>
+                  <div onClick={()=>{document.getElementsByClassName('proto-totimelinecard')[0].classList.add('proto-flipped');this.setState({ready:true})}} className="proto-call-to-action-button">Let's time travel</div>
                 </div>
               </div>
               <div className="proto-col-4">
-                <div className="cover-image">
+                <div className="proto-cover-image">
                   <img style={{height:"100%", width:"100%"}}src={data.mandatory_config.timeline_image}/>
                 </div>
               </div>
             </div>
-            <div className="second-view view">
-              <div className="proto-col-3 view-in-desktop" style={{opacity:"0.3"}}>
-                <div className="tag-area"></div>
-                <div className="cover-content" style={{bottom:52}}>
-                  <div className="title">{data.mandatory_config.timeline_title}</div>
-                  <div className="description">{data.mandatory_config.timeline_description}</div>
+            <div className="proto-second-view proto-view">
+              <div className="proto-col-3 proto-view-in-desktop" style={{opacity:"0.3"}}>
+                <div className="proto-tag-area"></div>
+                <div className="proto-cover-content" style={{bottom:52}}>
+                  <div className="proto-title">{data.mandatory_config.timeline_title}</div>
+                  <div className="proto-description">{data.mandatory_config.timeline_description}</div>
                 </div>
               </div>
               <div className="proto-col-4" onScroll={()=>this.handleScroll()}>
-                <div className="progress-line" id="progress_desktop">
-                  <div className="progress-start-lable">{topLabel}</div>
-                  <div className="progress-container">
-                    <div className="progress-after" style={{height: percent}}></div>
-                    <div className="progress"></div>
+                <div className="proto-progress-line" id="proto_progress_desktop">
+                  <div className="proto-progress-start-lable">{topLabel}</div>
+                  <div className="proto-progress-container">
+                    <div className="proto-progress-after" style={{height: percent}}></div>
+                    <div className="proto-progress"></div>
                   </div>
-                  <div className="progress-end-lable">{bottomLabel}</div>
+                  <div className="proto-progress-end-lable">{bottomLabel}</div>
                 </div>
-                <div className="main-content">
-                  <div className="timeline-card">
+                <div className="proto-main-content">
+                  <div className="proto-timeline-card">
                     {
                       data.data.events.map((d,i)=>{
                         let date = dateformat(new Date(d.single_event.timestamp_date), "mmm dd, yyyy")
                         return(
-                          <div key={i} className="single-event">
-                            <div className="timeline-time">{date}</div>
-                            <div className="quiz-answer">
+                          <div key={i} className="proto-single-event">
+                            <div className="proto-timeline-time">{date}</div>
+                            <div className="proto-quiz-answer">
                               {d.single_event.header}
                             </div>
-                            {d.single_event.photo && <div className="quiz-answer-image">
+                            {d.single_event.photo && <div className="proto-quiz-answer-image">
                               <img src={d.single_event.photo} style={{height:"100%", width:"100%"}} />
                             </div>}
                             <p>
@@ -357,55 +357,55 @@ export default class TimelineCard extends React.Component {
           padding = "1px";
         }
         return(
-          <div className="totimelinecard parent-card-mobile">
-            <div className="first-view view">
+          <div className="proto-totimelinecard proto-parent-card-mobile">
+            <div className="proto-first-view proto-view">
               <div className="proto-col-4">
-                <div className="cover-image">
+                <div className="proto-cover-image">
                   <img style={{height:"100%", width:"100%"}} src={data.mandatory_config.timeline_image}/>
-                  <div className="card-tags"  style={{position: "absolute",top:0}}>
+                  <div className="proto-card-tags"  style={{position: "absolute",top:0}}>
                     {fav ?
-                    <div className="publisher-icon" style={{backgroundColor:this.state.dataJSON.mandatory_config.iconbgcolor || 'white'}}>
-                      <img className="favicon" src = {fav}/>
+                    <div className="proto-publisher-icon" style={{backgroundColor:this.state.dataJSON.mandatory_config.iconbgcolor || 'white'}}>
+                      <img className="proto-favicon" src = {fav}/>
                     </div> : null}
-                    <div className="series-name" style={{ padding: padding }}>{series}{genre ? <div className="genre" style={{backgroundColor: genreColor, color: genreFontColor, marginLeft: series?'3px' :'0px' }}>
+                    <div className="proto-series-name" style={{ padding: padding }}>{series}{genre ? <div className="proto-genre" style={{backgroundColor: genreColor, color: genreFontColor, marginLeft: series?'3px' :'0px' }}>
                       {genre } </div> : null}
                       </div>
-                      <div className="sub-genre-light" style={{fontStyle:this.state.dataJSON.mandatory_config.sponsored? 'italic': 'normal', textDecoration:this.state.dataJSON.mandatory_config.sponsored? 'underline' : 'none'}}>
+                      <div className="proto-sub-genre-light" style={{fontStyle:this.state.dataJSON.mandatory_config.sponsored? 'italic': 'normal', textDecoration:this.state.dataJSON.mandatory_config.sponsored? 'underline' : 'none'}}>
                           {this.state.dataJSON.mandatory_config.sponsored ?'Sponsored': this.state.dataJSON.mandatory_config.subgenre}
                       </div>
                   </div>
-                  <div className="black-overlay">
-                    <div className="cover-content">
-                      <div className="title font-white">{data.mandatory_config.timeline_title}</div>
-                      <div className="description font-white">{data.mandatory_config.timeline_description}</div>
-                      <div onClick={()=>{document.getElementsByClassName('totimelinecard')[0].classList.add('flipped');this.setState({ready:true})}} className="call-to-action-button">Let's time travel</div>
+                  <div className="proto-black-overlay">
+                    <div className="proto-cover-content">
+                      <div className="proto-title proto-font-white">{data.mandatory_config.timeline_title}</div>
+                      <div className="proto-description proto-font-white">{data.mandatory_config.timeline_description}</div>
+                      <div onClick={()=>{document.getElementsByClassName('proto-totimelinecard')[0].classList.add('proto-flipped');this.setState({ready:true})}} className="proto-call-to-action-button">Let's time travel</div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="second-view view">
+            <div className="proto-second-view proto-view">
               <div className="proto-col-4" onScroll={()=>this.handleScroll()}>
-                <div className="progress-line" id="progress_mobile">
-                  <div className="progress-start-lable">{topLabel}</div>
-                  <div className="progress-container">
-                    <div className="progress-after" style={{height: percent}}></div>
-                    <div className="progress"></div>
+                <div className="proto-progress-line" id="proto_progress_mobile">
+                  <div className="proto-progress-start-lable">{topLabel}</div>
+                  <div className="proto-progress-container">
+                    <div className="proto-progress-after" style={{height: percent}}></div>
+                    <div className="proto-progress"></div>
                   </div>
-                  <div className="progress-end-lable">{bottomLabel}</div>
+                  <div className="proto-progress-end-lable">{bottomLabel}</div>
                 </div>
-                <div className="main-content">
-                  <div className="timeline-card">
+                <div className="proto-main-content">
+                  <div className="proto-timeline-card">
                     {
                       data.data.events.map((d,i)=>{
                         let date = dateformat(new Date(d.single_event.timestamp_date), "mmm dd, yyyy")
                         return(
-                          <div key={i} className="single-event">
-                            <div className="timeline-time">{date}</div>
-                            <div className="quiz-answer">
+                          <div key={i} className="proto-single-event">
+                            <div className="proto-timeline-time">{date}</div>
+                            <div className="proto-quiz-answer">
                               {d.single_event.header}
                             </div>
-                            {d.single_event.photo && <div className="quiz-answer-image">
+                            {d.single_event.photo && <div className="proto-quiz-answer-image">
                               <img src={d.single_event.photo} style={{height:"100%", width:"100%"}} />
                             </div>}
                             <p>
