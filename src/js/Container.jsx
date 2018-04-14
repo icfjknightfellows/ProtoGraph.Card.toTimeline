@@ -201,7 +201,11 @@ export default class TimelineCard extends React.Component {
 
     return (subDomain);
   }
-  renderLaptop() {
+  flipper(){
+    document.getElementsByClassName('proto-totimelinecard')[0].classList.add('proto-flipped');
+    this.setState({ready:true})
+  }
+  renderColSeven() {
     if (this.state.fetchingData){
       return(<div>Loading</div>)
     } else {
@@ -260,19 +264,19 @@ export default class TimelineCard extends React.Component {
                 <div className="proto-cover-content">
                   <div className="proto-title">{data.mandatory_config.timeline_title}</div>
                   <div className="proto-description">{data.mandatory_config.timeline_description}</div>
-                  <div onClick={()=>{document.getElementsByClassName('proto-totimelinecard')[0].classList.add('proto-flipped');this.setState({ready:true})}} className="proto-call-to-action-button">{this.state.languageTexts.button_text}</div>
+                  <div onClick={()=>{this.flipper()}} className="proto-call-to-action-button">{this.state.languageTexts.button_text}</div>
                 </div>
               </div>
               <div className="proto-col-4">
                 <div className="proto-cover-image">
-                  <img style={{height:"100%", width:"100%"}}src={data.mandatory_config.timeline_image}/>
+                  <img className="proto-image" src={data.mandatory_config.timeline_image}/>
                 </div>
               </div>
             </div>
             <div className="proto-second-view proto-view">
-              <div className="proto-col-3 proto-view-in-desktop" style={{opacity:"0.3"}}>
+              <div className="proto-col-3 proto-view-in-desktop">
                 <div className="proto-tag-area"></div>
-                <div className="proto-cover-content" style={{bottom:52}}>
+                <div className="proto-cover-content">
                   <div className="proto-title">{data.mandatory_config.timeline_title}</div>
                   <div className="proto-description">{data.mandatory_config.timeline_description}</div>
                 </div>
@@ -298,7 +302,7 @@ export default class TimelineCard extends React.Component {
                               {d.single_event.header}
                             </div>
                             {d.single_event.photo && <div className="proto-quiz-answer-image">
-                              <img src={d.single_event.photo} style={{height:"100%", width:"100%"}} />
+                              <img src={d.single_event.photo} className="proto-image" />
                             </div>}
                             <p>
                               {d.single_event.message}
@@ -316,7 +320,7 @@ export default class TimelineCard extends React.Component {
     }
   }
 
-  renderMobile() {
+  renderColFour() {
     if (this.state.fetchingData){
       return(<div>Loading</div>)
     } else {
@@ -362,7 +366,7 @@ export default class TimelineCard extends React.Component {
               <div className="proto-col-4">
                 <div className="proto-cover-image">
                   <img style={{height:"100%", width:"100%"}} src={data.mandatory_config.timeline_image}/>
-                  <div className="proto-card-tags"  style={{position: "absolute",top:0}}>
+                  <div className="proto-card-tags proto-card-tags-mobile">
                     {fav ?
                     <div className="proto-publisher-icon" style={{backgroundColor:this.state.dataJSON.mandatory_config.iconbgcolor || 'white'}}>
                       <img className="proto-favicon" src = {fav}/>
@@ -378,7 +382,7 @@ export default class TimelineCard extends React.Component {
                     <div className="proto-cover-content">
                       <div className="proto-title proto-font-white">{data.mandatory_config.timeline_title}</div>
                       <div className="proto-description proto-font-white">{data.mandatory_config.timeline_description}</div>
-                      <div onClick={()=>{document.getElementsByClassName('proto-totimelinecard')[0].classList.add('proto-flipped');this.setState({ready:true})}} className="proto-call-to-action-button">Let's time travel</div>
+                      <div onClick={()=>{this.flipper()}} className="proto-call-to-action-button">Let's time travel</div>
                     </div>
                   </div>
                 </div>
@@ -406,7 +410,7 @@ export default class TimelineCard extends React.Component {
                               {d.single_event.header}
                             </div>
                             {d.single_event.photo && <div className="proto-quiz-answer-image">
-                              <img src={d.single_event.photo} style={{height:"100%", width:"100%"}} />
+                              <img src={d.single_event.photo} className="proto-image" />
                             </div>}
                             <p>
                               {d.single_event.message}
@@ -424,36 +428,14 @@ export default class TimelineCard extends React.Component {
     }
   }
 
-  renderScreenshot() {
-    if (this.state.fetchingData){
-      return(<div>Loading</div>)
-    } else {
-      return (
-        <div id="ProtoScreenshot">
-          <div id="protograph_div" className = "protograph-card-div protograph-screenshot-mode">
-              <div id="protograph_card_title_div">
-                <div id="protograph_timeline_details_div" style={{width: '100%'}}>
-                  <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
-                  <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
-                  <button id="protograph_show_main_card_button" style={{padding: '8px 10px', marginTop:0}}>{this.state.languageTexts.button_text}</button>
-                </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-  }
 
   render() {
     switch(this.props.mode) {
-      case 'laptop' :
-        return this.renderLaptop();
+      case 'col7' :
+        return this.renderColSeven();
         break;
-      case 'mobile' :
-        return this.renderMobile();
-        break;
-      case 'screenshot' :
-        return this.renderScreenshot();
+      case 'col4' :
+        return this.renderColFour();
         break;
     }
   }
