@@ -212,14 +212,20 @@ export default class TimelineCard extends React.Component {
     if (this.state.fetchingData){
       return(<div>Loading</div>)
     } else {
+      let dataArr = this.state.dataJSON.data.events.slice();
+      dataArr.sort(function(a,b){
+        return new Date(a.single_event.timestamp_date) - new Date(b.single_event.timestamp_date);
+      });
       let data = this.state.dataJSON,
-          topDate = data.data.events[0].single_event.timestamp_date,
-          bottomDate = data.data.events[data.data.events.length - 1].single_event.timestamp_date,
+          topDate = dataArr[0].single_event.timestamp_date,
+          bottomDate = dataArr[dataArr.length - 1].single_event.timestamp_date,
           topLabel = dateformat(new Date(topDate), "mmm yyyy"),
           bottomLabel = dateformat(new Date(bottomDate), "mmm yyyy"),
           percent = 100*(this.state.curr / data.data.events.length)+"%",
           genreColor = this.state.optionalConfigJSON.house_colour,
           genreFontColor = this.state.optionalConfigJSON.font_colour;
+
+          
         if(!this.state.dataJSON.mandatory_config.interactive){
           genreColor = "rgba(51, 51, 51, 0.75)",
           genreFontColor = "#fff";
@@ -296,7 +302,7 @@ export default class TimelineCard extends React.Component {
                 <div className="proto-main-content">
                   <div className="proto-timeline-card">
                     {
-                      data.data.events.map((d,i)=>{
+                      dataArr.map((d,i)=>{
                         let date = dateformat(new Date(d.single_event.timestamp_date), "mmm dd, yyyy")
                         return(
                           <div key={i} className="proto-single-event">
@@ -327,14 +333,20 @@ export default class TimelineCard extends React.Component {
     if (this.state.fetchingData){
       return(<div>Loading</div>)
     } else {
+      let dataArr = this.state.dataJSON.data.events.slice();
+      dataArr.sort(function(a,b){
+        return new Date(a.single_event.timestamp_date) - new Date(b.single_event.timestamp_date);
+      });
       let data = this.state.dataJSON,
-          topDate = data.data.events[0].single_event.timestamp_date,
-          bottomDate = data.data.events[data.data.events.length - 1].single_event.timestamp_date,
+          topDate = dataArr[0].single_event.timestamp_date,
+          bottomDate = dataArr[dataArr.length - 1].single_event.timestamp_date,
           topLabel = dateformat(new Date(topDate), "mmm yyyy"),
           bottomLabel = dateformat(new Date(bottomDate), "mmm yyyy"),
           percent = 100*(this.state.curr / data.data.events.length)+"%",
           genreColor = this.state.optionalConfigJSON.house_colour,
           genreFontColor = this.state.optionalConfigJSON.font_colour;
+
+            
         if(!this.state.dataJSON.mandatory_config.interactive){
           genreColor = "rgba(51, 51, 51, 0.75)",
           genreFontColor = "#fff";
@@ -404,7 +416,7 @@ export default class TimelineCard extends React.Component {
                 <div className="proto-main-content">
                   <div className="proto-timeline-card">
                     {
-                      data.data.events.map((d,i)=>{
+                      dataArr.map((d,i)=>{
                         let date = dateformat(new Date(d.single_event.timestamp_date), "mmm dd, yyyy")
                         return(
                           <div key={i} className="proto-single-event">
