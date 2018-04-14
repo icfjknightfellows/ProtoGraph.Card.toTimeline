@@ -1,10 +1,10 @@
 const webpack = require('webpack');
-const uglifycss = require('uglifycss');
+const minifier = require('minifier')
 const input = './src/css/styles.css'
 const options = {
   output: "./dist/0.0.1/card.min.css"
 }
-uglifycss.processFiles([input], options)
+minifier.minify(input, options);
 
 module.exports = {
   entry: './main.js',
