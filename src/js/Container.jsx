@@ -122,6 +122,7 @@ export default class TimelineCard extends React.Component {
     }
     event.classList.add('active');
   }
+
   handleScroll(){
     let events = Array.prototype.slice.call(document.getElementsByClassName('proto-single-event')),
     card = document.getElementsByClassName('proto-timeline-card')[0],
@@ -147,7 +148,7 @@ export default class TimelineCard extends React.Component {
       curr:curr
     })
   }
-  
+
   matchDomain(domain, url) {
     let url_domain = this.getDomainFromURL(url).replace(/^(https?:\/\/)?(www\.)?/, ''),
       domain_has_subdomain = this.subDomain(domain),
@@ -160,11 +161,13 @@ export default class TimelineCard extends React.Component {
     }
     return (domain === url_domain)
   }
+
   getDomainFromURL(url) {
     let a = document.createElement('a');
     a.href = url;
     return a.hostname;
   }
+
   subDomain(url) {
     if(!url){
       url = "";
@@ -199,10 +202,12 @@ export default class TimelineCard extends React.Component {
 
     return (subDomain);
   }
+
   flipper(){
     document.getElementsByClassName('proto-totimelinecard')[0].classList.add('proto-flipped');
     this.setState({ready:true})
   }
+
   renderCol7() {
     if (this.state.fetchingData){
       return(<div>Loading</div>)
@@ -244,7 +249,7 @@ export default class TimelineCard extends React.Component {
           padding = "1px";
         }
         return(
-          <div className="proto-totimelinecard proto-parent-card-desktop">
+          <div id="protograph_div" className="proto-totimelinecard proto-parent-card-desktop">
             <div className="proto-first-view proto-view">
               <div className="proto-col-3 proto-view-in-desktop">
                 <div className="proto-card-tags">
@@ -359,7 +364,7 @@ export default class TimelineCard extends React.Component {
           padding = "1px";
         }
         return(
-          <div className="proto-totimelinecard proto-parent-card-mobile">
+          <div id="protograph_div" className="proto-totimelinecard proto-parent-card-mobile">
             <div className="proto-first-view proto-view">
               <div className="proto-col-4">
                 <div className="proto-cover-image">
@@ -425,7 +430,6 @@ export default class TimelineCard extends React.Component {
         )
     }
   }
-
 
   render() {
     switch(this.props.mode) {

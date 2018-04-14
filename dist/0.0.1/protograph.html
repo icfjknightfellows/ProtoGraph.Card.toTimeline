@@ -48,18 +48,19 @@
     function renderWithMode(mode) {
       switch(mode){
         case "laptop":
-          x.renderSevenCol();
+          x.renderCol7();
           break;
         case "mobile":
-          x.renderFourCol();
+          x.renderCol4();
+          break;
         case "col7":
-          x.renderSevenCol();
+          x.renderCol7();
           break;
         case "col4":
-          x.renderFourCol();
+          x.renderCol4();
           break;
         default:
-          x.renderFourCol();
+          x.renderCol4();
           break;
       }
     }

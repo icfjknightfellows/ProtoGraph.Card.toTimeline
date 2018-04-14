@@ -17,13 +17,13 @@ ProtoGraph.Card.toTimeline.prototype.getData = function (data) {
   return this.containerInstance.exportData();
 }
 
-ProtoGraph.Card.toTimeline.prototype.renderSevenCol = function (data) {
+ProtoGraph.Card.toTimeline.prototype.renderCol7 = function (data) {
   this.mode = 'col7';
   ReactDOM.unmountComponentAtNode(this.options.selector);
   this.render();
 }
 
-ProtoGraph.Card.toTimeline.prototype.renderFourCol = function (data) {
+ProtoGraph.Card.toTimeline.prototype.renderCol4 = function (data) {
   this.mode = 'col4';
   ReactDOM.unmountComponentAtNode(this.options.selector);
   this.render();
