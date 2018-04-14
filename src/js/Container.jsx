@@ -203,7 +203,7 @@ export default class TimelineCard extends React.Component {
     document.getElementsByClassName('proto-totimelinecard')[0].classList.add('proto-flipped');
     this.setState({ready:true})
   }
-  renderColSeven() {
+  renderCol7() {
     if (this.state.fetchingData){
       return(<div>Loading</div>)
     } else {
@@ -318,7 +318,7 @@ export default class TimelineCard extends React.Component {
     }
   }
 
-  renderColFour() {
+  renderCol4() {
     if (this.state.fetchingData){
       return(<div>Loading</div>)
     } else {
@@ -430,10 +430,10 @@ export default class TimelineCard extends React.Component {
   render() {
     switch(this.props.mode) {
       case 'col7' :
-        return this.renderColSeven();
+        return this.renderCol7();
         break;
       case 'col4' :
-        return this.renderColFour();
+        return this.renderCol4();
         break;
     }
   }
