@@ -100,14 +100,14 @@ export default class TimelineCard extends React.Component {
   }
 
   componentDidUpdate(){
-    let events = Array.from(document.getElementsByClassName('proto-single-event')),
+    let events = Array.prototype.slice.call(document.getElementsByClassName('proto-single-event')),
     card = document.getElementsByClassName('proto-timeline-card')[0],
     min = Infinity,
     event;
     if(!card){
       return;
     }
-    Array.from(document.getElementsByClassName('active')).forEach((e)=>{
+    Array.prototype.slice.call(document.getElementsByClassName('active')).forEach((e)=>{
       e.classList.remove('active');
     })
     events.forEach((e)=>{
@@ -123,11 +123,11 @@ export default class TimelineCard extends React.Component {
     event.classList.add('active');
   }
   handleScroll(){
-    let events = Array.from(document.getElementsByClassName('proto-single-event')),
+    let events = Array.prototype.slice.call(document.getElementsByClassName('proto-single-event')),
     card = document.getElementsByClassName('proto-timeline-card')[0],
     min = Infinity,
     event, curr;
-    Array.from(document.getElementsByClassName('active')).forEach((e)=>{
+    Array.prototype.slice.call(document.getElementsByClassName('active')).forEach((e)=>{
       e.classList.remove('active');
     })
     events.forEach((e,i)=>{
@@ -152,16 +152,14 @@ export default class TimelineCard extends React.Component {
     let url_domain = this.getDomainFromURL(url).replace(/^(https?:\/\/)?(www\.)?/, ''),
       domain_has_subdomain = this.subDomain(domain),
       url_has_subdomain = this.subDomain(url_domain);
-
     if (domain_has_subdomain) {
-      return (domain === url_domain) || (domain.indexOf(url_domain));
+      return (domain === url_domain) || (domain.indexOf(url_domain) >=0 );
     }
     if (url_has_subdomain) {
-      return (domain === url_domain) || (url_domain.indexOf(domain))
+      return (domain === url_domain) || (url_domain.indexOf(domain) >=0 )
     }
     return (domain === url_domain)
   }
-
   getDomainFromURL(url) {
     let a = document.createElement('a');
     a.href = url;
