@@ -14,7 +14,7 @@ export default class EditTimelineCard extends React.Component {
         mandatory_config: {}
       },
       uiSchemaJSON: {},
-      mode: "laptop",
+      mode: "col7",
       publishing: false,
       schemaJSON: undefined,
       errorOnFetchingData: undefined,
@@ -207,7 +207,7 @@ showLinkText() {
     let element = e.target.closest('a'),
       mode = element.getAttribute('data-mode');
 
-    if (mode === 'laptop'){
+    if (mode === 'col7'){
       document.getElementById('protograph_card_title_div_gradient').style.display = 'block';
     } else {
 
@@ -275,17 +275,17 @@ showLinkText() {
               <div className="twelve wide column proto-card-preview proto-share-card-div">
                 <div className="protograph-menu-container">
                   <div className="ui compact menu">
-                    <a className={`item ${this.state.mode === 'laptop' ? 'active' : ''}`}
-                      data-mode='laptop'
+                    <a className={`item ${this.state.mode === 'col7' ? 'active' : ''}`}
+                      data-mode='col7'
                       onClick={this.toggleMode}
                     >
-                      <i className="desktop icon"></i>
+                      col7
                     </a>
-                    <a className={`item ${this.state.mode === 'mobile' ? 'active' : ''}`}
-                      data-mode='mobile'
+                    <a className={`item ${this.state.mode === 'col4' ? 'active' : ''}`}
+                      data-mode='col4'
                       onClick={this.toggleMode}
                     >
-                      <i className="mobile icon"></i>
+                      col4
                     </a>
                   </div>
                 </div>

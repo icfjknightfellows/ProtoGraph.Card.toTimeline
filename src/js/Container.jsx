@@ -175,7 +175,7 @@ export default class TimelineCard extends React.Component {
 
   injectImage(photoExists, captionExists) {
     if (photoExists) {
-      if(this.props.mode === 'laptop') {
+      if(this.props.mode === 'col7') {
         return (
           <div style={{marginBottom: 10}}>
           <img className="protograph-event-photo" src={photoExists} /> {
@@ -206,7 +206,7 @@ export default class TimelineCard extends React.Component {
     if(urlExists) {
       if(regex.test(urlExists)){
         let embedUrl = "https://www.youtube.com/embed/" + urlExists.split('=')[1];
-        if(this.props.mode === 'laptop') {
+        if(this.props.mode === 'col7') {
           return (
             <div style={{marginBottom: 10}}>
               <iframe className="protograph-youtube-embed" src={embedUrl} frameBorder="0" allowFullScreen></iframe> {
@@ -281,10 +281,10 @@ export default class TimelineCard extends React.Component {
           svg.appendChild(circle);
         }
         plot.style.fill = "red";
-        if(centralEvents[0] === document.getElementsByClassName('protograph-first-event')[0] && this.props.mode === 'laptop') {
+        if(centralEvents[0] === document.getElementsByClassName('protograph-first-event')[0] && this.props.mode === 'col7') {
           document.getElementById('protograph_date_div').style.marginTop = "20px";
         }
-        else if (this.props.mode === 'laptop') {
+        else if (this.props.mode === 'col7') {
           document.getElementById('protograph_date_div').style.marginTop = `${plot.getBoundingClientRect().top - container.getBoundingClientRect().top - 35}px`;
         }
       }
@@ -299,7 +299,7 @@ export default class TimelineCard extends React.Component {
     });
     if(centralEvents[0]) {
       let timestamp = centralEvents[0].id.split('-');
-      if(this.props.mode === 'laptop') {
+      if(this.props.mode === 'col7') {
         document.getElementById('protograph_month_div').innerHTML = this.getMonth(timestamp[1]);
         document.getElementById('protograph_day_div').innerHTML = timestamp[2];
         document.getElementById('protograph_year_div').innerHTML = timestamp[0];
@@ -334,20 +334,20 @@ export default class TimelineCard extends React.Component {
   showMainCard(e) {
     let line_height = 390,
     // let line_height = 340,
-      hideTitlePage = this.props.mode === 'laptop' ? document.getElementById('protograph_card_title_div') : document.getElementById('protograph_card_title_div_mobile');
+      hideTitlePage = this.props.mode === 'col7' ? document.getElementById('protograph_card_title_div') : document.getElementById('protograph_card_title_div_mobile');
     hideTitlePage.style.opacity = '0';
     let that = this;
     setTimeout(function(){
       hideTitlePage.style.display = 'none';
-      that.props.mode === 'laptop' ? document.getElementById('protograph_card_main_div').style.display = 'flex' : document.getElementById('protograph_card_main_div').style.display = 'block';
-      if(that.props.mode === 'mobile') {
+      that.props.mode === 'col7' ? document.getElementById('protograph_card_main_div').style.display = 'flex' : document.getElementById('protograph_card_main_div').style.display = 'block';
+      if(that.props.mode === 'col4') {
         document.getElementById('protograph_card_title_div_gradient').style.display = 'none';
       }
     }, 500);
     setTimeout(function(){
       document.getElementById('protograph_div').style.background = '#f5f5f5';
-      that.props.mode === 'laptop' ? document.getElementById('protograph_card_main_div').style.display = 'flex' : document.getElementById('protograph_card_main_div').style.display = 'block';
-      if(that.props.mode === 'mobile') {
+      that.props.mode === 'col7' ? document.getElementById('protograph_card_main_div').style.display = 'flex' : document.getElementById('protograph_card_main_div').style.display = 'block';
+      if(that.props.mode === 'col4') {
         document.querySelector('.protograph-card-div.protograph-mobile-mode').style.padding = '0 10px';
       }
     }, 515);
@@ -406,7 +406,7 @@ export default class TimelineCard extends React.Component {
     e.target.style.r = '5';
   }
 
-  renderLaptop() {
+  renderCol7() {
     if (this.state.fetchingData){
       return(<div>Loading</div>)
     } else {
@@ -574,7 +574,7 @@ export default class TimelineCard extends React.Component {
     }
   }
 
-  renderMobile() {
+  renderCol4() {
     if (this.state.fetchingData){
       return(<div>Loading</div>)
     } else {
@@ -716,36 +716,13 @@ export default class TimelineCard extends React.Component {
     }
   }
 
-  renderScreenshot() {
-    if (this.state.fetchingData){
-      return(<div>Loading</div>)
-    } else {
-      return (
-        <div id="ProtoScreenshot">
-          <div id="protograph_div" className = "protograph-card-div protograph-screenshot-mode">
-              <div id="protograph_card_title_div">
-                <div id="protograph_timeline_details_div" style={{width: '100%'}}>
-                  <h1>{this.state.dataJSON.mandatory_config.timeline_title}</h1>
-                  <p>{this.state.dataJSON.mandatory_config.timeline_description}</p>
-                  <button id="protograph_show_main_card_button" style={{padding: '8px 10px', marginTop:0}} onClick={(e) => that.showMainCard(e)}>{this.state.languageTexts.button_text}</button>
-                </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-  }
-
   render() {
     switch(this.props.mode) {
-      case 'laptop' :
-        return this.renderLaptop();
+      case 'col7' :
+        return this.renderCol7();
         break;
-      case 'mobile' :
-        return this.renderMobile();
-        break;
-      case 'screenshot' :
-        return this.renderScreenshot();
+      case 'col4' :
+        return this.renderCol4();
         break;
     }
   }

@@ -17,20 +17,15 @@ ProtoGraph.Card.toTimeline.prototype.getData = function (data) {
   return this.containerInstance.exportData();
 }
 
-ProtoGraph.Card.toTimeline.prototype.renderLaptop = function (data) {
-  this.mode = 'laptop';
+ProtoGraph.Card.toTimeline.prototype.renderCol7 = function (data) {
+  this.mode = 'col7';
   ReactDOM.unmountComponentAtNode(this.options.selector);
   this.render();
 }
 
-ProtoGraph.Card.toTimeline.prototype.renderMobile = function (data) {
-  this.mode = 'mobile';
+ProtoGraph.Card.toTimeline.prototype.renderCol4 = function (data) {
+  this.mode = 'col4';
   ReactDOM.unmountComponentAtNode(this.options.selector);
-  this.render();
-}
-
-ProtoGraph.Card.toTimeline.prototype.renderScreenshot = function (data) {
-  this.mode = 'screenshot';
   this.render();
 }
 
