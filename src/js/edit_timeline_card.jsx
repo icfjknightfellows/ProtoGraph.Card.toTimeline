@@ -50,7 +50,7 @@ export default class EditTimelineCard extends React.Component {
           let stateVar = {
             dataJSON: {
               data: card.data.data,
-              mandatory_config: card.data.mandatory_config
+              mandatory_config: card.data
             },
             schemaJSON: schema.data,
             optionalConfigJSON: opt_config.data,
@@ -59,7 +59,7 @@ export default class EditTimelineCard extends React.Component {
             siteConfigs: site_configs.data
           };
 
-          stateVar.dataJSON.mandatory_config.language = stateVar.siteConfigs.primary_language.toLowerCase();
+          stateVar.dataJSON.data.mandatory_config.language = stateVar.siteConfigs.primary_language.toLowerCase();
           stateVar.languageTexts = this.getLanguageTexts(stateVar.dataJSON.mandatory_config.language);
 
           stateVar.optionalConfigJSON.start_button_color = stateVar.siteConfigs.house_colour;
@@ -95,49 +95,65 @@ export default class EditTimelineCard extends React.Component {
   }
 
   onChangeHandler({formData}) {
-    switch (this.state.step) {
-      case 1:
-        this.setState((prevStep, prop) => {
-          let dataJSON = prevStep.dataJSON;
-          dataJSON.mandatory_config = formData;
-          dataJSON.data.section = formData.timeline_title;
-          return {
-            dataJSON: dataJSON
-          }
-        });
-        break;
-      case 2:
-        this.setState((prevStep, prop) => {
-          let dataJSON = prevStep.dataJSON;
-          dataJSON.data.events = formData.events;
-          return {
-            dataJSON: dataJSON
-            // optionalConfigJSON: dataJSON
-          }
-        });
-        break;
-    }
+     this.setState((prevStep, prop) => {
+      let dataJSON = prevStep.dataJSON;
+      dataJSON.data = formData;
+      return {
+        dataJSON: dataJSON
+      }
+    });
+    // switch (this.state.step) {
+    //   case 1:
+    //     this.setState((prevStep, prop) => {
+    //       let dataJSON = prevStep.dataJSON;
+    //       dataJSON.mandatory_config = formData;
+    //       dataJSON.data.section = formData.timeline_title;
+    //       return {
+    //         dataJSON: dataJSON
+    //       }
+    //     });
+    //     break;
+    //   case 2:
+    //     this.setState((prevStep, prop) => {
+    //       let dataJSON = prevStep.dataJSON;
+    //       dataJSON.data.events = formData.events;
+    //       return {
+    //         dataJSON: dataJSON
+    //         // optionalConfigJSON: dataJSON
+    //       }
+    //     });
+    //     break;
+    // }
   }
 
   onSubmitHandler(e) {
-    switch(this.state.step) {
-      case 1:
-        this.setState({
-          step: 2
-        });
-        break;
-      case 2:
-        if (typeof this.props.onPublishCallback === "function") {
-          let dataJSON = this.state.dataJSON;
-          dataJSON.data.section = dataJSON.mandatory_config.timeline_title;
-          this.setState({ publishing: true, dataJSON: dataJSON });
-          let publishCallback = this.props.onPublishCallback();
-          publishCallback.then((message) => {
-            this.setState({ publishing: false });
-          });
-        }
-        break;
+    if (typeof this.props.onPublishCallback === "function") {
+      let dataJSON = this.state.dataJSON;
+      dataJSON.data.section = dataJSON.mandatory_config.timeline_title;
+      this.setState({ publishing: true, dataJSON: dataJSON });
+      let publishCallback = this.props.onPublishCallback();
+      publishCallback.then((message) => {
+        this.setState({ publishing: false });
+      });
     }
+    // switch(this.state.step) {
+    //   case 1:
+    //     this.setState({
+    //       step: 2
+    //     });
+    //     break;
+    //   case 2:
+    //     if (typeof this.props.onPublishCallback === "function") {
+    //       let dataJSON = this.state.dataJSON;
+    //       dataJSON.data.section = dataJSON.mandatory_config.timeline_title;
+    //       this.setState({ publishing: true, dataJSON: dataJSON });
+    //       let publishCallback = this.props.onPublishCallback();
+    //       publishCallback.then((message) => {
+    //         this.setState({ publishing: false });
+    //       });
+    //     }
+    //     break;
+    // }
   }
 
   renderSEO() {
@@ -150,27 +166,29 @@ export default class EditTimelineCard extends React.Component {
   }
 
   renderSchemaJSON() {
-    switch(this.state.step){
-      case 1:
-        return this.state.schemaJSON.properties.mandatory_config;
-        break;
-      case 2:
-        return this.state.schemaJSON.properties.data;
-        break;
-      case 3:
-      return this.state.optionalConfigSchemaJSON;
-      }
+    return this.state.schemaJSON.properties.data;
+    // switch(this.state.step){
+    //   case 1:
+    //     return this.state.schemaJSON.properties.mandatory_config;
+    //     break;
+    //   case 2:
+    //     return this.state.schemaJSON.properties.data;
+    //     break;
+    //   case 3:
+    //   return this.state.optionalConfigSchemaJSON;
+    //   }
   }
 
 getFormData() {
-  switch(this.state.step) {
-    case 1:
-      return this.state.dataJSON.mandatory_config;
-      break;
-    case 2:
-      return this.state.dataJSON.data;
-      break;
-  }
+  return this.state.dataJSON.data;
+  // switch(this.state.step) {
+  //   case 1:
+  //     return this.state.dataJSON.mandatory_config;
+  //     break;
+  //   case 2:
+  //     return this.state.dataJSON.data;
+  //     break;
+  // }
 }
 
 showLinkText() {
@@ -186,14 +204,15 @@ showLinkText() {
   }
 
   showButtonText() {
-    switch(this.state.step) {
-      case 1:
-        return 'Next';
-        break;
-      case 2:
-        return 'Publish';
-        break;
-    }
+    return 'Publish';
+    // switch(this.state.step) {
+    //   case 1:
+    //     return 'Next';
+    //     break;
+    //   case 2:
+    //     return 'Publish';
+    //     break;
+    // }
   }
 
   onPrevHandler() {

@@ -14,6 +14,42 @@
           "title": "Section",
           "default": ""
         },
+        "mandatory_config": {
+          "type": "object",
+          "id": "/properties/mandatory_config",
+          "properties": {
+            "timeline_title": {
+              "title": "Title",
+              "type": "string",
+              "id": "/properties/mandatory_config/properties/timeline_title"
+            },
+            "timeline_description": {
+              "title": "Description",
+              "type": "string",
+              "id": "/properties/mandatory_config/properties/timeline_description"
+            },
+            "timeline_image": {
+              "title": "Cover Image URL",
+              "type": "string",
+              "id": "/properties/mandatory_config/properties/timeline_image",
+              "pattern": "((?:https?\\:\/\/|www\\.)(?:[-a-z0-9]+\\.)*[-a-z0-9]+.*)"
+            },
+            "language": {
+              "id": "/properties/mandatory_config/properties/language",
+              "type": "string",
+              "enum": [
+                "english",
+                "hindi"
+              ],
+              "enumNames": [
+                "English",
+                "Hindi"
+              ],
+              "title": "Language"
+            }
+          },
+          "required": ["timeline_title", "timeline_description", "timeline_image", "language"]
+        },
         "events": {
           "id": "/properties/data/properties/events",
           "type": "array",
@@ -74,43 +110,6 @@
           }
         }
       }
-    },
-    "mandatory_config": {
-      "type": "object",
-      "id": "/properties/mandatory_config",
-      "properties": {
-        "timeline_title": {
-          "title": "Title",
-          "type": "string",
-          "id": "/properties/mandatory_config/properties/timeline_title"
-        },
-        "timeline_description": {
-          "title": "Description",
-          "type": "string",
-          "id": "/properties/mandatory_config/properties/timeline_description"
-        },
-        "timeline_image": {
-          "title": "Cover Image URL",
-          "type": "string",
-          "id": "/properties/mandatory_config/properties/timeline_image",
-          "pattern": "((?:https?\\:\/\/|www\\.)(?:[-a-z0-9]+\\.)*[-a-z0-9]+.*)"
-        },
-        "language": {
-          "id": "/properties/mandatory_config/properties/language",
-          "type": "string",
-          "enum": [
-            "english",
-            "hindi"
-          ],
-          "enumNames": [
-            "English",
-            "Hindi"
-          ],
-          "title": "Language"
-        }
-      },
-      "required": ["timeline_title", "timeline_description", "timeline_image", "language"]
     }
-  },
-  "required": ["data", "mandatory_config"]
+  }
 }
